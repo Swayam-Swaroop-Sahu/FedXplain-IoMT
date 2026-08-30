@@ -14,14 +14,16 @@ CICIoMT2024 CSV files. Labels were derived from source filenames (e.g., `TCP_IP-
 
 ### Protocol Groups
 
-The original dataset combines Wi-Fi and MQTT traffic into one CSV set. Bluetooth data exists
-only as raw `.pcap` captures with no pre-extracted features, so it is **not included** in these
-sampled datasets.
+The original dataset combines Wi-Fi and MQTT traffic into one CSV set. Bluetooth data was
+provided only as raw `.pcap` captures (Bluetooth HCI H4), so features were extracted via a
+custom pipeline (see "Bluetooth Feature Extraction" below).
 
 - **WiFi**: TCP/IP-based attacks (DDoS, DoS via ICMP/SYN/TCP/UDP), ARP Spoofing, Reconnaissance, plus Benign traffic
 - **MQTT**: MQTT-specific attacks (DDoS/DoS Connect/Publish Flood, Malformed Data), plus Benign traffic
+- **Bluetooth**: Binary classification (Benign vs BT-DoS), features extracted from HCI H4 pcap captures
 
-Benign traffic is shared across both protocol groups (sampled independently for each).
+Benign traffic is shared across WiFi and MQTT protocol groups (sampled independently for each).
+Bluetooth Benign traffic is separate (captured over Bluetooth HCI, not TCP/IP).
 
 ### POC Datasets (`data/poc/`)
 
@@ -31,6 +33,7 @@ Small datasets for rapid pipeline development and testing.
 |------|----------|------|---------|----------|------|
 | `wifi_poc.csv` | WiFi | 4,995 | 14 | 45 + label | 1.3 MB |
 | `mqtt_poc.csv` | MQTT | 2,998 | 6 | 45 + label | 1.0 MB |
+| `bluetooth_poc.csv` | Bluetooth | 1,999 | 2 | 45 + label | 0.5 MB |
 
 ### Study Datasets (`data/study/`)
 
@@ -40,6 +43,7 @@ Paper-level experiment datasets, sized for 2-3 months of federated learning rese
 |------|----------|------|---------|----------|------|
 | `wifi_study.csv` | WiFi | 99,993 | 14 | 45 + label | 26.4 MB |
 | `mqtt_study.csv` | MQTT | 49,997 | 6 | 45 + label | 15.9 MB |
+| `bluetooth_study.csv` | Bluetooth | 16,346 | 2 | 45 + label | 3.7 MB |
 
 ### Column Schema
 
@@ -82,8 +86,36 @@ Paper-level experiment datasets, sized for 2-3 months of federated learning rese
 | MQTT-DoS-Publish_Flood | DoS | 52,881 | 5,411 |
 | MQTT-Malformed_Data | MQTT-specific | 6,877 | 2,047 |
 
+#### Bluetooth (2 classes)
+| Class | Category | Original Flows | Study Count |
+|-------|----------|---------------|-------------|
+| Benign | — | 9,611 | 9,611 |
+| BT-DoS | DoS | 6,735 | 6,735 |
+
+*Note: Bluetooth study dataset includes all extracted flows (16,346 total) since
+the pcap data yields fewer flows than WiFi/MQTT CSV rows.*
+
+## Bluetooth Feature Extraction
+
+The CICIoMT2024 release only provides raw Bluetooth HCI H4 `.pcap` captures (link-layer
+type 201) — not Ethernet/IP. Since standard network flow tools (CICFlowMeter, NFStream)
+cannot process HCI packets, a **custom feature extraction pipeline** was built:
+
+1. **Flow construction**: HCI packets are grouped into "flows" using connection handles
+   (for ACL data) and 1-second time windows
+2. **Feature mapping**: 45 features are computed to match the WiFi/MQTT schema:
+   - **Applicable features** (computed from HCI data): Header_Length, Duration, Rate,
+     packet size statistics (Tot sum, Min, Max, AVG, Std, Tot size), IAT, Number,
+     Magnitude, Radius, Covariance, Variance, Weight
+   - **Inapplicable features** (zeroed): TCP flags, IP-layer protocol indicators
+     (HTTP, HTTPS, DNS, TCP, UDP, etc.) — these don't exist in Bluetooth HCI
+   - **Repurposed**: `LLC` column stores ACL data packet ratio
+3. **Reproducibility**: Same seed=42, same stratified sampling approach
+
+Source pcaps: `Bluetooth/attacks/pcap/{train,test}/Bluetooth_{Benign,DoS}_{train,test}.pcap`
+
 ## Notes
 
-- **Bluetooth data** is NOT included — the CICIoMT2024 release only provides raw `.pcap` captures for Bluetooth, with no pre-extracted CSV features. Feature extraction from Bluetooth pcaps would require a separate pipeline (e.g., using CICFlowMeter or similar tools).
 - The `data/_extract_temp/` directory contains the full extraction workspace and is gitignored.
 - The original `CICIoMT2024.tar.xz.zip` archive (~10.3 GB) is also gitignored.
+- Bluetooth features are extracted from HCI H4 packets — see "Bluetooth Feature Extraction" above for methodology and caveats.
