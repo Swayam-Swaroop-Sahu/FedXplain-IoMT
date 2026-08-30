@@ -1,0 +1,35 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data - raw and extracted (too large for git)
+data/raw/
+data/extracted/
+data/_extract_temp/
+
+# Large archives
+*.zip
+*.tar.xz
+*.tar.gz
+*.pcap
+
+# Model artifacts
+models/*.pth
+models/*.pkl
+models/*.h5
+
+# Results (regenerable)
+results/*.png
+results/*.json
+
+# Logs
+*.log
