@@ -43,6 +43,10 @@ class IoMTFlowerClient(fl.client.NumPyClient):
     ) -> tuple[list[np.ndarray], int, dict]:
         self.set_parameters(parameters)
 
+        mu = float(config.get("mu", 0.0)) if config else 0.0
+        if mu > 0.0:
+            global_params = [p.clone().detach() for p in self.model.parameters()]
+
         # Local training: 2 epochs, batch 64, Adam lr=0.001, BCELoss
         optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
         criterion = nn.BCELoss()
@@ -57,6 +61,12 @@ class IoMTFlowerClient(fl.client.NumPyClient):
                 optimizer.zero_grad()
                 preds = self.model(X_batch)
                 loss = criterion(preds, y_batch)
+                if mu > 0.0:
+                    prox_term = sum(
+                        torch.sum((p - g_p) ** 2)
+                        for p, g_p in zip(self.model.parameters(), global_params)
+                    )
+                    loss = loss + (mu / 2.0) * prox_term
                 loss.backward()
                 optimizer.step()
                 epoch_loss += loss.item() * X_batch.size(0)
