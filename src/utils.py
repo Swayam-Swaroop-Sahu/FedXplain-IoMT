@@ -120,3 +120,18 @@ def get_input_dim(protocol: str, data_dir: str = "data/poc") -> int:
     if non_numeric:
         X = X.drop(columns=non_numeric)
     return X.shape[1]
+
+
+def get_feature_names(protocol: str = "wifi", data_dir: str = "data/poc") -> list[str]:
+    """Return list of feature column names after dropping non-features."""
+    protocol = protocol.lower()
+    path = os.path.join(data_dir, f"{protocol}_poc.csv")
+    df = pd.read_csv(path, nrows=5)
+
+    drop_cols = [c for c in df.columns if _is_drop_column(c)]
+    X = df.drop(columns=drop_cols, errors="ignore")
+    non_numeric = X.select_dtypes(exclude=[np.number]).columns.tolist()
+    if non_numeric:
+        X = X.drop(columns=non_numeric)
+    return list(X.columns)
+
