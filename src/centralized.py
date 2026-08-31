@@ -37,6 +37,15 @@ def main() -> None:
     y_test = torch.cat(y_tests, dim=0)
 
     input_dim = X_train.shape[1]
+
+    # Guardrail: verify all protocols produce the same feature count
+    for proto in protocols:
+        proto_dim = get_input_dim(proto, data_dir=data_dir)
+        assert proto_dim == input_dim, (
+            f"input_dim mismatch: '{proto}' has {proto_dim} features but "
+            f"expected {input_dim}. Preprocessing may have changed."
+        )
+
     print(f"Combined dataset  -> train: {X_train.shape[0]}, test: {X_test.shape[0]}, "
           f"features: {input_dim}")
 

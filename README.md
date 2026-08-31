@@ -129,7 +129,7 @@ $$\text{Linear}(45, 64) \rightarrow \text{ReLU} \rightarrow \text{Dropout}(0.2) 
 - **FedAvg**: Aggregates updated weights element-wise weighted by client dataset size $n_k$:
   $$w_{t+1} = \sum_{k=1}^K \frac{n_k}{N} w_{t+1}^k$$
 - **FedProx**: Incorporates a proximal regularization penalty directly into the client loss objective to restrict local drift from the global parameters $w_t$:
-  $$\mathcal{L}_{\text{FedProx}}(w; w_t) = \mathcal{L}_{\text{BCE}}(w) + \frac{\mu}{2} \|w - w_t\|_2^2 \quad (\mu = 0.1)$$
+  $$\mathcal{L}_{\text{FedProx}}(w; w_t) = \mathcal{L}_{\text{BCE}}(w) + \frac{\mu}{2} \|w - w_t\|_2^2 \quad (\mu = 0.01)$$
 
 ### Post-Hoc Explainability (`src/explain.py` & `src/explain_prox.py`)
 - **Explainer**: `shap.DeepExplainer` applied to the converged global PyTorch model.
@@ -147,19 +147,21 @@ $$\text{Linear}(45, 64) \rightarrow \text{ReLU} \rightarrow \text{Dropout}(0.2) 
 
 ### Model Detection Performance
 
-All paradigms achieve high attack detection performance on the held-out test partitions:
+The centralized baseline achieves near-optimal detection. Federated algorithms show strong Wi-Fi performance with moderate degradation on minority clients (MQTT, Bluetooth) due to sample count asymmetry (Wi-Fi: 50%, MQTT: 30%, BT: 20% of total training data):
 
 | Training Paradigm | Evaluation Scope | Accuracy | Precision | Recall | F1-Score |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Centralized Baseline** (10 epochs) | Pooled Combined Test Set | **0.9810** | **0.9855** | **0.9894** | **0.9875** |
-| **Federated FedAvg** (Round 5) | Wi-Fi Client Test Set | — | — | — | 0.9829 |
-| **Federated FedAvg** (Round 5) | MQTT Client Test Set | — | — | — | 0.9915 |
-| **Federated FedAvg** (Round 5) | Bluetooth Client Test Set | — | — | — | 0.9938 |
-| **Federated FedAvg** (Round 5) | **Macro Average across Clients** | — | — | — | **0.9894** |
-| **Federated FedProx** ($\mu=0.1$, Round 5) | Wi-Fi Client Test Set | — | — | — | 0.9874 |
-| **Federated FedProx** ($\mu=0.1$, Round 5) | MQTT Client Test Set | — | — | — | 0.9106 |
-| **Federated FedProx** ($\mu=0.1$, Round 5) | Bluetooth Client Test Set | — | — | — | 0.7721 |
-| **Federated FedProx** ($\mu=0.1$, Round 5) | **Macro Average across Clients** | — | — | — | **0.8900** |
+| **Federated FedAvg** (Round 5) | Wi-Fi Client Test Set | — | — | — | 0.9874 |
+| **Federated FedAvg** (Round 5) | MQTT Client Test Set | — | — | — | 0.8607 |
+| **Federated FedAvg** (Round 5) | Bluetooth Client Test Set | — | — | — | 0.7198 |
+| **Federated FedAvg** (Round 5) | **Macro Average across Clients** | — | — | — | **0.8560** |
+| **Federated FedProx** ($\mu=0.01$, Round 5) | Wi-Fi Client Test Set | — | — | — | 0.9874 |
+| **Federated FedProx** ($\mu=0.01$, Round 5) | MQTT Client Test Set | — | — | — | 0.8990 |
+| **Federated FedProx** ($\mu=0.01$, Round 5) | Bluetooth Client Test Set | — | — | — | 0.8058 |
+| **Federated FedProx** ($\mu=0.01$, Round 5) | **Macro Average across Clients** | — | — | — | **0.8974** |
+
+> **Note:** Bluetooth F1 < 0.85 for both federated algorithms; SHAP explanations for Bluetooth should be interpreted with caution. FedProx ($\mu=0.01$) improves macro-average F1 by +4.1pp over FedAvg, primarily benefiting minority-sample clients.
 
 ---
 
@@ -170,10 +172,10 @@ All paradigms achieve high attack detection performance on the held-out test par
 - **MQTT Client**: `rst_count`, `psh_flag_number`, `HTTP`, `ack_flag_number`, `Magnitue`
 - **Bluetooth Client**: `Magnitue`, `AVG`, `Number`, `Max`, `Tot sum`
 
-#### Top-5 Features Identified per Client (FedProx, $\mu = 0.1$)
-- **Wi-Fi Client**: `rst_count`, `psh_flag_number`, `ack_flag_number`, `Variance`, `Magnitue`
-- **MQTT Client**: `rst_count`, `psh_flag_number`, `Max`, `Variance`, `syn_count`
-- **Bluetooth Client**: `Magnitue`, `Tot sum`, `Tot size`, `Number`, `AVG`
+#### Top-5 Features Identified per Client (FedProx, $\mu = 0.01$)
+- **Wi-Fi Client**: `rst_count`, `ack_flag_number`, `psh_flag_number`, `Variance`, `Magnitue`
+- **MQTT Client**: `rst_count`, `psh_flag_number`, `ack_flag_number`, `Max`, `syn_flag_number`
+- **Bluetooth Client**: `Magnitue`, `Tot sum`, `AVG`, `Tot size`, `Number`
 
 ---
 
@@ -181,15 +183,15 @@ All paradigms achieve high attack detection performance on the held-out test par
 
 Comparing top-5 Jaccard overlap between algorithms on identical data splits:
 
-| Client Pair | FedAvg Jaccard | FedProx Jaccard ($\mu=0.1$) | Difference ($\Delta$) | Shared Features (FedAvg $\rightarrow$ FedProx) |
+| Client Pair | FedAvg Jaccard | FedProx Jaccard ($\mu=0.01$) | Difference ($\Delta$) | Shared Features (FedAvg $\rightarrow$ FedProx) |
 | :--- | :---: | :---: | :---: | :--- |
-| **wifi-mqtt** | **0.6667** | **0.4286** | -0.2381 | {`Magnitue`, `ack`, `psh`, `rst`} $\rightarrow$ {`Variance`, `psh`, `rst`} |
+| **wifi-mqtt** | **0.6667** | **0.4286** | -0.2381 | {`Magnitue`, `ack`, `psh`, `rst`} $\rightarrow$ {`ack`, `psh`, `rst`} |
 | **wifi-bluetooth** | **0.1111** | **0.1111** | 0.0000 | {`Magnitue`} $\rightarrow$ {`Magnitue`} |
 | **mqtt-bluetooth** | **0.1111** | **0.0000** | -0.1111 | {`Magnitue`} $\rightarrow$ *None* |
 
 #### Empirical Takeaways
 1. **Strong Protocol Divide**: Both algorithms show very low overlap ($J \le 0.11$) between IP clients (Wi-Fi, MQTT) and non-IP clients (Bluetooth). While IP-based attacks trigger transport flag counts (`rst_count`, `psh_flag_number`), Bluetooth attacks are driven entirely by packet volume and timing statistics (`AVG`, `Number`, `Tot sum`).
-2. **Impact of Proximal Regularization**: In this initial run, FedProx ($\mu = 0.1$) did not decrease divergence; rather, it reduced overlap on Wi-Fi/MQTT (from 0.6667 to 0.4286) and MQTT/Bluetooth (from 0.1111 to 0.0000).
+2. **Impact of Proximal Regularization**: In this initial run, FedProx ($\mu = 0.01$) improved macro-average F1 by +4.1pp over FedAvg (primarily benefiting MQTT and Bluetooth), but did not decrease explanation divergence; it reduced top-5 overlap on Wi-Fi/MQTT (from 0.6667 to 0.4286) and MQTT/Bluetooth (from 0.1111 to 0.0000), suggesting proximal regularization may allow more protocol-specific feature specialization.
 
 ---
 
@@ -254,7 +256,7 @@ python src/explain.py
 *Outputs: Generates `results/shap_top10_{protocol}.png`, `results/shap_cross_client_comparison.png`, and `results/divergence_report.md`.*
 
 ### Step 4: Federated Learning with FedProx
-Simulates 5 rounds with proximal penalty ($\mu = 0.1$):
+Simulates 5 rounds with proximal penalty ($\mu = 0.01$):
 ```bash
 python src/run_federated_prox.py
 ```

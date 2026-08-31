@@ -16,7 +16,7 @@ from src.run_federated import fedavg_weighted
 
 PROTOCOLS = ["wifi", "mqtt", "bluetooth"]
 NUM_ROUNDS = 5
-MU = 0.1
+MU = 0.01
 
 
 def main() -> None:
@@ -24,6 +24,14 @@ def main() -> None:
 
     # Determine input dimension (same across protocols after preprocessing)
     input_dim = get_input_dim("wifi")
+
+    # Guardrail: verify all protocols produce the same feature count
+    for proto in PROTOCOLS:
+        proto_dim = get_input_dim(proto)
+        assert proto_dim == input_dim, (
+            f"input_dim mismatch: '{proto}' has {proto_dim} features but "
+            f"expected {input_dim}. Preprocessing may have changed."
+        )
 
     # Fresh model for initial global weights
     global_model = IoMTMLP(input_dim)

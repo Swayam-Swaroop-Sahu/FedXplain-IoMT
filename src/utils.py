@@ -10,6 +10,12 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+# Guardrail: expected number of features after preprocessing (per CICIoMT2024
+# schema documentation). If this assertion fires, the preprocessing pipeline
+# or the input CSV schema has changed, which would silently produce
+# incomparable model weights and SHAP explanations across runs.
+EXPECTED_FEATURE_COUNT = 45
+
 
 def set_seed(seed: int = 42) -> None:
     """Fix random seeds for Python, NumPy and PyTorch."""
@@ -81,6 +87,15 @@ def load_and_preprocess(
         X = X.drop(columns=non_numeric)
 
     X = X.values.astype(np.float32)
+
+    # Guardrail: assert feature count matches expected schema
+    actual_features = X.shape[1]
+    assert actual_features == EXPECTED_FEATURE_COUNT, (
+        f"Feature count mismatch for protocol '{protocol}': expected "
+        f"{EXPECTED_FEATURE_COUNT}, got {actual_features}. This indicates a "
+        f"preprocessing or CSV schema change that will produce incomparable "
+        f"results across runs. Audit _is_drop_column() and the input CSV."
+    )
 
     # Replace NaN / Inf with 0
     X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
