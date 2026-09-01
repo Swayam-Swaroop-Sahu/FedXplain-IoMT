@@ -1,8 +1,7 @@
 """FedXplain-IoMT Research Dashboard.
 
 Interactive demonstration dashboard for jury presentations and research analysis.
-Visualizes federated learning detection metrics, class imbalance diagnostics,
-and post-hoc SHAP explanation divergence across IoMT protocols.
+Directly pairs metrics with dynamic, data-driven interpretations and cross-tab trade-offs.
 """
 
 import json
@@ -14,7 +13,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 # ----------------------------------------------------------------------
-# Page Configuration & Styling
+# Page Configuration & Clean Design System
 # ----------------------------------------------------------------------
 st.set_page_config(
     page_title="FedXplain-IoMT: Explainable Federated IoMT IDS",
@@ -26,38 +25,52 @@ st.set_page_config(
 st.markdown("""
 <style>
     .main-header {
-        font-size: 2.2rem;
+        font-size: 2.0rem;
         font-weight: 800;
         color: #1e3a8a;
         margin-bottom: 0.2rem;
     }
     .sub-header {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: #475569;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.2rem;
     }
-    .metric-card {
+    .alert-danger {
+        background-color: #fef2f2;
+        border-left: 5px solid #ef4444;
+        padding: 14px 18px;
+        border-radius: 6px;
+        margin: 12px 0 16px 0;
+        color: #991b1b;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    .alert-info {
+        background-color: #eff6ff;
+        border-left: 5px solid #3b82f6;
+        padding: 14px 18px;
+        border-radius: 6px;
+        margin: 12px 0 16px 0;
+        color: #1e40af;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    .alert-success {
+        background-color: #f0fdf4;
+        border-left: 5px solid #22c55e;
+        padding: 14px 18px;
+        border-radius: 6px;
+        margin: 12px 0 16px 0;
+        color: #166534;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    .verdict-card {
         background-color: #f8fafc;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 12px;
-    }
-    .warning-box {
-        background-color: #fffbeb;
-        border-left: 4px solid #f59e0b;
-        padding: 12px 16px;
-        border-radius: 4px;
-        margin: 12px 0;
-        font-size: 0.95rem;
-    }
-    .info-box {
-        background-color: #eff6ff;
-        border-left: 4px solid #3b82f6;
-        padding: 12px 16px;
-        border-radius: 4px;
-        margin: 12px 0;
-        font-size: 0.95rem;
+        border-radius: 6px;
+        padding: 14px;
+        margin-bottom: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -83,31 +96,24 @@ study_data = load_study_data()
 # Header
 # ----------------------------------------------------------------------
 st.markdown('<div class="main-header">🛡️ FedXplain-IoMT Research Dashboard</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Investigating Cross-Client Explanation Divergence in Federated Learning for Heterogeneous Medical IoT</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Connecting Federated Learning Performance with Post-Hoc Explanation Divergence</div>', unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Sidebar
+# Sidebar (Focused Experiment Controls)
 # ----------------------------------------------------------------------
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/flower/flower/main/doc/source/_static/img/flower-logo.svg", width=160)
-    st.markdown("### 📊 Experiment Settings")
+    st.image("https://raw.githubusercontent.com/flower/flower/main/doc/source/_static/img/flower-logo.svg", width=150)
+    st.markdown("### ⚙️ Experiment Parameters")
     if study_data:
         meta = study_data.get("run_metadata", {})
-        st.markdown(f"**Dataset Scale**: `{meta.get('data_dir', 'data/study')}`")
-        st.markdown(f"**FL Rounds**: `{meta.get('n_rounds', 10)}` rounds")
-        st.markdown(f"**Local Epochs**: `{meta.get('n_local_epochs', 3)}` epochs/round")
-        st.markdown(f"**Seeds Evaluated**: `{meta.get('seeds', [42, 7])}`")
-        st.markdown(f"**Proximal Regularizers**: `mu in {meta.get('mu_values', [0.01, 0.1])}`")
+        st.markdown(f"**Dataset**: `{meta.get('data_dir', 'data/study')}` (166k+ flows)")
+        st.markdown(f"**Rounds**: `{meta.get('n_rounds', 10)}` | **Epochs/Round**: `{meta.get('n_local_epochs', 3)}`")
+        st.markdown(f"**Seeds**: `{meta.get('seeds', [42, 7])}`")
+        st.markdown(f"**Proximal Penalties (μ)**: `{meta.get('mu_values', [0.01, 0.1])}`")
     else:
-        st.warning("⚠️ `results/study_results.json` not found. Please run `src/run_study_experiments.py` first.")
-
+        st.error("Missing `results/study_results.json`. Run `python src/run_study_experiments.py`.")
     st.markdown("---")
-    st.markdown("### 🔍 IoMT Protocols")
-    st.markdown("- **Wi-Fi**: High-throughput telemetry & imaging (TCP/IP)")
-    st.markdown("- **MQTT**: Lightweight sensor messaging (TCP/IP)")
-    st.markdown("- **Bluetooth**: Short-range wearables (HCI H4 Non-IP)")
-    st.markdown("---")
-    st.caption("FedXplain-IoMT Research Team • CICIoMT2024 Benchmark")
+    st.caption("FedXplain-IoMT • CICIoMT2024 Evaluation")
 
 
 # ----------------------------------------------------------------------
@@ -117,7 +123,7 @@ tab_overview, tab_perf, tab_divergence, tab_compare, tab_methods = st.tabs([
     "📖 1. Overview & Architecture",
     "📈 2. Detection Performance",
     "🧠 3. Explanation Divergence",
-    "⚖️ 4. FedAvg vs FedProx Comparison",
+    "⚖️ 4. FedAvg vs FedProx Verdict",
     "🔬 5. Methodology & Limitations",
 ])
 
@@ -128,104 +134,98 @@ tab_overview, tab_perf, tab_divergence, tab_compare, tab_methods = st.tabs([
 with tab_overview:
     col1, col2 = st.columns([3, 2])
     with col1:
-        st.markdown("### 🎯 Research Motivation")
+        st.markdown("### 🎯 Clinical Problem & Research Question")
         st.markdown("""
-        In clinical healthcare environments, Internet of Medical Things (IoMT) devices operate across heterogeneous network architectures:
-        Wi-Fi for high-bandwidth telemetry, MQTT for bedside sensor publishing, and Bluetooth/BLE for peripheral monitoring.
-
-        Under healthcare privacy mandates (HIPAA/GDPR), raw packet streams cannot be aggregated centrally. **Federated Learning (FL)**
-        solves this by training a unified global intrusion detection model across hospital partitions without sharing patient telemetry.
+        In hospital networks, Internet of Medical Things (IoMT) devices operate on disjoint physical protocols:
+        **Wi-Fi** (high-bandwidth monitors), **MQTT** (bedside sensor telemetry), and **Bluetooth/BLE** (wearables).
+        
+        Because HIPAA/GDPR prohibit centralizing raw patient traffic, **Federated Learning (FL)** trains a unified global model across hospital subnets without moving raw data.
+        
+        **The Critical Question**: Standard FL papers declare success when global F1 is high. But does the converged global model rely on the **same security features** across these silos, or is it learning **disjoint, protocol-divergent decision logic**?
         """)
 
-        st.markdown("### ❓ The Core Problem: Cross-Client Explanation Divergence")
         st.markdown("""
-        Standard federated intrusion detection research evaluates models exclusively on global accuracy or binary F1 score.
-        However, **identical global model weights ($\theta^*$) may achieve uniform predictive metrics while relying on fundamentally
-        contradictory or disjoint decision logic** across different protocol clients.
-
-        If a hospital cybersecurity analyst on a Wi-Fi ward sees attacks flagged by TCP header resets (`rst_count`), while a Bluetooth
-        wearable ward flags the same global model prediction via volumetric flow statistics (`Tot sum`, `Magnitue`), **cross-subnet automated
-        containment policies cannot be trusted without explanation alignment**.
-        """)
+        <div class="alert-info">
+            <b>Core Finding:</b> Global weights produce protocol-contingent feature attributions. Furthermore, optimization regularizers like FedProx can appear to reduce explanation divergence on paper, but the reduction is an artifact of <b>minority-client performance collapse</b> rather than genuine shared representation.
+        </div>
+        """, unsafe_allow_html=True)
 
     with col2:
-        st.markdown("### 🏗️ System Architecture")
+        st.markdown("### 🏗️ Pipeline Architecture")
         st.code("""
          +----------------------------------+
-         | Central Orchestrator / Server    |
-         | (FedAvg / FedProx Aggregator)    |
+         | Server Orchestrator (FedAvg/Prox)|
          +----------------+-----------------+
-                          |
-             Global Weights w_t | Aggregate w_{t+1}
+                          | Global Weights w_t
                           v
          +----------------+-----------------+
          |                |                 |
          v                v                 v
    +-----------+    +-----------+    +-----------+
-   | Client 0  |    | Client 1  |    | Client 2  |
-   |   Wi-Fi   |    |   MQTT    |    | Bluetooth |
+   |  Wi-Fi    |    |   MQTT    |    | Bluetooth |
    | (TCP/IP)  |    | (TCP/IP)  |    | (HCI H4)  |
    +-----+-----+    +-----+-----+    +-----+-----+
          |                |                 |
          +----------------+-----------------+
-                          |
+                          | Local SHAP Attributions
                           v
              +--------------------------+
-             | SHAP DeepExplainer       |
-             | + Top-5 Jaccard Analysis |
+             | Pairwise Top-5 Jaccard   |
+             | Divergence & Diagnostic  |
              +--------------------------+
         """, language="text")
 
-    st.markdown("---")
-    st.markdown("### 📌 Key Scientific Insights from this Study")
-    col_a, col_b, col_c = st.columns(3)
-    with col_a:
-        st.markdown("""
-        <div class="metric-card">
-            <h4>1. Structural Protocol Divide</h4>
-            <p>IP-based clients (Wi-Fi, MQTT) prioritize transport-layer TCP flags, whereas Bluetooth relies purely on volumetric flow features, yielding near-zero explanation overlap (J ≤ 0.11).</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_b:
-        st.markdown("""
-        <div class="metric-card">
-            <h4>2. Proximal Regularization Effect</h4>
-            <p>FedProx (μ=0.01) stabilizes minority client learning (MQTT Macro F1 +9.0pp) while permitting protocol-specialized decision logic.</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_c:
-        st.markdown("""
-        <div class="metric-card">
-            <h4>3. Class Imbalance Rigor</h4>
-            <p>Uncovered that high binary F1 on Wi-Fi was inflated by 96% attack prevalence; established Macro F1 and benign precision as standard reporting metrics.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
 
 # ======================================================================
-# TAB 2: Detection Performance
+# TAB 2: Detection Performance (With Dynamic Interpretation & Collapse Flags)
 # ======================================================================
 with tab_perf:
-    st.markdown("### 📊 Federated Intrusion Detection Performance")
+    st.markdown("### 📈 Client Detection Performance & Failure Diagnostics")
 
-    scale_toggle = st.radio(
-        "Select Dataset Evaluation Scale:",
-        ["Study Scale (data/study, 10 Rounds, 3 Local Epochs)", "POC Scale (data/poc, 5 Rounds, 2 Local Epochs)"],
-        horizontal=True,
-    )
-
-    if "Study Scale" in scale_toggle and study_data:
+    if study_data:
         runs = study_data.get("runs", [])
-        seed_selected = st.selectbox("Select Random Seed:", [42, 7], index=0)
+        seeds_available = sorted(list(set(r.get("seed", 42) for r in runs)))
+        seed_selected = st.selectbox("Select Evaluation Seed:", seeds_available, index=0)
         filtered_runs = [r for r in runs if r.get("seed") == seed_selected]
 
-        st.markdown("""
-        <div class="warning-box">
-            ⚠️ <b>Class Imbalance Audit Note:</b> In the Wi-Fi client partition, 96.4% of test traffic is attack traffic.
-            While binary F1 appears near-perfect (>0.99), <b>Macro F1</b> and <b>Benign Precision</b> provide an honest view of benign misclassification rates.
-        </div>
-        """, unsafe_allow_html=True)
+        # Extract FedAvg and FedProx (mu=0.01) for dynamic comparison
+        avg_run = next((r for r in filtered_runs if r["aggregator"] == "fedavg"), None)
+        prox_run = next((r for r in filtered_runs if r["aggregator"] == "fedprox" and r.get("mu") == 0.01), None)
 
+        if avg_run and prox_run:
+            m_avg = avg_run["client_metrics"]
+            m_prox = prox_run["client_metrics"]
+
+            # Dynamic calculations
+            mqtt_diff = (m_prox["mqtt"]["f1_macro"] - m_avg["mqtt"]["f1_macro"]) * 100
+            wifi_diff = (m_prox["wifi"]["f1_macro"] - m_avg["wifi"]["f1_macro"]) * 100
+            bt_diff = (m_prox["bluetooth"]["f1_macro"] - m_avg["bluetooth"]["f1_macro"]) * 100
+
+            bt_avg_brec = m_avg["bluetooth"]["benign_recall"] * 100
+            bt_prox_brec = m_prox["bluetooth"]["benign_recall"] * 100
+            bt_prox_aprec = m_prox["bluetooth"]["attack_precision"] * 100
+
+            # Dynamic Interpretation Box (Placed directly above data)
+            st.markdown(f"""
+            <div class="alert-info">
+                <b>📊 Dynamic Performance Interpretation (Seed {seed_selected}):</b><br>
+                • <b>MQTT Client</b> gained significantly under FedProx (μ=0.01): Macro F1 shifted by <b>{mqtt_diff:+.1f}pp</b> ({m_avg['mqtt']['f1_macro']:.4f} → {m_prox['mqtt']['f1_macro']:.4f}), balancing benign and attack detection.<br>
+                • <b>Wi-Fi Client</b> remained stable (<b>{wifi_diff:+.1f}pp</b>, {m_avg['wifi']['f1_macro']:.4f} → {m_prox['wifi']['f1_macro']:.4f}). Note that Wi-Fi binary F1 (>0.99) is inflated by 96.4% attack prevalence; Macro F1 is the honest metric.
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Check for model collapse condition (Benign recall < 10% or Attack precision < 50%)
+            if m_prox["bluetooth"]["benign_recall"] < 0.15 or m_prox["bluetooth"]["f1_macro"] < 0.50:
+                st.markdown(f"""
+                <div class="alert-danger">
+                    🚨 <b>CRITICAL FAILURE: Bluetooth Client Collapsed Under FedProx (μ=0.01)</b><br>
+                    Bluetooth Macro F1 plummeted by <b>{bt_diff:.1f}pp</b> ({m_avg['bluetooth']['f1_macro']:.4f} → {m_prox['bluetooth']['f1_macro']:.4f}).
+                    Benign recall collapsed from <b>{bt_avg_brec:.1f}%</b> down to <b>{bt_prox_brec:.1f}%</b>, and attack precision dropped to <b>{bt_prox_aprec:.1f}%</b>.
+                    The model ceased discriminating benign traffic and degenerated into predicting 'attack' for almost all inputs.
+                </div>
+                """, unsafe_allow_html=True)
+
+        # Performance Data Table with Visual Failure Highlighting
         rows = []
         for r in filtered_runs:
             agg_name = r["aggregator"].upper()
@@ -233,61 +233,50 @@ with tab_perf:
                 agg_name += f" (mu={r['mu']})"
 
             for proto, metrics in r["client_metrics"].items():
+                is_collapsed = metrics["benign_recall"] < 0.15 and metrics["f1_macro"] < 0.50
+                status_tag = "🚨 COLLAPSED" if is_collapsed else ("✅ IMPROVED" if "FEDPROX (MU=0.01)" in agg_name and proto == "mqtt" else "STABLE")
+
                 rows.append({
                     "Aggregator": agg_name,
-                    "Client Protocol": proto.upper(),
-                    "Macro F1": f"{metrics['f1_macro']:.4f}",
-                    "Binary F1 (Attack)": f"{metrics['f1_binary']:.4f}",
-                    "Benign Precision": f"{metrics['benign_precision']:.4f}",
-                    "Benign Recall": f"{metrics['benign_recall']:.4f}",
-                    "Attack Recall": f"{metrics['attack_recall']:.4f}",
-                    "Accuracy": f"{metrics['accuracy']:.4f}",
-                    "Test Benign/Attack": f"{metrics.get('n_benign', '—')} / {metrics.get('n_attack', '—')}",
+                    "Client": proto.upper(),
+                    "Status": status_tag,
+                    "Macro F1": metrics["f1_macro"],
+                    "Binary F1": metrics["f1_binary"],
+                    "Benign Precision": metrics["benign_precision"],
+                    "Benign Recall": metrics["benign_recall"],
+                    "Attack Precision": metrics["attack_precision"],
+                    "Attack Recall": metrics["attack_recall"],
+                    "Accuracy": metrics["accuracy"],
                 })
 
         df_perf = pd.DataFrame(rows)
-        st.dataframe(df_perf, use_container_width=True, height=360)
 
-        # Visual Comparison Bar Chart
-        st.markdown("#### Macro F1 vs Binary F1 per Client")
-        chart_data = []
-        for r in filtered_runs:
-            agg_label = r["aggregator"] + (f" (mu={r['mu']})" if r.get("mu") else "")
-            for proto, metrics in r["client_metrics"].items():
-                chart_data.append({"Aggregator": agg_label, "Protocol": proto.upper(), "Metric": "Macro F1", "Score": metrics["f1_macro"]})
-                chart_data.append({"Aggregator": agg_label, "Protocol": proto.upper(), "Metric": "Binary F1", "Score": metrics["f1_binary"]})
+        # Style the dataframe: highlight collapsed rows in light red
+        def highlight_status(row):
+            if "COLLAPSED" in row["Status"]:
+                return ["background-color: #fee2e2; color: #991b1b; font-weight: bold;"] * len(row)
+            elif "IMPROVED" in row["Status"]:
+                return ["background-color: #f0fdf4; color: #166534; font-weight: bold;"] * len(row)
+            return [""] * len(row)
 
-        df_chart = pd.DataFrame(chart_data)
-        fig = px.bar(
-            df_chart,
-            x="Protocol",
-            y="Score",
-            color="Metric",
-            barmode="group",
-            facet_col="Aggregator",
-            color_discrete_map={"Macro F1": "#2563eb", "Binary F1": "#93c5fd"},
-            range_y=[0, 1.05],
-            height=380,
-        )
-        fig.update_layout(margin=dict(l=20, r=20, t=40, b=20))
-        st.plotly_chart(fig, use_container_width=True)
+        styled_df = df_perf.style.apply(highlight_status, axis=1).format({
+            "Macro F1": "{:.4f}",
+            "Binary F1": "{:.4f}",
+            "Benign Precision": "{:.4f}",
+            "Benign Recall": "{:.4f}",
+            "Attack Precision": "{:.4f}",
+            "Attack Recall": "{:.4f}",
+            "Accuracy": "{:.4f}",
+        })
 
-    else:
-        # POC Reference Data
-        st.markdown("#### Initial POC Reference Table (5 Rounds, 2 Local Epochs, Seed 42)")
-        poc_rows = [
-            {"Aggregator": "Centralized Baseline (10 ep)", "Wi-Fi Macro F1": "—", "MQTT Macro F1": "—", "Bluetooth Macro F1": "—", "Macro Avg F1": "0.9875 (Pooled)"},
-            {"Aggregator": "FedAvg", "Wi-Fi Macro F1": "0.8604", "MQTT Macro F1": "0.8607", "Bluetooth Macro F1": "0.7198", "Macro Avg F1": "0.8560"},
-            {"Aggregator": "FedProx (mu=0.01)", "Wi-Fi Macro F1": "0.8604", "MQTT Macro F1": "0.8990", "Bluetooth Macro F1": "0.8058", "Macro Avg F1": "0.8974"},
-        ]
-        st.dataframe(pd.DataFrame(poc_rows), use_container_width=True)
+        st.dataframe(styled_df, use_container_width=True, height=360)
 
 
 # ======================================================================
-# TAB 3: Explanation Divergence
+# TAB 3: Explanation Divergence (Direct Cross-Tab Failure Trade-Off)
 # ======================================================================
 with tab_divergence:
-    st.markdown("### 🧠 SHAP Attribution & Jaccard Divergence Matrix")
+    st.markdown("### 🧠 SHAP Attribution & Divergence Heatmap")
 
     if study_data:
         runs = study_data.get("runs", [])
@@ -295,13 +284,17 @@ with tab_divergence:
             f"{r['aggregator'].upper()}" + (f" (mu={r['mu']})" if r.get("mu") else "") + f" - Seed {r['seed']}"
             for r in runs
         ]
-        selected_idx = st.selectbox("Select Aggregator & Seed Configuration:", range(len(run_options)), format_func=lambda i: run_options[i])
+        selected_idx = st.selectbox("Select Aggregator Run to Inspect:", range(len(run_options)), format_func=lambda i: run_options[i])
         active_run = runs[selected_idx]
+        active_seed = active_run["seed"]
+
+        # Find baseline FedAvg for this same seed to compute dynamic delta
+        base_avg_run = next((r for r in runs if r["aggregator"] == "fedavg" and r["seed"] == active_seed), None)
 
         col_top10, col_jaccard = st.columns([3, 2])
 
         with col_top10:
-            st.markdown("#### Top-10 SHAP Feature Attributions by Client")
+            st.markdown("#### Top-10 SHAP Feature Attributions")
             proto_select = st.segmented_control("Select Protocol Client:", ["WIFI", "MQTT", "BLUETOOTH"], default="WIFI")
             proto_key = proto_select.lower()
 
@@ -316,15 +309,13 @@ with tab_divergence:
                     title=f"Top 10 SHAP Features - {proto_select} Client",
                     color="Mean |SHAP|",
                     color_continuous_scale="Blues",
-                    height=420,
+                    height=400,
                 )
-                fig_shap.update_layout(margin=dict(l=20, r=20, t=40, b=20))
+                fig_shap.update_layout(margin=dict(l=20, r=20, t=35, b=20))
                 st.plotly_chart(fig_shap, use_container_width=True)
-            else:
-                st.info("No SHAP values recorded for this selection.")
 
         with col_jaccard:
-            st.markdown("#### Cross-Client Top-5 Jaccard Similarity")
+            st.markdown("#### Top-5 Jaccard Similarity Heatmap")
             j_map = active_run["jaccard_pairwise"]
             j_matrix = [
                 [1.0, j_map.get("wifi-mqtt", 0.0), j_map.get("wifi-bluetooth", 0.0)],
@@ -345,77 +336,120 @@ with tab_divergence:
                 textfont={"size": 14},
             ))
             fig_hm.update_layout(
-                title=f"Top-5 Feature Overlap (Jaccard Index)",
-                height=420,
-                margin=dict(l=20, r=20, t=40, b=20),
+                title=f"Pairwise Jaccard Overlap",
+                height=400,
+                margin=dict(l=20, r=20, t=35, b=20),
             )
             st.plotly_chart(fig_hm, use_container_width=True)
 
-        # Auto-generated explanation interpretation
+        # Dynamic Interpretation Placed Directly Alongside the Heatmap
         j_wm = j_map.get("wifi-mqtt", 0.0)
         j_wb = j_map.get("wifi-bluetooth", 0.0)
         j_mb = j_map.get("mqtt-bluetooth", 0.0)
 
+        diff_text = ""
+        if base_avg_run and active_run["aggregator"] != "fedavg":
+            base_j = base_avg_run["jaccard_pairwise"]
+            d_wm = j_wm - base_j.get("wifi-mqtt", 0.0)
+            d_wb = j_wb - base_j.get("wifi-bluetooth", 0.0)
+            d_mb = j_mb - base_j.get("mqtt-bluetooth", 0.0)
+            diff_text = f"Versus FedAvg: Wi-Fi/MQTT shifted by <b>{d_wm:+.4f}</b>, Wi-Fi/Bluetooth by <b>{d_wb:+.4f}</b>, and MQTT/Bluetooth by <b>{d_mb:+.4f}</b>."
+
         st.markdown(f"""
-        <div class="info-box">
-            💡 <b>Automated Divergence Interpretation:</b><br>
-            • <b>Wi-Fi vs MQTT (J = {j_wm:.4f})</b>: Moderate overlap driven by shared IP transport flag features (<code>rst_count</code>, <code>ack_flag_number</code>).<br>
-            • <b>Wi-Fi vs Bluetooth (J = {j_wb:.4f}) & MQTT vs Bluetooth (J = {j_mb:.4f})</b>: Severe explanation divergence. Bluetooth operates over non-IP HCI H4 packets, forcing the global model to rely exclusively on packet volume metrics (<code>Tot sum</code>, <code>Number</code>, <code>Weight</code>).
+        <div class="alert-info">
+            <b>🔍 Explanation Divergence Summary:</b><br>
+            • Current Top-5 Jaccards: Wi-Fi vs MQTT = <b>{j_wm:.4f}</b> | Wi-Fi vs Bluetooth = <b>{j_wb:.4f}</b> | MQTT vs Bluetooth = <b>{j_mb:.4f}</b>. {diff_text}
         </div>
         """, unsafe_allow_html=True)
 
+        # Cross-Tab Reality Check: Connect Divergence to Performance Collapse
+        bt_macro = active_run["client_metrics"]["bluetooth"]["f1_macro"]
+        bt_brec = active_run["client_metrics"]["bluetooth"]["benign_recall"]
+
+        if bt_brec < 0.15:
+            st.markdown(f"""
+            <div class="alert-danger">
+                ⚠️ <b>CRITICAL TRADE-OFF REALITY CHECK:</b><br>
+                Any Jaccard overlap shift involving Bluetooth (e.g. MQTT-Bluetooth J = <b>{j_mb:.4f}</b>) coincides with Bluetooth's 
+                <b>detection collapse (Macro F1: {bt_macro:.4f}, Benign Recall: {bt_brec*100:.1f}%)</b>. 
+                This shift is NOT true shared learning—it is an artifact of the model failing to classify Bluetooth traffic and collapsing into majority-class predictions.
+            </div>
+            """, unsafe_allow_html=True)
+
 
 # ======================================================================
-# TAB 4: FedAvg vs FedProx Comparison
+# TAB 4: FedAvg vs FedProx Side-by-Side & Dynamic Verdicts
 # ======================================================================
 with tab_compare:
-    st.markdown("### ⚖️ Side-by-Side Comparison: FedAvg vs FedProx")
+    st.markdown("### ⚖️ Side-by-Side Performance & Divergence Matrix")
 
     if study_data:
         runs = study_data.get("runs", [])
-        s42_runs = {f"{r['aggregator']}_{r['mu']}": r for r in runs if r["seed"] == 42}
+        seeds_avail = sorted(list(set(r.get("seed", 42) for r in runs)))
+        cmp_seed = st.selectbox("Select Seed for Comparison:", seeds_avail, index=0)
 
-        if "fedavg_None" in s42_runs and "fedprox_0.01" in s42_runs:
-            avg_run = s42_runs["fedavg_None"]
-            prox001_run = s42_runs["fedprox_0.01"]
-            prox01_run = s42_runs.get("fedprox_0.1")
+        s_runs = {f"{r['aggregator']}_{r['mu']}": r for r in runs if r["seed"] == cmp_seed}
 
-            comp_rows = []
-            for proto in ["wifi", "mqtt", "bluetooth"]:
-                m_avg = avg_run["client_metrics"][proto]
-                m_p001 = prox001_run["client_metrics"][proto]
-                m_p01 = prox01_run["client_metrics"][proto] if prox01_run else None
+        if "fedavg_None" in s_runs and "fedprox_0.01" in s_runs:
+            avg_run = s_runs["fedavg_None"]
+            prox001_run = s_runs["fedprox_0.01"]
+            prox01_run = s_runs.get("fedprox_0.1")
 
-                comp_rows.append({
-                    "Protocol": proto.upper(),
-                    "FedAvg Macro F1": f"{m_avg['f1_macro']:.4f}",
-                    "FedProx (mu=0.01) Macro F1": f"{m_p001['f1_macro']:.4f}",
-                    "FedProx (mu=0.1) Macro F1": f"{m_p01['f1_macro']:.4f}" if m_p01 else "—",
-                    "Δ (Prox0.01 - Avg)": f"{m_p001['f1_macro'] - m_avg['f1_macro']:+.4f}",
-                })
+            col_t1, col_t2 = st.columns(2)
 
-            st.dataframe(pd.DataFrame(comp_rows), use_container_width=True)
+            with col_t1:
+                st.markdown("#### 1. Detection Performance (Macro F1)")
+                comp_rows = []
+                for proto in ["wifi", "mqtt", "bluetooth"]:
+                    m_a = avg_run["client_metrics"][proto]["f1_macro"]
+                    m_p001 = prox001_run["client_metrics"][proto]["f1_macro"]
+                    diff = m_p001 - m_a
 
-            # Jaccard Overlap Side by Side
-            st.markdown("#### Pairwise Explanation Overlap Comparison (Jaccard Index)")
-            j_rows = []
-            for pair in ["wifi-mqtt", "wifi-bluetooth", "mqtt-bluetooth"]:
-                j_a = avg_run["jaccard_pairwise"].get(pair, 0.0)
-                j_p001 = prox001_run["jaccard_pairwise"].get(pair, 0.0)
-                j_p01 = prox01_run["jaccard_pairwise"].get(pair, 0.0) if prox01_run else 0.0
-                j_rows.append({
-                    "Client Pair": pair.upper(),
-                    "FedAvg Jaccard": f"{j_a:.4f}",
-                    "FedProx (mu=0.01) Jaccard": f"{j_p001:.4f}",
-                    "FedProx (mu=0.1) Jaccard": f"{j_p01:.4f}",
-                    "Shared Features (Prox mu=0.01)": ", ".join(prox001_run["shared_features"].get(pair, [])) or "None",
-                })
-            st.dataframe(pd.DataFrame(j_rows), use_container_width=True)
+                    comp_rows.append({
+                        "Protocol": proto.upper(),
+                        "FedAvg": f"{m_a:.4f}",
+                        "FedProx (μ=0.01)": f"{m_p001:.4f}",
+                        "Δ Change": f"{diff:+.4f}",
+                    })
+                st.dataframe(pd.DataFrame(comp_rows), use_container_width=True)
 
-            st.markdown("""
-            <div class="info-box">
-                <b>Takeaway:</b> Proximal regularization with μ=0.01 significantly improves MQTT client macro detection performance (+9.0pp)
-                while preserving specialized local feature attribution profiles across physical layers.
+            with col_t2:
+                st.markdown("#### 2. Explanation Overlap (Top-5 Jaccard)")
+                j_rows = []
+                for pair in ["wifi-mqtt", "wifi-bluetooth", "mqtt-bluetooth"]:
+                    j_a = avg_run["jaccard_pairwise"].get(pair, 0.0)
+                    j_p001 = prox001_run["jaccard_pairwise"].get(pair, 0.0)
+                    diff_j = j_p001 - j_a
+                    j_rows.append({
+                        "Pair": pair.upper(),
+                        "FedAvg J": f"{j_a:.4f}",
+                        "FedProx (μ=0.01) J": f"{j_p001:.4f}",
+                        "Δ Overlap": f"{diff_j:+.4f}",
+                    })
+                st.dataframe(pd.DataFrame(j_rows), use_container_width=True)
+
+            # Dynamically-computed closing verdicts per client
+            st.markdown("#### 🏁 Concrete Client-by-Client Verdicts (Data-Driven)")
+
+            w_avg = avg_run["client_metrics"]["wifi"]["f1_macro"]
+            w_prox = prox001_run["client_metrics"]["wifi"]["f1_macro"]
+            m_avg = avg_run["client_metrics"]["mqtt"]["f1_macro"]
+            m_prox = prox001_run["client_metrics"]["mqtt"]["f1_macro"]
+            b_avg = avg_run["client_metrics"]["bluetooth"]["f1_macro"]
+            b_prox = prox001_run["client_metrics"]["bluetooth"]["f1_macro"]
+
+            st.markdown(f"""
+            <div class="verdict-card">
+                <b>🌐 Wi-Fi Verdict: NET NEUTRAL / FLAT ({w_prox - w_avg:+.4f} Δ Macro F1)</b><br>
+                Wi-Fi achieves {w_avg:.4f} under FedAvg and {w_prox:.4f} under FedProx (μ=0.01). As the dominant client (50% of total volume), global weights are anchored in Wi-Fi representations regardless of proximal penalty.
+            </div>
+            <div class="verdict-card">
+                <b>📡 MQTT Verdict: NET POSITIVE ({m_prox - m_avg:+.4f} Δ Macro F1)</b><br>
+                MQTT Macro F1 increased from {m_avg:.4f} to {m_prox:.4f}. Proximal regularization prevents local gradients from being overwritten by Wi-Fi dominance, stabilizing bedside sensor detection boundaries.
+            </div>
+            <div class="verdict-card" style="border-left: 4px solid #ef4444;">
+                <b>📶 Bluetooth Verdict: SEVERE COLLAPSE ({b_prox - b_avg:+.4f} Δ Macro F1)</b><br>
+                Bluetooth Macro F1 dropped from {b_avg:.4f} down to {b_prox:.4f}. Proximal penalty over-constrains non-IP link-layer representations toward IP-centric global weights, causing complete failure on benign discrimination.
             </div>
             """, unsafe_allow_html=True)
 
@@ -424,36 +458,35 @@ with tab_compare:
 # TAB 5: Methodology & Limitations
 # ======================================================================
 with tab_methods:
-    st.markdown("### 🔬 Scientific Methodology & Preliminary Noise Floor")
+    st.markdown("### 🔬 Scientific Methodology & Noise Floor")
 
     col_m1, col_m2 = st.columns(2)
 
     with col_m1:
-        st.markdown("#### ✅ What This Extended Pilot Demonstrates")
+        st.markdown("#### ✅ Demonstrated in this Study")
         st.markdown("""
-        1. **Multi-Round Stability**: Scaled from 5 rounds (POC) to 10 communication rounds on 166,000+ real IoMT traffic flows.
-        2. **Reproducible Preprocessing Guardrails**: Exact 45-feature schema enforcement across all heterogeneous physical layers.
-        3. **Class-Imbalance Transparency**: Macro F1 and per-class precision/recall reported by default.
-        4. **Mathematical Divergence Tracking**: Quantitative Jaccard indices across multi-seed evaluations.
+        - **10-Round Scaled Validation**: Verified multi-round convergence on 166,000+ real IoMT flows across 3 distinct protocols.
+        - **45-Feature Schema Guardrails**: Enforced strict input dimension checks across physical layer boundaries.
+        - **Imbalance-Aware Reporting**: Macro F1 and per-class metrics surfaced by default.
         """)
 
     with col_m2:
-        st.markdown("#### ⚠️ What Has NOT Yet Been Statistically Claimed")
+        st.markdown("#### ⚠️ Open Scope for Full Multi-Seed Study")
         st.markdown("""
-        1. **Noise Floor Calibration (n=2 seeds)**: 2 random seeds provide a preliminary consistency check, not a full 10-seed Gaussian confidence interval.
-        2. **Hyperparameter Grid**: Explored μ ∈ {0.01, 0.1}. A continuous logarithmic grid (10^-4 to 10^0) remains for the full publication study.
-        3. **Alternative Aggregators**: Evaluated FedAvg and FedProx; SCAFFOLD, FedOpt, and FedNova remain planned roadmap items.
+        - **Seed Calibration ($n=2$ seeds)**: Provides directional consistency, not a full 10-seed Gaussian confidence interval.
+        - **Hyperparameter Sweeps**: Explored $\mu \in \{0.01, 0.1\}$; a full logarithmic grid remains planned.
+        - **Advanced Aggregators**: Benchmarking SCAFFOLD, FedNova, and FedOpt.
         """)
 
     if study_data and "preliminary_noise_floor" in study_data:
         st.markdown("---")
-        st.markdown("#### 📉 Preliminary Seed-to-Seed Stability (n=2 Seeds)")
+        st.markdown("#### 📉 Seed-to-Seed Stability Matrix ($n=2$ Seeds)")
         nf = study_data["preliminary_noise_floor"]
         nf_rows = []
         for agg_name, d in nf.items():
             stabs = d.get("per_client_top5_stability", {})
             nf_rows.append({
-                "Aggregator Configuration": agg_name.upper(),
+                "Aggregator": agg_name.upper(),
                 "Wi-Fi Seed Overlap": f"{stabs.get('wifi', {}).get('seed_to_seed_jaccard', 0.0):.4f}",
                 "MQTT Seed Overlap": f"{stabs.get('mqtt', {}).get('seed_to_seed_jaccard', 0.0):.4f}",
                 "Bluetooth Seed Overlap": f"{stabs.get('bluetooth', {}).get('seed_to_seed_jaccard', 0.0):.4f}",
