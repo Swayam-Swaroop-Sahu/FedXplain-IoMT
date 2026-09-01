@@ -1,4 +1,4 @@
-"""Federated FedProx demo: manual round orchestration with 3 protocol clients."""
+"""Federated FedProx orchestration with per-protocol IoMT clients."""
 
 import os
 import sys
@@ -9,25 +9,36 @@ import torch
 # Allow running as `python src/run_federated_prox.py` from repo root
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.utils import set_seed, get_input_dim
-from src.model import IoMTMLP
 from src.client import IoMTFlowerClient
+from src.config import (
+    DATA_DIR,
+    MODELS_DIR,
+    MU_VALUES,
+    N_LOCAL_EPOCHS,
+    N_ROUNDS,
+    PROTOCOLS,
+)
+from src.model import IoMTMLP
 from src.run_federated import fedavg_weighted
-
-PROTOCOLS = ["wifi", "mqtt", "bluetooth"]
-NUM_ROUNDS = 5
-MU = 0.01
+from src.utils import get_input_dim, set_seed
 
 
-def main() -> None:
-    set_seed(42)
+def train_fedprox(
+    data_dir: str = DATA_DIR,
+    seed: int = 42,
+    mu: float = 0.01,
+    n_rounds: int = N_ROUNDS,
+    n_epochs: int = N_LOCAL_EPOCHS,
+    save_path: str | None = None,
+) -> dict:
+    """Run FedProx training loop across all clients with proximal regularization."""
+    set_seed(seed)
 
-    # Determine input dimension (same across protocols after preprocessing)
-    input_dim = get_input_dim("wifi")
+    input_dim = get_input_dim("wifi", data_dir=data_dir)
 
     # Guardrail: verify all protocols produce the same feature count
     for proto in PROTOCOLS:
-        proto_dim = get_input_dim(proto)
+        proto_dim = get_input_dim(proto, data_dir=data_dir)
         assert proto_dim == input_dim, (
             f"input_dim mismatch: '{proto}' has {proto_dim} features but "
             f"expected {input_dim}. Preprocessing may have changed."
@@ -37,20 +48,20 @@ def main() -> None:
     global_model = IoMTMLP(input_dim)
     global_weights = global_model.get_weights()
 
-    # Track per-round evaluation F1s for the summary table
-    history: list[dict[str, float]] = []
+    history: list[dict[str, dict]] = []
 
-    print(f"Starting FedProx (mu={MU}): {NUM_ROUNDS} rounds, 2 local epochs, 3 clients\n")
+    print(f"Starting FedProx (mu={mu}): {n_rounds} rounds, {n_epochs} local epochs, "
+          f"{len(PROTOCOLS)} clients, seed={seed}, data_dir={data_dir}\n")
 
-    for rnd in range(1, NUM_ROUNDS + 1):
-        print(f"--- Round {rnd}/{NUM_ROUNDS} ---")
+    for rnd in range(1, n_rounds + 1):
+        print(f"--- Round {rnd}/{n_rounds} (mu={mu}) ---")
 
         # ----- FIT phase with proximal regularization -----
         fit_results: list[tuple[list[np.ndarray], int]] = []
         for cid, proto in enumerate(PROTOCOLS):
-            client = IoMTFlowerClient(cid=cid, protocol=proto)
+            client = IoMTFlowerClient(cid=cid, protocol=proto, data_dir=data_dir, seed=seed)
             updated_weights, n_train, metrics = client.fit(
-                global_weights, {"mu": MU}
+                global_weights, {"mu": mu, "epochs": n_epochs}
             )
             fit_results.append((updated_weights, n_train))
 
@@ -58,44 +69,69 @@ def main() -> None:
         global_weights = fedavg_weighted(fit_results)
 
         # ----- EVALUATE phase -----
-        round_f1s: dict[str, float] = {}
+        round_metrics: dict[str, dict] = {}
         for cid, proto in enumerate(PROTOCOLS):
-            client = IoMTFlowerClient(cid=cid, protocol=proto)
+            client = IoMTFlowerClient(cid=cid, protocol=proto, data_dir=data_dir, seed=seed)
             loss, n_test, metrics = client.evaluate(global_weights, {})
-            round_f1s[proto] = metrics["f1"]
-            print(f"  Eval {proto:<10s} - Loss: {loss:.4f}  F1: {metrics['f1']:.4f}")
+            round_metrics[proto] = metrics
+            print(
+                f"  Eval {proto:<10s} - Loss: {loss:.4f} | "
+                f"Binary F1: {metrics['f1_binary']:.4f} | Macro F1: {metrics['f1_macro']:.4f} | "
+                f"Benign Prec: {metrics['benign_precision']:.4f} | Attack Rec: {metrics['attack_recall']:.4f}"
+            )
 
-        avg_f1 = np.mean(list(round_f1s.values()))
-        print(f"  Average F1: {avg_f1:.4f}\n")
-        history.append(round_f1s)
+        avg_macro_f1 = np.mean([m["f1_macro"] for m in round_metrics.values()])
+        avg_bin_f1 = np.mean([m["f1_binary"] for m in round_metrics.values()])
+        print(f"  Round {rnd} Summary -> Avg Macro F1: {avg_macro_f1:.4f} | Avg Binary F1: {avg_bin_f1:.4f}\n")
+        history.append(round_metrics)
 
     # ------------------------------------------------------------------
     # Save global model
     # ------------------------------------------------------------------
-    os.makedirs("models", exist_ok=True)
+    if save_path is None:
+        os.makedirs(MODELS_DIR, exist_ok=True)
+        suffix = f"_mu{mu}_seed{seed}.pth" if (seed != 42 or mu != 0.01) else ".pth"
+        save_path = os.path.join(MODELS_DIR, f"fedprox_global{suffix}")
+
+    os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
     final_model = IoMTMLP(input_dim)
     final_model.set_weights(global_weights)
-    save_path = "models/fedprox_global.pth"
     torch.save(final_model.state_dict(), save_path)
 
     # ------------------------------------------------------------------
     # Summary table
     # ------------------------------------------------------------------
-    print("=" * 62)
-    print(f"{'Round':>5} | {'Wi-Fi F1':>9} | {'MQTT F1':>8} | {'BT F1':>8} | {'Avg F1':>8}")
-    print("-" * 62)
-    for rnd, f1s in enumerate(history, 1):
-        avg = np.mean(list(f1s.values()))
+    print("=" * 82)
+    print(f"{'Round':>5} | {'Wi-Fi (Macro/Bin)':>18} | {'MQTT (Macro/Bin)':>18} | {'BT (Macro/Bin)':>18} | {'Avg Macro':>10}")
+    print("-" * 82)
+    for rnd, r_metrics in enumerate(history, 1):
+        w = r_metrics["wifi"]
+        m = r_metrics["mqtt"]
+        b = r_metrics["bluetooth"]
+        avg_mac = np.mean([w["f1_macro"], m["f1_macro"], b["f1_macro"]])
         print(
-            f"{rnd:>5} | {f1s['wifi']:>9.4f} | {f1s['mqtt']:>8.4f} | "
-            f"{f1s['bluetooth']:>8.4f} | {avg:>8.4f}"
+            f"{rnd:>5} | {w['f1_macro']:>7.4f}/{w['f1_binary']:<7.4f} | "
+            f"{m['f1_macro']:>7.4f}/{m['f1_binary']:<7.4f} | "
+            f"{b['f1_macro']:>7.4f}/{b['f1_binary']:<7.4f} | {avg_mac:>10.4f}"
         )
-    print("=" * 62)
+    print("=" * 82)
 
-    # Model size check
-    size_kb = os.path.getsize(save_path) / 1024
-    print(f"\nModel saved to {save_path}  ({size_kb:.1f} KB)")
-    print("Federated FedProx demo complete.")
+    final_metrics = history[-1]
+    return {
+        "aggregator": "fedprox",
+        "mu": mu,
+        "seed": seed,
+        "data_dir": data_dir,
+        "n_rounds": n_rounds,
+        "n_local_epochs": n_epochs,
+        "model_path": save_path,
+        "client_metrics": final_metrics,
+        "history": history,
+    }
+
+
+def main() -> None:
+    train_fedprox()
 
 
 if __name__ == "__main__":

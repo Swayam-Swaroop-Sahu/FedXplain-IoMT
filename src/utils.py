@@ -1,4 +1,4 @@
-"""Shared utilities: seeding, data loading & preprocessing."""
+"""Shared utilities: seeding, data loading, preprocessing, and feature inspection."""
 
 import os
 import random
@@ -10,11 +10,11 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# Guardrail: expected number of features after preprocessing (per CICIoMT2024
-# schema documentation). If this assertion fires, the preprocessing pipeline
-# or the input CSV schema has changed, which would silently produce
-# incomparable model weights and SHAP explanations across runs.
-EXPECTED_FEATURE_COUNT = 45
+from src.config import (
+    DATA_DIR,
+    EXPECTED_FEATURE_COUNT,
+    TEST_SIZE,
+)
 
 
 def set_seed(seed: int = 42) -> None:
@@ -33,37 +33,66 @@ def _is_drop_column(col_name: str) -> bool:
     if lower in {"label", "labels"}:
         return True
     # Substring patterns for ID, IP, timestamp columns
-    patterns = ["flow id", "flow_id", "src ip", "src_ip", "dst ip", "dst_ip",
-                "timestamp", "time_stamp"]
+    patterns = [
+        "flow id", "flow_id", "src ip", "src_ip", "dst ip", "dst_ip",
+        "timestamp", "time_stamp"
+    ]
     for pat in patterns:
         if pat in lower:
             return True
     return False
 
 
+def _find_csv_path(protocol: str, data_dir: str = DATA_DIR) -> str:
+    """Resolve the dataset CSV path across study, poc, or raw conventions."""
+    protocol = protocol.lower().strip()
+    candidates = [
+        os.path.join(data_dir, f"{protocol}_study.csv"),
+        os.path.join(data_dir, f"{protocol}_poc.csv"),
+        os.path.join(data_dir, f"{protocol}.csv"),
+    ]
+    for cand in candidates:
+        if os.path.exists(cand):
+            return cand
+    raise FileNotFoundError(
+        f"No CSV dataset found for protocol '{protocol}' in '{data_dir}'. "
+        f"Checked candidates: {candidates}"
+    )
+
+
+_DATA_CACHE: dict[tuple, tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]] = {}
+
+
 def load_and_preprocess(
     protocol: str,
-    data_dir: str = "data/poc",
-    test_size: float = 0.2,
-) -> tuple:
-    """Load a PoC CSV and return preprocessed PyTorch tensors.
+    data_dir: str = DATA_DIR,
+    test_size: float = TEST_SIZE,
+    random_state: int = 42,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Load a protocol CSV and return preprocessed PyTorch tensors.
 
     Parameters
     ----------
     protocol : str
         One of 'wifi', 'mqtt', 'bluetooth' (case-insensitive).
     data_dir : str
-        Directory containing ``{protocol}_poc.csv`` files.
+        Directory containing dataset files. Defaults to config.DATA_DIR.
     test_size : float
-        Fraction of data reserved for testing.
+        Fraction of data reserved for testing. Defaults to config.TEST_SIZE.
+    random_state : int
+        Seed for the stratified train/test split. Defaults to 42.
 
     Returns
     -------
     (X_train, X_test, y_train, y_test) as PyTorch tensors.
         X tensors are FloatTensor; y tensors are FloatTensor with shape (N, 1).
     """
-    protocol = protocol.lower()
-    path = os.path.join(data_dir, f"{protocol}_poc.csv")
+    cache_key = (protocol.lower().strip(), os.path.abspath(data_dir), test_size, random_state)
+    if cache_key in _DATA_CACHE:
+        X_tr, X_te, y_tr, y_te = _DATA_CACHE[cache_key]
+        return X_tr.clone(), X_te.clone(), y_tr.clone(), y_te.clone()
+
+    path = _find_csv_path(protocol, data_dir)
     df = pd.read_csv(path)
 
     # Identify columns to drop (IDs, IPs, timestamps, label)
@@ -102,7 +131,7 @@ def load_and_preprocess(
 
     # Train / test split (stratified)
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, stratify=y, random_state=42
+        X, y, test_size=test_size, stratify=y, random_state=random_state
     )
 
     # Standard-scale (fit on train only)
@@ -120,14 +149,14 @@ def load_and_preprocess(
     y_train_t = torch.FloatTensor(y_train.astype(np.float32)).unsqueeze(1)
     y_test_t = torch.FloatTensor(y_test.astype(np.float32)).unsqueeze(1)
 
-    return X_train_t, X_test_t, y_train_t, y_test_t
+    _DATA_CACHE[cache_key] = (X_train_t, X_test_t, y_train_t, y_test_t)
+    return X_train_t.clone(), X_test_t.clone(), y_train_t.clone(), y_test_t.clone()
 
 
-def get_input_dim(protocol: str, data_dir: str = "data/poc") -> int:
+def get_input_dim(protocol: str = "wifi", data_dir: str = DATA_DIR) -> int:
     """Return the number of feature columns after dropping IDs/labels."""
-    protocol = protocol.lower()
-    path = os.path.join(data_dir, f"{protocol}_poc.csv")
-    df = pd.read_csv(path, nrows=5)  # only need header
+    path = _find_csv_path(protocol, data_dir)
+    df = pd.read_csv(path, nrows=5)
 
     drop_cols = [c for c in df.columns if _is_drop_column(c)]
     X = df.drop(columns=drop_cols, errors="ignore")
@@ -137,10 +166,9 @@ def get_input_dim(protocol: str, data_dir: str = "data/poc") -> int:
     return X.shape[1]
 
 
-def get_feature_names(protocol: str = "wifi", data_dir: str = "data/poc") -> list[str]:
+def get_feature_names(protocol: str = "wifi", data_dir: str = DATA_DIR) -> list[str]:
     """Return list of feature column names after dropping non-features."""
-    protocol = protocol.lower()
-    path = os.path.join(data_dir, f"{protocol}_poc.csv")
+    path = _find_csv_path(protocol, data_dir)
     df = pd.read_csv(path, nrows=5)
 
     drop_cols = [c for c in df.columns if _is_drop_column(c)]
@@ -149,4 +177,3 @@ def get_feature_names(protocol: str = "wifi", data_dir: str = "data/poc") -> lis
     if non_numeric:
         X = X.drop(columns=non_numeric)
     return list(X.columns)
-

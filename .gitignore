@@ -30,6 +30,7 @@ models/*.h5
 # Results (regenerable)
 results/*.png
 results/*.json
+!results/study_results.json
 
 # Logs
 *.log
