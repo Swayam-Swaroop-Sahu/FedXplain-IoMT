@@ -27,29 +27,30 @@ The application will automatically open in your default browser at `http://local
 
 ## 2. Dashboard Navigation Structure
 
-The dashboard contains 5 dedicated tabs designed for an interactive 5-minute presentation:
+The dashboard features a fixed header block with the embedded system architecture diagram, followed by 4 focused analytical tabs:
 
-### Tab 1: 📖 Overview & Architecture
-- **Purpose:** Introduces the clinical IoMT threat landscape, healthcare privacy constraints, and the core research question: *Do federated models learn divergent local decision logic across physical protocols?*
-- **Key Visual:** Interactive ASCII architectural diagram illustrating client partitioning and post-hoc SHAP extraction.
+### Fixed Header Block (Always Visible)
+- **Problem Statement & Research Question**: Introduces the clinical IoMT threat landscape, healthcare privacy constraints (HIPAA/GDPR), and the explanation divergence question.
+- **Architecture Diagram**: High-resolution visualization showing Phase 1 (Federated Training across heterogeneous protocol clients with FedAvg/FedProx) and Phase 2 (Post-Training Explainability & Cross-Client Divergence Analysis).
 
-### Tab 2: 📈 Detection Performance
-- **Purpose:** Interactive performance metrics across Wi-Fi, MQTT, and Bluetooth clients.
-- **Controls:** Toggle between initial **POC Scale** (5 rounds, 5k samples) and **Study Scale** (10 rounds, 166k samples), and select random seeds (Seed 42 vs Seed 7).
-- **Class-Imbalance Transparency:** Displays Macro F1 alongside Binary F1, highlighting benign precision metrics to guard against class-imbalance false positives in Wi-Fi traffic.
+### Tab 1: Detection Performance
+- **Purpose**: Client-by-client performance metrics across Wi-Fi, MQTT, and Bluetooth.
+- **Controls**: Seed selector (Seed 42 vs. Seed 7).
+- **Dynamic Interpretations**: In-place summary stating macro F1 shifts under FedProx.
+- **Failure Callout & Highlighting**: Automatically flags when a client suffers a classification collapse (e.g., Bluetooth benign recall dropping to ~4%), with highlighted table rows.
 
-### Tab 3: 🧠 Explanation Divergence
-- **Purpose:** Visualizes model-agnostic feature attributions (SHAP) and pairwise set-theoretic similarity.
-- **Controls:** Dropdown to switch between **FedAvg**, **FedProx ($\mu=0.01$)**, and **FedProx ($\mu=0.1$)** across seeds.
-- **Visuals:** 
-  - Interactive horizontal bar chart of Top-10 SHAP features with hover tooltips.
+### Tab 2: Explanation Divergence
+- **Purpose**: Visualizes model-agnostic feature attributions (SHAP) and pairwise set-theoretic similarity.
+- **Controls**: Dropdown to select model configurations (FedAvg vs. FedProx $\mu=0.01, 0.1$).
+- **Visuals**:
+  - Interactive horizontal bar chart of Top-10 SHAP features.
   - $3 \times 3$ Jaccard divergence similarity heatmap.
-  - Automated interpretation text explaining why Bluetooth exhibits near-zero overlap with IP-based protocols.
+  - In-place summary text and trade-off reality checks cross-referencing detection failure against apparent feature shifts.
 
-### Tab 4: ⚖️ FedAvg vs FedProx Comparison
-- **Purpose:** Direct side-by-side comparison of predictive performance and explanatory divergence between standard Federated Averaging and proximal regularization.
-- **Key Takeaway:** Demonstrates that $\mu=0.01$ stabilizes MQTT client detection (+9.0pp Macro F1) while allowing protocol-specific feature specialization.
+### Tab 3: FedAvg vs FedProx
+- **Purpose**: Side-by-side comparison of detection performance and explanation overlap.
+- **Findings**: Paper-style narrative findings delivering definitive data-driven verdicts for Wi-Fi (neutral), MQTT (positive), and Bluetooth (collapse).
 
-### Tab 5: 🔬 Methodology & Limitations
-- **Purpose:** Scientific rigor checklist outlining what has been validated (multi-round scaling, 45-feature schema assertions) and what remains for the full multi-seed study (10-seed confidence intervals, logarithmic $\mu$ sweep).
-- **Noise Floor Table:** Displays preliminary seed-to-seed stability metrics ($n=2$ seeds).
+### Tab 4: Methodology and Limitations
+- **Purpose**: Scientific rigor checklist outlining verified items vs. planned full-study milestones.
+- **Noise Floor Table**: Preliminary seed-to-seed stability metrics ($n=2$ seeds).

@@ -68,41 +68,9 @@ The study utilizes the **CICIoMT2024** benchmark (Canadian Institute for Cyberse
 
 ## 3. System Architecture
 
-```
-                       +-------------------------------+
-                       |   Central Server / Orchestrator|
-                       |       (FedAvg / FedProx)       |
-                       +---------------+---------------+
-                                       |
-                    Global Weights (w_t)| Aggregate (w_{t+1})
-                                       v
-         +-----------------------------+-----------------------------+
-         |                             |                             |
-         v                             v                             v
-+-----------------+           +-----------------+           +-----------------+
-|   Client 0      |           |   Client 1      |           |   Client 2      |
-|  Protocol: Wi-Fi|           |  Protocol: MQTT |           |Protocol: BLE/BT |
-| Local Training  |           | Local Training  |           | Local Training  |
-| 100 Benign Ref  |           | 100 Benign Ref  |           | 100 Benign Ref  |
-| 200 Attack Eval |           | 200 Attack Eval |           | 200 Attack Eval |
-+--------+--------+           +--------+--------+           +--------+--------+
-         |                             |                             |
-         | Local SHAP                  | Local SHAP                  | Local SHAP
-         v                             v                             v
-+-----------------+           +-----------------+           +-----------------+
-| Top-10 Attribs  |           | Top-10 Attribs  |           | Top-10 Attribs  |
-+--------+--------+           +--------+--------+           +--------+--------+
-         |                             |                             |
-         +-----------------------------+-----------------------------+
-                                       |
-                                       v
-                     +-----------------------------------+
-                     | Cross-Client Divergence Analysis  |
-                     |  - Top-5 Jaccard Similarity Index |
-                     |  - Multi-Client Alignment Plots   |
-                     |  - 2-Seed Stability Noise Floor   |
-                     +-----------------------------------+
-```
+![FedXplain-IoMT System Architecture](docs/system_architecture.png)
+
+*Figure 1. End-to-end FedXplain-IoMT system architecture: Phase 1 (Federated Training across heterogeneous protocol clients with FedAvg/FedProx aggregation) and Phase 2 (Post-Training Explainability & Cross-Client Divergence Analysis via SHAP and Jaccard similarity).*
 
 ---
 

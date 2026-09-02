@@ -83,6 +83,11 @@ Internet of Medical Things (IoMT) devices in hospital networks communicate acros
 </div>
 """, unsafe_allow_html=True)
 
+ARCH_IMG_PATH = os.path.join("docs", "system_architecture.png")
+if os.path.exists(ARCH_IMG_PATH):
+    st.image(ARCH_IMG_PATH, caption="Figure 1. Federated training and post-hoc explanation pipeline across three protocol-grounded clients.", width="stretch")
+
+
 # ----------------------------------------------------------------------
 # Sidebar (Experiment Configuration Metadata)
 # ----------------------------------------------------------------------
