@@ -28,12 +28,14 @@ from src.config import (
     STUDY_RESULTS_PATH,
 )
 from src.explain import compute_shap_divergence
+from src.run_fedper import run_fedper_suite
 from src.run_federated import train_fedavg
 from src.run_federated_prox import train_fedprox
+from src.run_local_only import run_local_only_suite
 
 
 def run_all_study_experiments() -> dict:
-    """Run all 6 federated configurations + centralized baseline + SHAP."""
+    """Run centralized baseline + all federated configurations + local-only control + SHAP."""
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(MODELS_DIR, exist_ok=True)
 
@@ -51,7 +53,7 @@ def run_all_study_experiments() -> dict:
     print(f">>> Centralized Baseline completed in {time.time() - t0_cent:.1f}s")
 
     # ------------------------------------------------------------------
-    # 2. Federated Runs (2 seeds x 3 aggregators = 6 runs)
+    # 2. Federated Runs (len(SEEDS) seeds x (1 + len(MU_VALUES)) aggregators)
     # ------------------------------------------------------------------
     runs_data = []
     run_idx = 1
@@ -90,7 +92,9 @@ def run_all_study_experiments() -> dict:
             "client_metrics": fedavg_res["client_metrics"],
             "shap_top10_per_client": shap_res_avg["client_top10"],
             "shap_top5_per_client": shap_res_avg["client_top5"],
+            "shap_full_vectors_per_client": shap_res_avg["shap_full_vectors_per_client"],
             "jaccard_pairwise": shap_res_avg["jaccard_pairwise"],
+            "divergence_full": shap_res_avg["divergence_full"],
             "shared_features": shap_res_avg["shared_features"],
         })
         run_idx += 1
@@ -128,7 +132,9 @@ def run_all_study_experiments() -> dict:
                 "client_metrics": fedprox_res["client_metrics"],
                 "shap_top10_per_client": shap_res_prox["client_top10"],
                 "shap_top5_per_client": shap_res_prox["client_top5"],
+                "shap_full_vectors_per_client": shap_res_prox["shap_full_vectors_per_client"],
                 "jaccard_pairwise": shap_res_prox["jaccard_pairwise"],
+                "divergence_full": shap_res_prox["divergence_full"],
                 "shared_features": shap_res_prox["shared_features"],
             })
             run_idx += 1
@@ -184,6 +190,30 @@ def run_all_study_experiments() -> dict:
         "jaccard_mqtt_bluetooth": {"fedavg": 0.1111, "fedprox_mu0.01": 0.0000},
     }
 
+    # ------------------------------------------------------------------
+    # 4. Local-Only Baseline (control) for both seeds
+    # ------------------------------------------------------------------
+    print("\n>>> Running Local-Only Baseline (control, both seeds)...")
+    t0_local = time.time()
+    local_payload = run_local_only_suite(runs_data=runs_data)
+    print(f">>> Local-Only Baseline completed in {time.time() - t0_local:.1f}s")
+
+    # ------------------------------------------------------------------
+    # 4b. FedPer (personalized federated learning) for both seeds
+    # ------------------------------------------------------------------
+    # Runs after the local-only suite so that fedper_vs_local_only can be
+    # computed against the same-seed local-only control. Appends entries
+    # with aggregator="fedper", mu=None to the runs array; existing keys
+    # and dashboard behavior are untouched.
+    print("\n>>> Running FedPer (personalized federated, both seeds)...")
+    t0_fedper = time.time()
+    fedper_runs = run_fedper_suite(
+        runs_data=runs_data,
+        local_only_runs=local_payload["local_only"],
+    )
+    print(f">>> FedPer (both seeds) completed in {time.time() - t0_fedper:.1f}s")
+    runs_data.extend(fedper_runs)
+
     final_payload = {
         "run_metadata": {
             "n_rounds": N_ROUNDS,
@@ -198,6 +228,8 @@ def run_all_study_experiments() -> dict:
         "centralized": cent_metrics,
         "poc_baseline_reference": poc_summary,
         "runs": runs_data,
+        "local_only": local_payload["local_only"],
+        "local_vs_global": local_payload["local_vs_global"],
         "preliminary_noise_floor": noise_floor,
     }
 
@@ -240,15 +272,82 @@ def run_all_study_experiments() -> dict:
         p_prox = fedprox_s42_001["client_metrics"][proto]["f1_macro"]
         print(f"  {proto.upper()} FedAvg / FedProx0.01:   | {'—':<22} | {p_avg:.4f} / {p_prox:.4f}")
 
-    # Divergence Jaccard
+    # Divergence Jaccard + full-vector metrics (Spearman / cosine)
     print("-" * 90)
     pairs = [("wifi-mqtt", "0.6667 / 0.4286"), ("wifi-bluetooth", "0.1111 / 0.1111"), ("mqtt-bluetooth", "0.1111 / 0.0000")]
     for pair, poc_val in pairs:
         j_avg = fedavg_s42["jaccard_pairwise"][pair]
         j_prox = fedprox_s42_001["jaccard_pairwise"][pair]
         print(f"  Jaccard {pair:<16} | {poc_val:<22} | {j_avg:.4f} (Avg) / {j_prox:.4f} (Prox0.01)")
+        for metric in ("spearman", "cosine"):
+            m_avg = fedavg_s42.get("divergence_full", {}).get(pair, {}).get(metric)
+            m_prox = fedprox_s42_001.get("divergence_full", {}).get(pair, {}).get(metric)
+            if m_avg is not None and m_prox is not None:
+                print(f"  {metric.capitalize():<24} | {'—':<22} | {m_avg:.4f} (Avg) / {m_prox:.4f} (Prox0.01)")
 
     print("=" * 90)
+
+    # Local-only baseline rows (control: no sharing)
+    if final_payload.get("local_only"):
+        print("\nLOCAL-ONLY BASELINE (control, no sharing):")
+        print(f"{'Seed':>5} | {'Wi-Fi Macro F1':>15} | {'MQTT Macro F1':>14} | {'BT Macro F1':>12} | {'Avg Macro':>10}")
+        print("-" * 65)
+        for lr in final_payload["local_only"]:
+            cms = lr["client_metrics"]
+            avg_mac = np.mean([cms[p]["f1_macro"] for p in PROTOCOLS])
+            print(f"{lr['seed']:>5} | {cms['wifi']['f1_macro']:>15.4f} | "
+                  f"{cms['mqtt']['f1_macro']:>14.4f} | {cms['bluetooth']['f1_macro']:>12.4f} | {avg_mac:>10.4f}")
+        lvg = final_payload.get("local_vs_global", {}).get("seed42_local_vs_fedavg_seed42", {})
+        if lvg:
+            print("\n  Local-only vs FedAvg (seed 42) explanation comparison per client:")
+            for proto, d in lvg.items():
+                sp = d["spearman"]
+                cs = d["cosine"]
+                sp_str = f"{sp:.4f}" if sp is not None else "n/a"
+                cs_str = f"{cs:.4f}" if cs is not None else "n/a"
+                print(f"    {proto:<10} top5 Jaccard={d['top5_jaccard']:.4f} | Spearman={sp_str} | Cosine={cs_str}")
+
+    # ------------------------------------------------------------------
+    # 6. Unified method comparison table (the paper's core comparison)
+    # ------------------------------------------------------------------
+    print("\n" + "=" * 78)
+    print("UNIFIED COMPARISON - Macro F1 per client (all methods, both seeds)")
+    print("=" * 78)
+    print(f"{'Method':<18} | {'Seed':>4} | {'Wi-Fi':>8} | {'MQTT':>8} | {'Bluetooth':>9} | {'Avg':>8}")
+    print("-" * 78)
+
+    method_specs = [
+        ("FedAvg", "fedavg", None),
+        ("FedProx(0.001)", "fedprox", 0.001),
+        ("FedProx(0.01)", "fedprox", 0.01),
+        ("FedProx(0.1)", "fedprox", 0.1),
+        ("Local-only", "local_only", None),
+        ("FedPer", "fedper", None),
+    ]
+    for seed in SEEDS:
+        for label, agg, mu in method_specs:
+            if agg == "local_only":
+                run = next(
+                    (lr for lr in final_payload.get("local_only", []) if lr["seed"] == seed), None
+                )
+            else:
+                run = next(
+                    (r for r in runs_data
+                     if r["aggregator"] == agg and r["seed"] == seed and r["mu"] == mu),
+                    None,
+                )
+            if run is None:
+                print(f"{label:<18} | {seed:>4} | {'n/a':>8} | {'n/a':>8} | {'n/a':>9} | {'n/a':>8}")
+                continue
+            cms = run["client_metrics"]
+            avg_mac = np.mean([cms[p]["f1_macro"] for p in PROTOCOLS])
+            print(f"{label:<18} | {seed:>4} | {cms['wifi']['f1_macro']:>8.4f} | "
+                  f"{cms['mqtt']['f1_macro']:>8.4f} | {cms['bluetooth']['f1_macro']:>9.4f} | "
+                  f"{avg_mac:>8.4f}")
+        if seed != SEEDS[-1]:
+            print("-" * 78)
+    print("=" * 78)
+
     print("\nPreliminary 2-seed noise floor summary:")
     for agg_key, nf in noise_floor.items():
         print(f"  [{agg_key}] Seed-to-seed top-5 Jaccards: " +

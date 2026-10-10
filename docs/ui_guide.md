@@ -45,7 +45,12 @@ The dashboard features a fixed header block with the embedded system architectur
 - **Visuals**:
   - Interactive horizontal bar chart of Top-10 SHAP features.
   - $3 \times 3$ Jaccard divergence similarity heatmap.
+  - Full-vector divergence table (Spearman ρ and cosine similarity per client pair).
   - In-place summary text and trade-off reality checks cross-referencing detection failure against apparent feature shifts.
+
+> **Why three divergence metrics?** Jaccard only looks at the top 5 features and jumps in large
+> steps; Spearman and cosine use all 45 features, so they move smoothly and are more reliable
+> for comparing runs.
 
 ### Tab 3: FedAvg vs FedProx
 - **Purpose**: Side-by-side comparison of detection performance and explanation overlap.

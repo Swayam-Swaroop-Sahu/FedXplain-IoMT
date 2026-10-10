@@ -272,6 +272,23 @@ with tab_divergence:
             )
             st.plotly_chart(fig_hm, width="stretch")
 
+            # Full-vector divergence metrics (Spearman / cosine) — guarded for
+            # older results files that only contain jaccard_pairwise.
+            div_full = active_run.get("divergence_full", {})
+            if div_full:
+                st.markdown("**Full-Vector Divergence (all 45 features)**")
+                df_rows = []
+                for pair in ["wifi-mqtt", "wifi-bluetooth", "mqtt-bluetooth"]:
+                    d = div_full.get(pair, {})
+                    spearman = d.get("spearman")
+                    cosine = d.get("cosine")
+                    df_rows.append({
+                        "Client Pair": pair.upper(),
+                        "Spearman ρ": "—" if spearman is None else f"{spearman:.4f}",
+                        "Cosine Sim": "—" if cosine is None else f"{cosine:.4f}",
+                    })
+                st.dataframe(pd.DataFrame(df_rows), width="stretch", hide_index=True)
+
         j_wm = j_map.get("wifi-mqtt", 0.0)
         j_wb = j_map.get("wifi-bluetooth", 0.0)
         j_mb = j_map.get("mqtt-bluetooth", 0.0)
@@ -358,7 +375,7 @@ with tab_compare:
 
             st.markdown(
                 f"Wi-Fi: Macro F1 changed by {w_prox - w_avg:+.4f} under FedProx (mu=0.01), from {w_avg:.4f} to {w_prox:.4f}. "
-                f"As the largest client by sample count (50% of the aggregate dataset), the global model's aggregate behavior remains anchored to Wi-Fi's decision boundary regardless of the proximal penalty applied to other clients."
+                f"As the largest client by sample count (60% of the aggregate dataset), the global model's aggregate behavior remains anchored to Wi-Fi's decision boundary regardless of the proximal penalty applied to other clients."
             )
 
             st.markdown(

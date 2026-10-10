@@ -1,6 +1,6 @@
 # FedXplain-IoMT: Federated Learning & Explainable AI for Heterogeneous Medical IoT
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![Flower](https://img.shields.io/badge/Flower-1.5%2B-gold.svg)](https://flower.ai/)
 [![SHAP](https://img.shields.io/badge/SHAP-0.42%2B-brightgreen.svg)](https://shap.readthedocs.io/)
@@ -81,7 +81,7 @@ All experimental parameters are strictly managed via `src/config.py`:
 - `N_ROUNDS = 10`
 - `N_LOCAL_EPOCHS = 3`
 - `SEEDS = [42, 7]`
-- `MU_VALUES = [0.01, 0.1]`
+- `MU_VALUES = [0.001, 0.01, 0.05, 0.1]`
 - `DATA_DIR = "data/study"`
 
 ### Model Architecture (`src/model.py`)
@@ -179,15 +179,23 @@ streamlit run app.py
 All results can be regenerated from scratch using the centralized configuration:
 
 ```bash
-# 1. Install dependencies
+# 1. Install dependencies (exact pinned versions, Python 3.14)
 pip install -r requirements.txt
 
-# 2. Run the complete study experiment suite (Centralized + 6 FL runs + SHAP + JSON export)
+# 2. Run the complete experiment suite (Centralized + FL runs + local-only control + SHAP + JSON export)
 python src/run_study_experiments.py
 
 # 3. Launch the dashboard
 streamlit run app.py
 ```
+
+### Environment Pinning
+`requirements.txt` contains **exact pinned versions** (`==`) of every dependency. All reported
+numbers in this README and in `results/study_results.json` were generated with these versions on
+**Python 3.14** (CPU-only; the model is a small MLP so no GPU is required). Re-running the suite
+with different dependency versions may produce slightly different numbers due to library-level
+numerical changes (e.g., PyTorch kernel updates, pandas/scikit-learn behavioral changes), even
+with identical seeds.
 
 ---
 
@@ -236,6 +244,7 @@ FedXplain-IoMT/
     ├── centralized.py                  # Centralized baseline benchmark
     ├── run_federated.py                # FedAvg orchestration runner
     ├── run_federated_prox.py           # FedProx orchestration runner
+    ├── run_local_only.py               # Local-only (no-sharing) control baseline
     ├── run_study_experiments.py        # Master suite for study experiments
     ├── explain.py                      # SHAP explainability pipeline
     └── explain_prox.py                 # FedProx explainability wrapper

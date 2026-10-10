@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import shap
 import torch
+from scipy.stats import spearmanr
 
 # Allow running as `python src/explain.py` from repo root
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -26,6 +27,138 @@ from src.config import (
 )
 from src.model import IoMTMLP
 from src.utils import get_feature_names, get_input_dim, load_and_preprocess, set_seed
+
+
+def _spearman_cosine(a: np.ndarray, b: np.ndarray) -> tuple[float | None, float | None]:
+    """Spearman rank correlation and cosine similarity between two attribution vectors."""
+    a = np.asarray(a, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
+    if a.size == 0 or b.size == 0:
+        return None, None
+    spearman = float(spearmanr(a, b)[0])
+    if not np.isfinite(spearman):
+        spearman = None
+    denom = float(np.linalg.norm(a) * np.linalg.norm(b))
+    cosine = float(np.dot(a, b) / denom) if denom > 0 else None
+    return spearman, cosine
+
+
+def compute_pairwise_divergence(
+    client_top5: dict[str, list[str]],
+    client_full_vectors: dict[str, dict[str, list]],
+) -> tuple[dict[str, float], dict[str, list[str]], dict[str, dict[str, float | None]]]:
+    """Compute pairwise Jaccard, shared features, and full-vector divergence metrics."""
+    pairs = [("wifi", "mqtt"), ("wifi", "bluetooth"), ("mqtt", "bluetooth")]
+    jaccard_pairwise: dict[str, float] = {}
+    shared_features: dict[str, list[str]] = {}
+    divergence_full: dict[str, dict[str, float | None]] = {}
+
+    for p1, p2 in pairs:
+        pair_label = f"{p1}-{p2}"
+        if not client_top5.get(p1) or not client_top5.get(p2):
+            jaccard_pairwise[pair_label] = 0.0
+            shared_features[pair_label] = []
+        else:
+            set1 = set(client_top5[p1])
+            set2 = set(client_top5[p2])
+            shared = sorted(list(set1.intersection(set2)))
+            union = set1.union(set2)
+            jaccard = float(len(shared) / len(union)) if union else 0.0
+            jaccard_pairwise[pair_label] = round(jaccard, 4)
+            shared_features[pair_label] = shared
+
+        # Full-vector divergence (Spearman / cosine) requires both clients' vectors
+        vec1, vec2 = client_full_vectors.get(p1), client_full_vectors.get(p2)
+        if vec1 is None or vec2 is None:
+            divergence_full[pair_label] = {"spearman": None, "cosine": None}
+            continue
+        # Align by feature name so vector order cannot skew the comparison
+        names1 = list(vec1["feature_names"])
+        names2 = list(vec2["feature_names"])
+        common = [n for n in names1 if n in set(names2)]
+        a = np.array([vec1["values"][names1.index(n)] for n in common])
+        b = np.array([vec2["values"][names2.index(n)] for n in common])
+        spearman, cosine = _spearman_cosine(a, b)
+        divergence_full[pair_label] = {
+            "spearman": round(spearman, 4) if spearman is not None else None,
+            "cosine": round(cosine, 4) if cosine is not None else None,
+        }
+
+    return jaccard_pairwise, shared_features, divergence_full
+
+
+def explain_client(
+    model: torch.nn.Module,
+    proto: str,
+    feature_names: list[str],
+    data_dir: str = DATA_DIR,
+    seed: int = 42,
+    bg_size: int = SHAP_BACKGROUND_SIZE,
+    attack_sample_size: int = SHAP_ATTACK_SAMPLE_SIZE,
+) -> tuple[list[tuple[str, float]], list[str], dict[str, float]]:
+    """Compute SHAP top-10/top-5 features and the full mean-|SHAP| vector for one client.
+
+    Returns (top10, top5, full_mean_shap) where full_mean_shap is a dict with
+    'feature_names' and 'values' (45-element lists), or empty lists/dicts if the
+    client has no attack samples.
+    """
+    set_seed(seed)
+    X_train, X_test, y_train, y_test = load_and_preprocess(
+        proto, data_dir=data_dir, random_state=seed
+    )
+
+    # Background set: random samples from X_train where y_train == 0 (benign)
+    benign_indices = torch.where(y_train == 0)[0]
+    if len(benign_indices) == 0:
+        bg_tensor = X_train[:bg_size]
+    elif len(benign_indices) <= bg_size:
+        bg_tensor = X_train[benign_indices]
+    else:
+        perm = torch.randperm(len(benign_indices))[:bg_size]
+        bg_tensor = X_train[benign_indices[perm]]
+
+    # Attack samples: from X_test where y_test == 1
+    attack_indices = torch.where(y_test == 1)[0]
+    n_attack = len(attack_indices)
+
+    if n_attack == 0:
+        print(f"[WARNING] Protocol '{proto}' has ZERO attack samples. Skipping SHAP.")
+        return [], [], {}
+
+    sample_size = min(attack_sample_size, n_attack)
+    perm = torch.randperm(n_attack)[:sample_size]
+    attack_tensor = X_test[attack_indices[perm]]
+
+    print(f"Protocol: {proto.upper():<9} | Background: {bg_tensor.shape[0]} benign | Attack: {attack_tensor.shape[0]} samples")
+
+    # Compute SHAP values with DeepExplainer
+    explainer = shap.DeepExplainer(model, bg_tensor)
+    shap_values = explainer.shap_values(attack_tensor)
+
+    if isinstance(shap_values, list):
+        shap_arr = shap_values[0]
+    else:
+        shap_arr = shap_values
+    shap_arr = np.squeeze(shap_arr)
+
+    mean_shap = np.abs(shap_arr).mean(axis=0)
+    mean_shap = np.squeeze(mean_shap)
+
+    # Rank descending, keep top 10
+    ranked_indices = np.argsort(mean_shap)[::-1]
+    top10_idx = ranked_indices[:10]
+    top10_feats = [feature_names[i] for i in top10_idx]
+    top10_vals = [float(mean_shap[i]) for i in top10_idx]
+
+    top10 = list(zip(top10_feats, top10_vals))
+    top5 = top10_feats[:5]
+    full_mean_shap = {
+        "feature_names": list(feature_names),
+        "values": [float(v) for v in mean_shap],
+    }
+
+    print(f"  Top 5 features for {proto.upper()}: {top10_feats[:5]}\n")
+    return top10, top5, full_mean_shap
 
 
 def compute_shap_divergence(
@@ -57,87 +190,30 @@ def compute_shap_divergence(
 
     client_top10: dict[str, list[tuple[str, float]]] = {}
     client_top5: dict[str, list[str]] = {}
-    client_mean_shap: dict[str, dict[str, float]] = {}
+    client_full_vectors: dict[str, dict[str, list]] = {}
 
     print(f"Computing SHAP explanations (data_dir={data_dir}, bg={bg_size}, attack={attack_sample_size}, seed={seed})...\n")
 
     for proto in PROTOCOLS:
-        X_train, X_test, y_train, y_test = load_and_preprocess(
-            proto, data_dir=data_dir, random_state=seed
+        top10, top5, full_vec = explain_client(
+            model,
+            proto,
+            feature_names,
+            data_dir=data_dir,
+            seed=seed,
+            bg_size=bg_size,
+            attack_sample_size=attack_sample_size,
         )
-
-        # Background set: random samples from X_train where y_train == 0 (benign)
-        benign_indices = torch.where(y_train == 0)[0]
-        if len(benign_indices) == 0:
-            bg_tensor = X_train[:bg_size]
-        elif len(benign_indices) <= bg_size:
-            bg_tensor = X_train[benign_indices]
-        else:
-            perm = torch.randperm(len(benign_indices))[:bg_size]
-            bg_tensor = X_train[benign_indices[perm]]
-
-        # Attack samples: from X_test where y_test == 1
-        attack_indices = torch.where(y_test == 1)[0]
-        n_attack = len(attack_indices)
-
-        if n_attack == 0:
-            print(f"[WARNING] Protocol '{proto}' has ZERO attack samples. Skipping SHAP.")
-            client_top10[proto] = []
-            client_top5[proto] = []
-            client_mean_shap[proto] = {}
-            continue
-
-        sample_size = min(attack_sample_size, n_attack)
-        perm = torch.randperm(n_attack)[:sample_size]
-        attack_tensor = X_test[attack_indices[perm]]
-
-        print(f"Protocol: {proto.upper():<9} | Background: {bg_tensor.shape[0]} benign | Attack: {attack_tensor.shape[0]} samples")
-
-        # Compute SHAP values with DeepExplainer
-        explainer = shap.DeepExplainer(model, bg_tensor)
-        shap_values = explainer.shap_values(attack_tensor)
-
-        if isinstance(shap_values, list):
-            shap_arr = shap_values[0]
-        else:
-            shap_arr = shap_values
-        shap_arr = np.squeeze(shap_arr)
-
-        mean_shap = np.abs(shap_arr).mean(axis=0)
-        mean_shap = np.squeeze(mean_shap)
-
-        # Rank descending, keep top 10
-        ranked_indices = np.argsort(mean_shap)[::-1]
-        top10_idx = ranked_indices[:10]
-        top10_feats = [feature_names[i] for i in top10_idx]
-        top10_vals = [float(mean_shap[i]) for i in top10_idx]
-
-        client_top10[proto] = list(zip(top10_feats, top10_vals))
-        client_top5[proto] = top10_feats[:5]
-        client_mean_shap[proto] = {feature_names[i]: float(mean_shap[i]) for i in range(len(feature_names))}
-
-        print(f"  Top 5 features for {proto.upper()}: {top10_feats[:5]}\n")
+        client_top10[proto] = top10
+        client_top5[proto] = top5
+        client_full_vectors[proto] = full_vec
 
     # ------------------------------------------------------------------
-    # Top-5 Jaccard overlap
+    # Top-5 Jaccard overlap + full-vector divergence (Spearman / cosine)
     # ------------------------------------------------------------------
-    pairs = [("wifi", "mqtt"), ("wifi", "bluetooth"), ("mqtt", "bluetooth")]
-    jaccard_pairwise: dict[str, float] = {}
-    shared_features: dict[str, list[str]] = {}
-
-    for p1, p2 in pairs:
-        pair_label = f"{p1}-{p2}"
-        if not client_top5.get(p1) or not client_top5.get(p2):
-            jaccard_pairwise[pair_label] = 0.0
-            shared_features[pair_label] = []
-        else:
-            set1 = set(client_top5[p1])
-            set2 = set(client_top5[p2])
-            shared = sorted(list(set1.intersection(set2)))
-            union = set1.union(set2)
-            jaccard = float(len(shared) / len(union)) if union else 0.0
-            jaccard_pairwise[pair_label] = round(jaccard, 4)
-            shared_features[pair_label] = shared
+    jaccard_pairwise, shared_features, divergence_full = compute_pairwise_divergence(
+        client_top5, client_full_vectors
+    )
 
     # ------------------------------------------------------------------
     # Save plots if requested
@@ -227,7 +303,9 @@ def compute_shap_divergence(
     return {
         "client_top10": client_top10,
         "client_top5": client_top5,
+        "shap_full_vectors_per_client": client_full_vectors,
         "jaccard_pairwise": jaccard_pairwise,
+        "divergence_full": divergence_full,
         "shared_features": shared_features,
     }
 

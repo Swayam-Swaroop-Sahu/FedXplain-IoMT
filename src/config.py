@@ -8,7 +8,17 @@ import os
 N_ROUNDS: int = 10
 N_LOCAL_EPOCHS: int = 3
 SEEDS: list[int] = [42, 7]
-MU_VALUES: list[float] = [0.01, 0.1]
+# mu sweep extended below 0.01 to test whether a gentler proximal pull helps
+# MQTT without breaking Bluetooth (0.01/0.1 already collapsed Bluetooth).
+MU_VALUES: list[float] = [0.001, 0.01, 0.05, 0.1]
+
+# FedPer: number of leading parameter arrays (as returned by
+# IoMTMLP.get_weights()) that form the shared trunk and get aggregated.
+# IoMTMLP exposes 6 arrays in order: net.0.weight/bias (45->64),
+# net.3.weight/bias (64->32), net.5.weight/bias (32->1 output head).
+# The first 4 are the trunk (shared); the last 2 are the private
+# per-client output head that is never uploaded or averaged.
+FEDPER_SHARED_PARAM_COUNT: int = 4
 
 DATA_DIR: str = "data/study"
 POC_DATA_DIR: str = "data/poc"
