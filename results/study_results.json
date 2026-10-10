@@ -7241,7 +7241,8 @@
           "Number",
           "Weight"
         ]
-      }
+      },
+      "divergence_scope": "across local-only models (one isolated model per client)"
     },
     {
       "seed": 7,
@@ -7768,7 +7769,8 @@
           "Number",
           "Weight"
         ]
-      }
+      },
+      "divergence_scope": "across local-only models (one isolated model per client)"
     }
   ],
   "local_vs_global": {
@@ -7845,6 +7847,80 @@
         "spearman": 0.982,
         "cosine": 0.8464
       }
+    },
+    "seed7_local_vs_fedavg_seed7": {
+      "wifi": {
+        "local_top5": [
+          "rst_count",
+          "ack_flag_number",
+          "Variance",
+          "syn_flag_number",
+          "HTTP"
+        ],
+        "fedavg_top5": [
+          "rst_count",
+          "Variance",
+          "HTTP",
+          "psh_flag_number",
+          "ack_flag_number"
+        ],
+        "shared_top5": [
+          "HTTP",
+          "Variance",
+          "ack_flag_number",
+          "rst_count"
+        ],
+        "top5_jaccard": 0.6667,
+        "spearman": 0.8583,
+        "cosine": 0.9731
+      },
+      "mqtt": {
+        "local_top5": [
+          "rst_count",
+          "fin_flag_number",
+          "Number",
+          "Weight",
+          "syn_flag_number"
+        ],
+        "fedavg_top5": [
+          "rst_count",
+          "syn_flag_number",
+          "syn_count",
+          "rst_flag_number",
+          "ack_flag_number"
+        ],
+        "shared_top5": [
+          "rst_count",
+          "syn_flag_number"
+        ],
+        "top5_jaccard": 0.25,
+        "spearman": 0.7055,
+        "cosine": 0.9272
+      },
+      "bluetooth": {
+        "local_top5": [
+          "AVG",
+          "Number",
+          "Weight",
+          "Max",
+          "Std"
+        ],
+        "fedavg_top5": [
+          "AVG",
+          "Weight",
+          "Std",
+          "Magnitue",
+          "Duration"
+        ],
+        "shared_top5": [
+          "AVG",
+          "Std",
+          "Weight"
+        ],
+        "top5_jaccard": 0.4286,
+        "spearman": 0.9813,
+        "cosine": 0.8749
+      }
     }
   },
   "preliminary_noise_floor": {
@@ -7854,16 +7930,16 @@
           "seed42_top5": [
             "rst_count",
             "Variance",
-            "Header_Length",
-            "Magnitue",
-            "psh_flag_number"
+            "HTTP",
+            "psh_flag_number",
+            "ack_flag_number"
           ],
           "seed7_top5": [
             "rst_count",
             "Variance",
-            "HTTP",
-            "psh_flag_number",
-            "ack_flag_number"
+            "Header_Length",
+            "Magnitue",
+            "psh_flag_number"
           ],
           "seed_to_seed_jaccard": 0.4286
         },
@@ -7871,15 +7947,15 @@
           "seed42_top5": [
             "rst_count",
             "syn_flag_number",
-            "HTTP",
-            "fin_count",
+            "syn_count",
+            "rst_flag_number",
             "ack_flag_number"
           ],
           "seed7_top5": [
             "rst_count",
             "syn_flag_number",
-            "syn_count",
-            "rst_flag_number",
+            "HTTP",
+            "fin_count",
             "ack_flag_number"
           ],
           "seed_to_seed_jaccard": 0.4286
@@ -7887,25 +7963,25 @@
         "bluetooth": {
           "seed42_top5": [
             "AVG",
-            "Std",
-            "Max",
-            "Duration",
-            "Number"
-          ],
-          "seed7_top5": [
-            "AVG",
             "Weight",
             "Std",
             "Magnitue",
             "Duration"
+          ],
+          "seed7_top5": [
+            "AVG",
+            "Std",
+            "Max",
+            "Duration",
+            "Number"
           ],
           "seed_to_seed_jaccard": 0.4286
         }
       },
       "pairwise_divergence_spread": {
         "wifi-mqtt": {
-          "seed42_jaccard": 0.1111,
-          "seed7_jaccard": 0.25,
+          "seed42_jaccard": 0.25,
+          "seed7_jaccard": 0.1111,
           "abs_diff": 0.1389,
           "mean_jaccard": 0.1805
         },
@@ -7920,6 +7996,20 @@
           "seed7_jaccard": 0.0,
           "abs_diff": 0.0,
           "mean_jaccard": 0.0
+        }
+      },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.0027,
+          "cosine_abs_diff": 0.0197
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.0662,
+          "cosine_abs_diff": 0.0357
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.0295,
+          "cosine_abs_diff": 0.033
         }
       },
       "status": "preliminary (n=2 seeds), not the full noise floor"
@@ -7929,73 +8019,87 @@
         "wifi": {
           "seed42_top5": [
             "rst_count",
-            "Number",
-            "Weight",
-            "Magnitue",
-            "IAT"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "Magnitue",
             "Header_Length",
             "HTTP",
             "Weight"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "Number",
+            "Weight",
+            "Magnitue",
+            "IAT"
           ],
           "seed_to_seed_jaccard": 0.4286
         },
         "mqtt": {
           "seed42_top5": [
             "rst_count",
-            "Number",
-            "Weight",
-            "syn_flag_number",
-            "IAT"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "rst_flag_number",
             "syn_flag_number",
             "fin_flag_number",
             "HTTP"
           ],
+          "seed7_top5": [
+            "rst_count",
+            "Number",
+            "Weight",
+            "syn_flag_number",
+            "IAT"
+          ],
           "seed_to_seed_jaccard": 0.25
         },
         "bluetooth": {
           "seed42_top5": [
-            "AVG",
-            "Std",
-            "Tot size",
-            "Max",
-            "IAT"
-          ],
-          "seed7_top5": [
             "Tot size",
             "Magnitue",
             "Std",
             "AVG",
             "Weight"
           ],
+          "seed7_top5": [
+            "AVG",
+            "Std",
+            "Tot size",
+            "Max",
+            "IAT"
+          ],
           "seed_to_seed_jaccard": 0.4286
         }
       },
       "pairwise_divergence_spread": {
         "wifi-mqtt": {
-          "seed42_jaccard": 0.6667,
-          "seed7_jaccard": 0.25,
+          "seed42_jaccard": 0.25,
+          "seed7_jaccard": 0.6667,
           "abs_diff": 0.4167,
           "mean_jaccard": 0.4583
         },
         "wifi-bluetooth": {
-          "seed42_jaccard": 0.1111,
-          "seed7_jaccard": 0.25,
+          "seed42_jaccard": 0.25,
+          "seed7_jaccard": 0.1111,
           "abs_diff": 0.1389,
           "mean_jaccard": 0.1805
         },
         "mqtt-bluetooth": {
-          "seed42_jaccard": 0.1111,
-          "seed7_jaccard": 0.0,
+          "seed42_jaccard": 0.0,
+          "seed7_jaccard": 0.1111,
           "abs_diff": 0.1111,
           "mean_jaccard": 0.0556
+        }
+      },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.008,
+          "cosine_abs_diff": 0.0064
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.0165,
+          "cosine_abs_diff": 0.0286
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.0386,
+          "cosine_abs_diff": 0.0272
         }
       },
       "status": "preliminary (n=2 seeds), not the full noise floor"
@@ -8005,51 +8109,51 @@
         "wifi": {
           "seed42_top5": [
             "rst_count",
-            "Weight",
-            "IAT",
-            "Number",
-            "Variance"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "IAT",
             "ack_flag_number",
             "Number",
             "Max"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "Weight",
+            "IAT",
+            "Number",
+            "Variance"
           ],
           "seed_to_seed_jaccard": 0.4286
         },
         "mqtt": {
           "seed42_top5": [
             "rst_count",
-            "Weight",
-            "Number",
-            "IAT",
-            "syn_flag_number"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "ack_flag_number",
             "Max",
             "HTTP",
             "Number"
           ],
+          "seed7_top5": [
+            "rst_count",
+            "Weight",
+            "Number",
+            "IAT",
+            "syn_flag_number"
+          ],
           "seed_to_seed_jaccard": 0.25
         },
         "bluetooth": {
           "seed42_top5": [
-            "AVG",
-            "IAT",
-            "Max",
-            "Tot size",
-            "Magnitue"
-          ],
-          "seed7_top5": [
             "IAT",
             "Std",
             "Tot size",
             "Magnitue",
             "AVG"
+          ],
+          "seed7_top5": [
+            "AVG",
+            "IAT",
+            "Max",
+            "Tot size",
+            "Magnitue"
           ],
           "seed_to_seed_jaccard": 0.6667
         }
@@ -8068,10 +8172,24 @@
           "mean_jaccard": 0.1111
         },
         "mqtt-bluetooth": {
-          "seed42_jaccard": 0.1111,
-          "seed7_jaccard": 0.0,
+          "seed42_jaccard": 0.0,
+          "seed7_jaccard": 0.1111,
           "abs_diff": 0.1111,
           "mean_jaccard": 0.0556
+        }
+      },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.0367,
+          "cosine_abs_diff": 0.0064
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.0525,
+          "cosine_abs_diff": 0.0148
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.0236,
+          "cosine_abs_diff": 0.0354
         }
       },
       "status": "preliminary (n=2 seeds), not the full noise floor"
@@ -8081,73 +8199,87 @@
         "wifi": {
           "seed42_top5": [
             "rst_count",
-            "Weight",
-            "IAT",
-            "Number",
-            "Variance"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "ack_flag_number",
             "Number",
             "IAT",
             "Max"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "Weight",
+            "IAT",
+            "Number",
+            "Variance"
           ],
           "seed_to_seed_jaccard": 0.4286
         },
         "mqtt": {
           "seed42_top5": [
             "rst_count",
-            "Weight",
-            "IAT",
-            "syn_flag_number",
-            "Max"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "Number",
             "Max",
             "ack_flag_number",
             "HTTP"
           ],
+          "seed7_top5": [
+            "rst_count",
+            "Weight",
+            "IAT",
+            "syn_flag_number",
+            "Max"
+          ],
           "seed_to_seed_jaccard": 0.25
         },
         "bluetooth": {
           "seed42_top5": [
-            "Tot size",
-            "AVG",
-            "Max",
-            "IAT",
-            "Tot sum"
-          ],
-          "seed7_top5": [
             "IAT",
             "Std",
             "Weight",
             "Tot size",
             "Max"
           ],
+          "seed7_top5": [
+            "Tot size",
+            "AVG",
+            "Max",
+            "IAT",
+            "Tot sum"
+          ],
           "seed_to_seed_jaccard": 0.4286
         }
       },
       "pairwise_divergence_spread": {
         "wifi-mqtt": {
-          "seed42_jaccard": 0.4286,
-          "seed7_jaccard": 0.6667,
+          "seed42_jaccard": 0.6667,
+          "seed7_jaccard": 0.4286,
           "abs_diff": 0.2381,
           "mean_jaccard": 0.5476
         },
         "wifi-bluetooth": {
-          "seed42_jaccard": 0.1111,
-          "seed7_jaccard": 0.25,
-          "abs_diff": 0.1389,
-          "mean_jaccard": 0.1805
-        },
-        "mqtt-bluetooth": {
           "seed42_jaccard": 0.25,
           "seed7_jaccard": 0.1111,
           "abs_diff": 0.1389,
           "mean_jaccard": 0.1805
+        },
+        "mqtt-bluetooth": {
+          "seed42_jaccard": 0.1111,
+          "seed7_jaccard": 0.25,
+          "abs_diff": 0.1389,
+          "mean_jaccard": 0.1805
+        }
+      },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.0145,
+          "cosine_abs_diff": 0.0011
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.0429,
+          "cosine_abs_diff": 0.0895
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.0341,
+          "cosine_abs_diff": 0.0024
         }
       },
       "status": "preliminary (n=2 seeds), not the full noise floor"
@@ -8157,32 +8289,32 @@
         "wifi": {
           "seed42_top5": [
             "rst_count",
-            "Variance",
-            "Weight",
-            "IAT",
-            "ack_flag_number"
-          ],
-          "seed7_top5": [
-            "rst_count",
             "ack_flag_number",
             "Number",
             "IAT",
             "Max"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "Variance",
+            "Weight",
+            "IAT",
+            "ack_flag_number"
           ],
           "seed_to_seed_jaccard": 0.4286
         },
         "mqtt": {
           "seed42_top5": [
             "rst_count",
-            "Weight",
-            "syn_flag_number",
+            "Number",
+            "ack_flag_number",
             "Max",
             "IAT"
           ],
           "seed7_top5": [
             "rst_count",
-            "Number",
-            "ack_flag_number",
+            "Weight",
+            "syn_flag_number",
             "Max",
             "IAT"
           ],
@@ -8190,43 +8322,654 @@
         },
         "bluetooth": {
           "seed42_top5": [
-            "Tot size",
-            "AVG",
-            "Max",
-            "Tot sum",
-            "Magnitue"
-          ],
-          "seed7_top5": [
             "IAT",
             "Weight",
             "Std",
             "Number",
             "Max"
           ],
+          "seed7_top5": [
+            "Tot size",
+            "AVG",
+            "Max",
+            "Tot sum",
+            "Magnitue"
+          ],
           "seed_to_seed_jaccard": 0.1111
         }
       },
       "pairwise_divergence_spread": {
         "wifi-mqtt": {
-          "seed42_jaccard": 0.4286,
-          "seed7_jaccard": 1.0,
+          "seed42_jaccard": 1.0,
+          "seed7_jaccard": 0.4286,
           "abs_diff": 0.5714,
           "mean_jaccard": 0.7143
         },
         "wifi-bluetooth": {
-          "seed42_jaccard": 0.0,
-          "seed7_jaccard": 0.4286,
+          "seed42_jaccard": 0.4286,
+          "seed7_jaccard": 0.0,
           "abs_diff": 0.4286,
           "mean_jaccard": 0.2143
         },
         "mqtt-bluetooth": {
-          "seed42_jaccard": 0.1111,
-          "seed7_jaccard": 0.4286,
+          "seed42_jaccard": 0.4286,
+          "seed7_jaccard": 0.1111,
           "abs_diff": 0.3175,
           "mean_jaccard": 0.2698
         }
       },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.0294,
+          "cosine_abs_diff": 0.0063
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.0338,
+          "cosine_abs_diff": 0.173
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.0189,
+          "cosine_abs_diff": 0.0805
+        }
+      },
       "status": "preliminary (n=2 seeds), not the full noise floor"
+    },
+    "fedper": {
+      "per_client_top5_stability": {
+        "wifi": {
+          "seed42_top5": [
+            "rst_count",
+            "ack_flag_number",
+            "Variance",
+            "HTTP",
+            "psh_flag_number"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "psh_flag_number",
+            "ack_flag_number",
+            "Header_Length",
+            "Variance"
+          ],
+          "seed_to_seed_jaccard": 0.6667
+        },
+        "mqtt": {
+          "seed42_top5": [
+            "rst_count",
+            "syn_flag_number",
+            "rst_flag_number",
+            "TCP",
+            "HTTP"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "syn_flag_number",
+            "TCP",
+            "fin_count",
+            "HTTP"
+          ],
+          "seed_to_seed_jaccard": 0.6667
+        },
+        "bluetooth": {
+          "seed42_top5": [
+            "AVG",
+            "Weight",
+            "Std",
+            "Number",
+            "Max"
+          ],
+          "seed7_top5": [
+            "AVG",
+            "Std",
+            "Max",
+            "Tot size",
+            "Weight"
+          ],
+          "seed_to_seed_jaccard": 0.6667
+        }
+      },
+      "pairwise_divergence_spread": {
+        "wifi-mqtt": {
+          "seed42_jaccard": 0.25,
+          "seed7_jaccard": 0.1111,
+          "abs_diff": 0.1389,
+          "mean_jaccard": 0.1805
+        },
+        "wifi-bluetooth": {
+          "seed42_jaccard": 0.0,
+          "seed7_jaccard": 0.0,
+          "abs_diff": 0.0,
+          "mean_jaccard": 0.0
+        },
+        "mqtt-bluetooth": {
+          "seed42_jaccard": 0.0,
+          "seed7_jaccard": 0.0,
+          "abs_diff": 0.0,
+          "mean_jaccard": 0.0
+        }
+      },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.0526,
+          "cosine_abs_diff": 0.0108
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.0077,
+          "cosine_abs_diff": 0.0377
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.1006,
+          "cosine_abs_diff": 0.0178
+        }
+      },
+      "status": "preliminary (n=2 seeds), not the full noise floor"
+    },
+    "local_only": {
+      "per_client_top5_stability": {
+        "wifi": {
+          "seed42_top5": [
+            "rst_count",
+            "ack_flag_number",
+            "Variance",
+            "syn_flag_number",
+            "HTTP"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "ack_flag_number",
+            "Variance",
+            "psh_flag_number",
+            "syn_flag_number"
+          ],
+          "seed_to_seed_jaccard": 0.6667
+        },
+        "mqtt": {
+          "seed42_top5": [
+            "rst_count",
+            "fin_flag_number",
+            "Number",
+            "Weight",
+            "syn_flag_number"
+          ],
+          "seed7_top5": [
+            "rst_count",
+            "fin_flag_number",
+            "Weight",
+            "Number",
+            "syn_flag_number"
+          ],
+          "seed_to_seed_jaccard": 1.0
+        },
+        "bluetooth": {
+          "seed42_top5": [
+            "AVG",
+            "Number",
+            "Weight",
+            "Max",
+            "Std"
+          ],
+          "seed7_top5": [
+            "AVG",
+            "Number",
+            "Weight",
+            "Max",
+            "Std"
+          ],
+          "seed_to_seed_jaccard": 1.0
+        }
+      },
+      "pairwise_divergence_spread": {
+        "wifi-mqtt": {
+          "seed42_jaccard": 0.25,
+          "seed7_jaccard": 0.25,
+          "abs_diff": 0.0,
+          "mean_jaccard": 0.25
+        },
+        "wifi-bluetooth": {
+          "seed42_jaccard": 0.0,
+          "seed7_jaccard": 0.0,
+          "abs_diff": 0.0,
+          "mean_jaccard": 0.0
+        },
+        "mqtt-bluetooth": {
+          "seed42_jaccard": 0.25,
+          "seed7_jaccard": 0.25,
+          "abs_diff": 0.0,
+          "mean_jaccard": 0.25
+        }
+      },
+      "full_metric_spread": {
+        "wifi-mqtt": {
+          "spearman_abs_diff": 0.1193,
+          "cosine_abs_diff": 0.0036
+        },
+        "wifi-bluetooth": {
+          "spearman_abs_diff": 0.1419,
+          "cosine_abs_diff": 0.0112
+        },
+        "mqtt-bluetooth": {
+          "spearman_abs_diff": 0.081,
+          "cosine_abs_diff": 0.0172
+        }
+      },
+      "status": "preliminary (n=2 seeds), not the full noise floor"
+    }
+  },
+  "centralized_by_seed": {
+    "42": {
+      "accuracy": 0.9872854609396134,
+      "f1_binary": 0.9921479088934677,
+      "f1_macro": 0.9793770254185503,
+      "f1_weighted": 0.9872927544196105,
+      "benign_precision": 0.965158442377424,
+      "benign_recall": 0.9680581910183428,
+      "attack_precision": 0.992497957364629,
+      "attack_recall": 0.9917981072555205,
+      "confusion_matrix": {
+        "tn": 6122,
+        "fp": 202,
+        "fn": 221,
+        "tp": 26724
+      }
+    },
+    "7": {
+      "accuracy": 0.9870449968439088,
+      "f1_binary": 0.991996137347026,
+      "f1_macro": 0.9790148548662784,
+      "f1_weighted": 0.987060994697217,
+      "benign_precision": 0.9629222309505107,
+      "benign_recall": 0.9691650853889943,
+      "attack_precision": 0.9927520071364853,
+      "attack_recall": 0.9912414177027278,
+      "confusion_matrix": {
+        "tn": 6129,
+        "fp": 195,
+        "fn": 236,
+        "tp": 26709
+      }
+    }
+  },
+  "divergence_summary": {
+    "fedavg": {
+      "scope": "shared global model evaluated per protocol",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 0.25,
+          "spearman": 0.752,
+          "cosine": 0.9705
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.2514,
+          "cosine": 0.0989
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.2346,
+          "cosine": 0.1178
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.1111,
+          "spearman": 0.7493,
+          "cosine": 0.9902
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.3176,
+          "cosine": 0.0632
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.2641,
+          "cosine": 0.0848
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.1389,
+          "spearman_abs_diff": 0.0027,
+          "cosine_abs_diff": 0.0197
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.0662,
+          "cosine_abs_diff": 0.0357
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.0295,
+          "cosine_abs_diff": 0.033
+        }
+      }
+    },
+    "fedprox_mu0.001": {
+      "scope": "shared global model evaluated per protocol",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 0.25,
+          "spearman": 0.8129,
+          "cosine": 0.9866
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.25,
+          "spearman": 0.4333,
+          "cosine": 0.1476
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.2676,
+          "cosine": 0.1655
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.6667,
+          "spearman": 0.8049,
+          "cosine": 0.9802
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.4168,
+          "cosine": 0.119
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.3062,
+          "cosine": 0.1927
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.4167,
+          "spearman_abs_diff": 0.008,
+          "cosine_abs_diff": 0.0064
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.1389,
+          "spearman_abs_diff": 0.0165,
+          "cosine_abs_diff": 0.0286
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.1111,
+          "spearman_abs_diff": 0.0386,
+          "cosine_abs_diff": 0.0272
+        }
+      }
+    },
+    "fedprox_mu0.01": {
+      "scope": "shared global model evaluated per protocol",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 0.6667,
+          "spearman": 0.8791,
+          "cosine": 0.9912
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.4897,
+          "cosine": 0.2038
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.3656,
+          "cosine": 0.1942
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.6667,
+          "spearman": 0.8424,
+          "cosine": 0.9848
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.5422,
+          "cosine": 0.189
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.3892,
+          "cosine": 0.2296
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.0367,
+          "cosine_abs_diff": 0.0064
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.0525,
+          "cosine_abs_diff": 0.0148
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.1111,
+          "spearman_abs_diff": 0.0236,
+          "cosine_abs_diff": 0.0354
+        }
+      }
+    },
+    "fedprox_mu0.05": {
+      "scope": "shared global model evaluated per protocol",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 0.6667,
+          "spearman": 0.8569,
+          "cosine": 0.9804
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.25,
+          "spearman": 0.4735,
+          "cosine": 0.3005
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.3707,
+          "cosine": 0.2563
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.4286,
+          "spearman": 0.8424,
+          "cosine": 0.9793
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.4306,
+          "cosine": 0.211
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.25,
+          "spearman": 0.3366,
+          "cosine": 0.2539
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.2381,
+          "spearman_abs_diff": 0.0145,
+          "cosine_abs_diff": 0.0011
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.1389,
+          "spearman_abs_diff": 0.0429,
+          "cosine_abs_diff": 0.0895
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.1389,
+          "spearman_abs_diff": 0.0341,
+          "cosine_abs_diff": 0.0024
+        }
+      }
+    },
+    "fedprox_mu0.1": {
+      "scope": "shared global model evaluated per protocol",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 1.0,
+          "spearman": 0.8593,
+          "cosine": 0.9712
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.4286,
+          "spearman": 0.4506,
+          "cosine": 0.381
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.4286,
+          "spearman": 0.3413,
+          "cosine": 0.3398
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.4286,
+          "spearman": 0.8299,
+          "cosine": 0.9649
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.4168,
+          "cosine": 0.208
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.1111,
+          "spearman": 0.3224,
+          "cosine": 0.2593
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.5714,
+          "spearman_abs_diff": 0.0294,
+          "cosine_abs_diff": 0.0063
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.4286,
+          "spearman_abs_diff": 0.0338,
+          "cosine_abs_diff": 0.173
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.3175,
+          "spearman_abs_diff": 0.0189,
+          "cosine_abs_diff": 0.0805
+        }
+      }
+    },
+    "fedper": {
+      "scope": "across personalized models (per-client assembled trunk+head)",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 0.25,
+          "spearman": 0.7894,
+          "cosine": 0.9664
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.2663,
+          "cosine": 0.1085
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.1461,
+          "cosine": 0.1226
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.1111,
+          "spearman": 0.7368,
+          "cosine": 0.9772
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.274,
+          "cosine": 0.0708
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.2467,
+          "cosine": 0.1404
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.1389,
+          "spearman_abs_diff": 0.0526,
+          "cosine_abs_diff": 0.0108
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.0077,
+          "cosine_abs_diff": 0.0377
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.1006,
+          "cosine_abs_diff": 0.0178
+        }
+      }
+    },
+    "local_only": {
+      "scope": "across local-only models (one isolated model per client)",
+      "seed7": {
+        "wifi-mqtt": {
+          "jaccard": 0.25,
+          "spearman": 0.5825,
+          "cosine": 0.9113
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": -0.0012,
+          "cosine": 0.0568
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.25,
+          "spearman": 0.1851,
+          "cosine": 0.1952
+        }
+      },
+      "seed42": {
+        "wifi-mqtt": {
+          "jaccard": 0.25,
+          "spearman": 0.4632,
+          "cosine": 0.9149
+        },
+        "wifi-bluetooth": {
+          "jaccard": 0.0,
+          "spearman": 0.1407,
+          "cosine": 0.0456
+        },
+        "mqtt-bluetooth": {
+          "jaccard": 0.25,
+          "spearman": 0.2661,
+          "cosine": 0.2124
+        }
+      },
+      "noise_floor_seed_to_seed": {
+        "wifi-mqtt": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.1193,
+          "cosine_abs_diff": 0.0036
+        },
+        "wifi-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.1419,
+          "cosine_abs_diff": 0.0112
+        },
+        "mqtt-bluetooth": {
+          "jaccard_abs_diff": 0.0,
+          "spearman_abs_diff": 0.081,
+          "cosine_abs_diff": 0.0172
+        }
+      }
+    },
+    "cluster_fl": {
+      "status": "slot empty - cluster_fl results pending"
     }
   }
 }

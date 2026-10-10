@@ -42,3 +42,10 @@ SHAP_ATTACK_SAMPLE_SIZE: int = 200
 RESULTS_DIR: str = "results"
 MODELS_DIR: str = "models"
 STUDY_RESULTS_PATH: str = os.path.join(RESULTS_DIR, "study_results.json")
+
+# Cluster-FL slot (currently EMPTY): a teammate ports the clustered federated
+# method separately and drops finished runs (documented schema in
+# src/run_study_experiments.py, CLUSTER_FL_RUN_SCHEMA) at this path as a JSON
+# array; the suite / merge tool picks them up without further code changes.
+CLUSTER_FL_RESULTS_PATH: str = os.path.join(RESULTS_DIR, "cluster_fl_results.json")
+CLUSTER_FL_STATUS: str = "in progress - port pending"

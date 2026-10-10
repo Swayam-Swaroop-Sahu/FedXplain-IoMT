@@ -134,7 +134,8 @@ def main(data_dir: str = DATA_DIR, seed: int = 42) -> dict:
     # 5. Save model
     # ------------------------------------------------------------------
     os.makedirs(MODELS_DIR, exist_ok=True)
-    save_path = os.path.join(MODELS_DIR, "centralized_baseline.pth")
+    save_name = "centralized_baseline.pth" if seed == 42 else f"centralized_baseline_seed{seed}.pth"
+    save_path = os.path.join(MODELS_DIR, save_name)
     torch.save(model.state_dict(), save_path)
     print(f"\nCentralized baseline complete. Model saved to {save_path}")
 

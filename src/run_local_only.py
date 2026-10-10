@@ -17,6 +17,7 @@ from src.config import (
     N_ROUNDS,
     PROTOCOLS,
     RESULTS_DIR,
+    SEEDS,
     SHAP_ATTACK_SAMPLE_SIZE,
     SHAP_BACKGROUND_SIZE,
     STUDY_RESULTS_PATH,
@@ -113,6 +114,9 @@ def train_local_only(
         "jaccard_pairwise": jaccard_pairwise,
         "divergence_full": divergence_full,
         "shared_features": shared_features,
+        # Local-only yields one isolated model per client: the divergence keys
+        # compare three *different* models, not one shared model per protocol.
+        "divergence_scope": "across local-only models (one isolated model per client)",
     }
 
 
@@ -162,13 +166,13 @@ def compute_local_vs_global(
 
 
 def run_local_only_suite(runs_data: list[dict] | None = None) -> dict:
-    """Run local-only for both seeds and build the payload for study_results.json.
+    """Run local-only for all configured seeds and build the payload for study_results.json.
 
-    If runs_data (the study 'runs' array) is provided, the seed-42
-    local_vs_global comparison is computed against its FedAvg seed-42 entry;
-    otherwise it is looked up from the existing study_results.json.
+    If runs_data (the study 'runs' array) is provided, the per-seed
+    local_vs_global comparisons are computed against each seed's FedAvg
+    entry; otherwise they are looked up from the existing study_results.json.
     """
-    local_runs = [train_local_only(seed=seed) for seed in (42, 7)]
+    local_runs = [train_local_only(seed=seed) for seed in SEEDS]
 
     if runs_data is None and os.path.exists(STUDY_RESULTS_PATH):
         with open(STUDY_RESULTS_PATH, "r", encoding="utf-8") as f:
@@ -177,13 +181,14 @@ def run_local_only_suite(runs_data: list[dict] | None = None) -> dict:
     local_vs_global: dict[str, dict] = {}
     local_by_seed = {r["seed"]: r for r in local_runs}
     if runs_data:
-        fedavg_s42 = next(
-            (r for r in runs_data if r["aggregator"] == "fedavg" and r["seed"] == 42), None
-        )
-        if fedavg_s42 is not None:
-            local_vs_global["seed42_local_vs_fedavg_seed42"] = compute_local_vs_global(
-                local_by_seed[42], fedavg_s42
+        for seed in SEEDS:
+            fedavg_run = next(
+                (r for r in runs_data if r["aggregator"] == "fedavg" and r["seed"] == seed), None
             )
+            if fedavg_run is not None and seed in local_by_seed:
+                local_vs_global[f"seed{seed}_local_vs_fedavg_seed{seed}"] = compute_local_vs_global(
+                    local_by_seed[seed], fedavg_run
+                )
 
     return {"local_only": local_runs, "local_vs_global": local_vs_global}
 

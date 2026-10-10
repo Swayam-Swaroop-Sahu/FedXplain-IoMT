@@ -237,12 +237,15 @@ def compare_explanations(
     fedper_run: dict,
     baseline_run: dict,
     baseline_label: str,
+    run_label: str = "fedper",
 ) -> dict[str, dict]:
-    """Compare each client's FedPer explanation against the SAME client's model
-    from another run at the same seed (e.g. FedAvg or local-only).
+    """Compare each client's explanation from one run against the SAME client's
+    model from another run at the same seed (e.g. FedAvg or local-only).
 
-    For each protocol: top-5 Jaccard plus Spearman / cosine over the full
-    45-element mean-|SHAP| vectors.
+    Generic over the method being compared (FedPer, Cluster-FL, ...): the
+    run's own top-5 list is stored under f"{run_label}_top5". For each
+    protocol: top-5 Jaccard plus Spearman / cosine over the full 45-element
+    mean-|SHAP| vectors.
     """
     comparisons: dict[str, dict] = {}
     for proto in PROTOCOLS:
@@ -268,7 +271,7 @@ def compare_explanations(
             cosine = round(cosine, 4) if cosine is not None else None
 
         comparisons[proto] = {
-            "fedper_top5": fedper_top5,
+            f"{run_label}_top5": fedper_top5,
             f"{baseline_label}_top5": baseline_top5,
             "shared_top5": shared,
             "top5_jaccard": top5_jaccard,
