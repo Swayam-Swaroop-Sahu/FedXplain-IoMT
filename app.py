@@ -529,7 +529,7 @@ with tab1:
                 cents = data.get("centralized_by_seed", {})
                 cents_run = cents.get(str(seed))
                 if cents_run:
-                    val = cents_run.get("bluetooth_benign_recall")
+                    val = cents_run.get("bluetooth_benign_recall", cents_run.get("benign_recall"))
                 else:
                     val = None
             else:
@@ -991,11 +991,13 @@ with tab3:
 
     st.markdown("---")
     st.markdown('<div class="section-header">Written findings</div>', unsafe_allow_html=True)
+    fedper_f1_means = [avg_macro_f1(r) for s in seeds if (r := method_run(data, "fedper", s))]
+    fedper_f1_mean = sum(fedper_f1_means) / len(fedper_f1_means) if fedper_f1_means else 0.0
     st.markdown(
         f"""
         - **No μ saves Bluetooth**: Even the gentlest proximal term (μ=0.001) lowers Bluetooth benign recall below FedAvg ({fmt(client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall'))} → {fmt(client_metric(method_run(data, f'fedprox_mu{fedprox_mus(data.get("runs", []))[0]}', seeds_of(data)[0]), 'bluetooth', 'benign_recall'))}). By μ=0.1 the model flags ~97–99% of Bluetooth benign traffic as attack. Local‑only sits at {fmt(local_bt_min)} — the collapse is caused by *sharing*, and proximal anchoring only deepens it.
-        - **Local‑only beats all sharing**: Local‑only achieves {fmt(local_mean)} avg macro F1 vs {fmt(best_shared_mean)} for the best shared model ({method_label(best_shared_label)}) — a {local_mean - best_shared_mean:+.4f} absolute gain. It matches the pooled centralized reference ({fmt(data.get('centralized_by_seed', {}).get('42', {}).get('f1_macro', 0.0))}/{fmt(data.get('centralized_by_seed', {}).get('7', {}).get('f1_macro', 0.0))}) within {abs(local_mean - 0.9792):.4f} points and beats it on Bluetooth benign recall ({fmt(local_bt_min)} vs {fmt(data.get('centralized_by_seed', {}).get('42', {}).get('bluetooth_benign_recall', 0.0))}/{fmt(data.get('centralized_by_seed', {}).get('7', {}).get('bluetooth_benign_recall', 0.0))}).
-        - **FedPer’s trade‑off position**: FedPer recovers {fmt(fedper_bt_mean)} Bluetooth benign recall — {(fedper_bt_mean - client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall')) / (local_bt_min - client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall')) * 100:.0f}% of the FedAvg→local‑only gap. Its avg macro F1 ({fmt(fedper_bt_mean)}) is {fedper_bt_mean / local_mean * 100:.0f}% of local‑only, and cross‑client explanation similarity remains at FedAvg level (see Tab 2).
+        - **Local‑only beats all sharing**: Local‑only achieves {fmt(local_mean)} avg macro F1 vs {fmt(best_shared_mean)} for the best shared model ({method_label(best_shared_label)}) — a {local_mean - best_shared_mean:+.4f} absolute gain. It matches the pooled centralized reference ({fmt(data.get('centralized_by_seed', {}).get('42', {}).get('f1_macro', 0.0))}/{fmt(data.get('centralized_by_seed', {}).get('7', {}).get('f1_macro', 0.0))}) within {abs(local_mean - 0.9792):.4f} points and beats it on Bluetooth benign recall ({fmt(local_bt_min)} vs {fmt(data.get('centralized_by_seed', {}).get('42', {}).get('bluetooth_benign_recall', data.get('centralized_by_seed', {}).get('42', {}).get('benign_recall', 0.0)))}/{fmt(data.get('centralized_by_seed', {}).get('7', {}).get('bluetooth_benign_recall', data.get('centralized_by_seed', {}).get('7', {}).get('benign_recall', 0.0)))}).
+        - **FedPer’s trade‑off position**: FedPer recovers {fmt(fedper_bt_mean)} Bluetooth benign recall — {(fedper_bt_mean - client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall')) / (local_bt_min - client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall')) * 100:.0f}% of the FedAvg→local‑only gap. Its avg macro F1 ({fmt(fedper_f1_mean)}) is {fedper_f1_mean / local_mean * 100:.0f}% of local‑only, and cross‑client explanation similarity remains at FedAvg level (see Tab 2).
         """
     )
 

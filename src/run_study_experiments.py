@@ -171,10 +171,10 @@ def compute_noise_floor(
 
     noise_floor: dict[str, dict] = {}
     for label, runs in method_runs.items():
-        runs = sorted(runs, key=lambda r: r["seed"])
         if len(runs) < 2:
             continue
-        r42, r7 = runs[0], runs[1]
+        by_seed = {r["seed"]: r for r in runs}
+        r42, r7 = by_seed.get(42, runs[0]), by_seed.get(7, runs[1])
 
         per_client_top5_stability = {}
         for proto in PROTOCOLS:
@@ -264,7 +264,8 @@ def build_divergence_summary(
         for run in runs:
             entry[f"seed{run['seed']}"] = _pair_metrics(run)
         if len(runs) >= 2:
-            r42, r7 = runs[0], runs[1]
+            by_seed = {r["seed"]: r for r in runs}
+            r42, r7 = by_seed.get(42, runs[0]), by_seed.get(7, runs[1])
             noise_ref = {}
             for pair in PAIR_LABELS:
                 m42 = _pair_metrics(r42)[pair]
@@ -283,7 +284,8 @@ def build_divergence_summary(
         for run in runs:
             entry[f"seed{run['seed']}"] = _pair_metrics(run)
         if len(runs) >= 2:
-            r42, r7 = runs[0], runs[1]
+            by_seed = {r["seed"]: r for r in runs}
+            r42, r7 = by_seed.get(42, runs[0]), by_seed.get(7, runs[1])
             noise_ref = {}
             for pair in PAIR_LABELS:
                 m42 = _pair_metrics(r42)[pair]
