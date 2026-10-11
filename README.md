@@ -3,7 +3,7 @@
 [![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![Flower](https://img.shields.io/badge/Flower-1.5%2B-gold.svg)](https://flower.ai/)
-[![SHAP](https://img.shields.io/badge/SHAP-0.42%2B-brightgreen.svg)](https://shap.readthedocs.io/)
+[![SHAP](https://img.shields.io/badge/SHAP-0.53.0%2B-brightgreen.svg)](https://shap.readthedocs.io/)
 [![Dataset](https://img.shields.io/badge/Dataset-CICIoMT2024-purple.svg)](https://www.unb.ca/cic/datasets/iomt-dataset-2024.html)
 [![Dashboard](https://img.shields.io/badge/UI-Streamlit-red.svg)](https://streamlit.io/)
 
@@ -19,11 +19,7 @@ While conventional federated evaluation focuses exclusively on global accuracy a
 - [3. System Architecture](#3-system-architecture)
 - [4. Methodology & Algorithms](#4-methodology--algorithms)
 - [5. Experimental Results](#5-experimental-results)
-  - [POC-Scale Results (Initial Pilot)](#poc-scale-results-initial-pilot)
-  - [Study-Scale Results (Extended Multi-Round Pilot)](#study-scale-results-extended-multi-round-pilot)
-  - [Class-Imbalance Diagnostic & Rigor](#class-imbalance-diagnostic--rigor)
-  - [Preliminary Noise Floor Analysis (n=2 Seeds)](#preliminary-noise-floor-analysis-n2-seeds)
-  - [What This Does NOT Yet Show](#what-this-does-not-yet-show)
+  - [Final Study Results](#final-study-results)
 - [6. Interactive Research Dashboard](#6-interactive-research-dashboard)
 - [7. Reproducibility Guide](#7-reproducibility-guide)
 - [8. Project Status & Roadmap](#8-project-status--roadmap)
@@ -42,6 +38,7 @@ In clinical healthcare environments, IoMT devices (infusion pumps, patient monit
 Due to strict healthcare privacy regulations (HIPAA, GDPR), raw telemetry from hospital subnets cannot be pooled centrally. Federated Learning enables distributed model training across hospital silos without transmitting patient data.
 
 ### The Explanation Divergence Problem
+
 Standard evaluation assumes that achieving high classification metrics (e.g., F1 > 0.98) across all clients implies consistent model behavior. However:
 1. **Protocol Asymmetry**: IP-based attacks exhibit distinct TCP/IP flag anomalies, whereas Bluetooth attacks manifest purely in packet frequency and flow timing.
 2. **Global Representation vs. Local Logic**: A single global neural network parameter set ($\theta^*$) may achieve uniform predictive accuracy while relying on disjoint feature subsets when explaining predictions locally.
@@ -94,6 +91,7 @@ $$\text{Linear}(45, 64) \rightarrow \text{ReLU} \rightarrow \text{Dropout}(0.2) 
   $$w_{t+1} = \sum_{k=1}^K \frac{n_k}{N} w_{t+1}^k$$
 - **FedProx (`src/run_federated_prox.py`)**: Penalizes local drift from global parameters $w_t$:
   $$\mathcal{L}_{\text{FedProx}}(w; w_t) = \mathcal{L}_{\text{BCE}}(w) + \frac{\mu}{2} \|w - w_t\|_2^2$$
+- **FedPer (`src/run_fedper.py`)**: Personalized FL where the first 4 parameter arrays (shared trunk) are aggregated, while the last 2 arrays (private output head) remain local.
 
 ### Post-Hoc Explainability (`src/explain.py`)
 - **Explainer**: `shap.DeepExplainer` on the converged global neural network.
@@ -106,51 +104,12 @@ $$\text{Linear}(45, 64) \rightarrow \text{ReLU} \rightarrow \text{Dropout}(0.2) 
 
 ## 5. Experimental Results
 
-### POC-Scale Results (Initial Pilot)
-*Evaluated on `data/poc` subsets (5 rounds, 2 local epochs, seed=42):*
+### Final Study Results
+All numbers are read directly from `results/study_results.json` (single source of truth). The study covers **2 seeds (42, 7)** — sample counts are too small for statistical inference, so every claim below is *directional*, and every between-method divergence gap is read against the **seed-to-seed noise floor** (the same statistic recomputed across seeds; a gap smaller than its noise-floor cell is within seed noise). `figures/` is regenerated with `python scripts/make_figures.py`; completeness of the results file itself is verified with `python scripts/audit_results.py`.
 
-| Algorithm | Wi-Fi Macro F1 | MQTT Macro F1 | BT Macro F1 | Macro Avg F1 | Top-5 Jaccard (Wi-Fi/MQTT) | Top-5 Jaccard (Wi-Fi/BT) | Top-5 Jaccard (MQTT/BT) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Centralized Baseline** | — | — | — | **0.9875** | — | — | — |
-| **FedAvg** | 0.8604 | 0.8607 | 0.7198 | **0.8560** | **0.6667** | **0.1111** | **0.1111** |
-| **FedProx ($\mu=0.01$)** | 0.8604 | 0.8990 | 0.8058 | **0.8974** | **0.4286** | **0.1111** | **0.0000** |
+Methods compared: **FedAvg** (shared model), **FedProx** (shared model + proximal term, mu in {0.001, 0.01, 0.05, 0.1}), **FedPer** (shared trunk + private per-client head), **Local-only** (no sharing, control). Centralized pooling is the upper reference. Cluster-FL is an empty slot pending a teammate's port.
 
----
-
-### Study-Scale Results (Extended Multi-Round Pilot)
-*Evaluated on full `data/study` datasets (166,000+ flows, 10 rounds, 3 local epochs, seed=42):*
-
-| Algorithm | Wi-Fi Macro F1 | MQTT Macro F1 | BT Macro F1 | Macro Avg F1 | Top-5 Jaccard (Wi-Fi/MQTT) | Top-5 Jaccard (Wi-Fi/BT) | Top-5 Jaccard (MQTT/BT) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Centralized Baseline** | — | — | — | **0.9794** | — | — | — |
-| **FedAvg** | 0.9353 | 0.8351 | 0.6106 | **0.7937** | **0.2500** | **0.0000** | **0.0000** |
-| **FedProx ($\mu=0.01$)** | 0.9138 | 0.9250 | 0.3379 | **0.7256** | **0.4286** | **0.1111** | **0.2500** |
-| **FedProx ($\mu=0.1$)** | 0.8928 | 0.8664 | 0.3343 | **0.6979** | **0.6667** | **0.2500** | **0.2500** |
-
----
-
-### Class-Imbalance Diagnostic & Rigor
-During rigorous auditing, we identified that **Wi-Fi binary F1 (>0.99) is inflated by class imbalance** (96.4% attack samples, 3.6% benign).
-- Under FedAvg (Study scale), Wi-Fi yields:
-  - **Attack Precision**: 0.9968 | **Attack Recall**: 0.9935 | **Binary F1**: 0.9951
-  - **Benign Precision**: 0.8399 | **Benign Recall**: 0.9142 | **Macro F1**: 0.9353
-- **Methodological Standard**: Macro F1 and per-class precision/recall are now reported by default across all experiments to prevent false optimism.
-
----
-
-### Preliminary Noise Floor Analysis (n=2 Seeds)
-Comparing Top-5 feature attribution stability between random seeds ($seed = 42$ vs $seed = 7$):
-- **FedAvg**: Seed-to-seed top-5 Jaccard overlap = **0.4286** across all three clients.
-- **FedProx ($\mu=0.01$)**: Wi-Fi overlap = **0.6667**, MQTT overlap = **0.4286**, Bluetooth overlap = **0.6667**.
-- **FedProx ($\mu=0.1$)**: Wi-Fi overlap = **0.6667**, MQTT overlap = **0.2500**, Bluetooth overlap = **0.2500**.
-
----
-
-### What This Does NOT Yet Show
-To maintain strict scientific integrity:
-1. **Preliminary Seed Count**: $n=2$ seeds provide a directional stability check, not a fully converged 10-seed confidence interval.
-2. **Hyperparameter Grid**: Explored $\mu \in \{0.01, 0.1\}$. A continuous logarithmic sweep remains for the full publication study.
-3. **No Statistical Significance Claims**: Findings demonstrate visible explanatory divergence under protocol heterogeneity, motivating the full formal study.
+See [`docs/final_results.md`](docs/final_results.md) for the complete result tables and figures.
 
 ---
 
@@ -159,16 +118,16 @@ To maintain strict scientific integrity:
 An interactive Streamlit dashboard is included for live presentations and inspection:
 
 ```bash
-pip install streamlit plotly pandas
+pip install -r requirements.txt
 streamlit run app.py
 ```
 
 ### Dashboard Features:
-1. **Overview & Architecture**: Interactive system diagram and problem framing.
-2. **Detection Performance**: Filterable performance table with Macro F1 vs Binary F1 comparisons.
-3. **Explanation Divergence**: Interactive Plotly bar charts of SHAP attributions + Jaccard heatmap.
-4. **FedAvg vs FedProx Comparison**: Side-by-side performance and attribution drift metrics.
-5. **Methodology & Limitations**: Transparent checklist of verified vs planned items.
+1. **Executive Summary**: One-sentence thesis; 4 KPI cards computed from the JSON; Figure 4 embedding; two-column "What we found / What we didn't prove yet".
+2. **Detection**: Unified comparison table (FedAvg, FedProx×4 mu, FedPer, Local-only, Centralized); Bluetooth benign-recall table with any cell < 0.5 auto-flagged; detailed per-seed metrics table; Bluetooth collapse callout.
+3. **Explanation Divergence**: Aggregator selector covering ALL methods (fedavg, fedprox×4, fedper, local-only, Cluster-FL); top-10 SHAP bar chart + Jaccard heatmap; full-metrics table (Jaccard + Spearman + cosine per pair, both seeds) from `divergence_summary` PLUS noise-floor reference row; divergence_scope caption; for fedper runs show `fedper_vs_fedavg`/`fedper_vs_local_only` per-client tables; selecting Cluster-FL (or any missing run) renders a graceful placeholder.
+4. **Methods Compared**: Centerpiece = Bluetooth benign recall vs mu curve (x categorical: FedAvg(μ=0), 0.001, 0.01, 0.05, 0.1; two lines one per seed; local-only as horizontal teal dashed reference line; FedPer as navy dotted reference); secondary chart = avg macro F1 per method (two-seed mean, error bars = seed spread); short written findings.
+5. **Methodology & Limitations**: 2 seeds (directional), 10 federated + 2 local-only + 2 FedPer runs, full 45-dim SHAP vectors, noise floor across ALL aggregators; Cluster-FL as "in progress — port pending" placeholder with pointer to documented schema; seed-to-seed stability table extended to all aggregators; architecture diagram (`docs/system_architecture.png`).
 
 *See [`docs/ui_guide.md`](docs/ui_guide.md) for full dashboard documentation.*
 
@@ -185,17 +144,21 @@ pip install -r requirements.txt
 # 2. Run the complete experiment suite (Centralized + FL runs + local-only control + SHAP + JSON export)
 python src/run_study_experiments.py
 
-# 3. Launch the dashboard
+# 3. (Optional) Verify completeness of results
+python scripts/audit_results.py
+
+# 4. Generate figures
+python scripts/make_figures.py
+
+# 5. Launch the dashboard
 streamlit run app.py
 ```
 
+### Cluster-FL Slot (for teammates)
+A teammate's Cluster-FL port will drop runs at `results/cluster_fl_results.json` following the documented schema (`CLUSTER_FL_RUN_SCHEMA` in `src/run_study_experiments.py`) and merge with `python src/merge_cluster_fl.py` — no code changes needed. Until then the dashboard and the divergence summary show an explicit placeholder (`slot empty - cluster_fl results pending`).
+
 ### Environment Pinning
-`requirements.txt` contains **exact pinned versions** (`==`) of every dependency. All reported
-numbers in this README and in `results/study_results.json` were generated with these versions on
-**Python 3.14** (CPU-only; the model is a small MLP so no GPU is required). Re-running the suite
-with different dependency versions may produce slightly different numbers due to library-level
-numerical changes (e.g., PyTorch kernel updates, pandas/scikit-learn behavioral changes), even
-with identical seeds.
+`requirements.txt` contains **exact pinned versions** (`==`) of every dependency. All reported numbers in this README and in `results/study_results.json` were generated with these versions on **Python 3.14** (CPU-only; the model is a small MLP so no GPU is required). Re-running the suite with different dependency versions may produce slightly different numbers due to library-level numerical changes (e.g., PyTorch kernel updates, pandas/scikit-learn behavioral changes), even with identical seeds.
 
 ---
 
@@ -204,12 +167,13 @@ with identical seeds.
 - [x] Phase 1: Shared preprocessing & centralized baseline benchmark.
 - [x] Phase 2: Multi-client federated training with Flower (FedAvg).
 - [x] Phase 3: Post-hoc explainability pipeline with DeepExplainer & Jaccard index.
-- [x] Phase 4: FedProx proximal term integration ($\mu=0.01, 0.1$).
+- [x] Phase 4: FedProx proximal term integration ($\mu=0.001, 0.01, 0.05, 0.1$).
 - [x] Phase 5: Diagnostic robustness check (Wi-Fi class imbalance, weight norms, guardrails).
 - [x] Phase 6: Scaled-up study run on `data/study` with centralized `config.py` and 2-seed pilot.
 - [x] Phase 7: Interactive Streamlit research dashboard (`app.py`).
 - [ ] Phase 8 (Full Study): 10-seed noise-floor calibration & full logarithmic $\mu$ sweep.
 - [ ] Phase 9 (Full Study): Advanced aggregators (SCAFFOLD, FedNova, FedOpt) and gradient-based explainers.
+- [ ] Phase 10: Teammate's Cluster-FL port (see `docs/final_results.md` for slot documentation).
 
 ---
 
@@ -224,30 +188,55 @@ FedXplain-IoMT/
 ├── data/
 │   ├── README.md                       # CICIoMT2024 dataset documentation
 │   ├── poc/                            # POC subsets (~10k rows total)
+│   │   ├── bluetooth_poc.csv
+│   │   ├── mqtt_poc.csv
+│   │   └── wifi_poc.csv
 │   └── study/                          # Full study datasets (~166k rows total)
+│       ├── bluetooth_study.csv
+│       ├── mqtt_study.csv
+│       └── wifi_study.csv
 ├── docs/
+│   ├── agent_fix_report.md             # Agent fix report with completion pass
+│   ├── final_results.md                # Final result tables and figures
 │   ├── poc_summary.md                  # POC pilot summary report
+│   ├── system_architecture.png         # System architecture diagram
 │   └── ui_guide.md                     # Dashboard presentation guide
+├── figures/                            # Generated publication figures
+│   ├── fig1_detection_macro_f1.png
+│   ├── fig2_spearman_divergence_heatmap.png
+│   ├── fig3_bluetooth_mu_sweep.png
+│   └── fig4_tradeoff_scatter.png
 ├── models/                             # Saved model weights (.pth) [gitignored]
 ├── results/                            # Generated experiment artifacts
-│   ├── study_results.json              # Master JSON payload for dashboard
+│   ├── audit_results.py                # Completeness checker
+│   ├── backfill_completions.py         # Idempotent backfiller
 │   ├── divergence_report.md            # POC FedAvg divergence report
 │   ├── divergence_report_fedprox.md    # POC FedProx divergence report
 │   ├── fedavg_vs_fedprox_comparison.md # POC comparative analysis
-│   └── *.png                           # SHAP attribution visualizations
+│   ├── make_figures.py                 # Figure generation script
+│   ├── shap_*.png                      # SHAP attribution visualizations
+│   ├── study_results.json              # Master JSON payload for dashboard
+│   └── test_dashboard.py               # Dashboard verification script
+├── scripts/
+│   ├── audit_results.py                # Completeness matrix verification
+│   ├── backfill_completions.py         # Idempotent backfill for missing pieces
+│   ├── make_figures.py                 # Regenerate all figures
+│   └── test_dashboard.py               # Streamlit dashboard test script
 └── src/                                # Core codebase
     ├── __init__.py
     ├── config.py                       # Centralized experiment configuration
-    ├── client.py                       # Flower NumPyClient with proximal regularization
-    ├── model.py                        # IoMTMLP neural network architecture
-    ├── utils.py                        # Preprocessing, caching & 45-feature guardrails
     ├── centralized.py                  # Centralized baseline benchmark
+    ├── client.py                       # Flower NumPyClient with proximal regularization
+    ├── explain.py                      # SHAP explainability pipeline
+    ├── explain_prox.py                 # FedProx explainability wrapper
+    ├── merge_cluster_fl.py             # Merge teammate-produced Cluster-FL runs
+    ├── model.py                        # IoMTMLP neural network architecture
     ├── run_federated.py                # FedAvg orchestration runner
     ├── run_federated_prox.py           # FedProx orchestration runner
+    ├── run_fedper.py                   # FedPer (personalized FL) orchestration runner
     ├── run_local_only.py               # Local-only (no-sharing) control baseline
     ├── run_study_experiments.py        # Master suite for study experiments
-    ├── explain.py                      # SHAP explainability pipeline
-    └── explain_prox.py                 # FedProx explainability wrapper
+    └── utils.py                        # Preprocessing, caching & 45-feature guardrails
 ```
 
 ---
