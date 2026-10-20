@@ -41,6 +41,7 @@ PROTOCOL_TITLES = {"wifi": "Wi-Fi", "mqtt": "MQTT", "bluetooth": "Bluetooth"}
 METHOD_LABELS = {
     "fedavg": "FedAvg",
     "fedper": "FedPer",
+    "cluster_fl": "Cluster-FL",
     "local_only": "Local-only",
 }
 PAIR_TITLES = {"wifi-mqtt": "Wi-Fi vs MQTT", "wifi-bluetooth": "Wi-Fi vs BT", "mqtt-bluetooth": "MQTT vs BT"}
@@ -55,11 +56,13 @@ def _method_label(method: str) -> str:
 
 
 def _method_color(method: str) -> str:
-    """Series color by method family: blue = shared-model FL, teal = local-only, amber = FedPer."""
+    """Series color by method family: blue = shared-model FL, teal = local-only, amber = FedPer, purple = Cluster-FL."""
     if method == "local_only":
         return TEAL
     if method == "fedper":
         return AMBER
+    if method == "cluster_fl":
+        return "#8338EC"
     return BLUE
 
 
@@ -117,10 +120,12 @@ def _apply_style(ax: plt.Axes) -> None:
 # horizontal bar per method; identity by y-label, color by method family)
 # ---------------------------------------------------------------------------
 def fig1_detection(study: dict, by_seed_method: dict) -> str:
-    methods = (
-        ["fedavg"] + [f"fedprox_mu{m}" for m in MU_VALUES] + ["fedper", "local_only"]
-    )
-    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.6), sharey=True)
+    has_cluster_fl = any(r.get("aggregator") == "cluster_fl" for r in study.get("runs", []))
+    methods = ["fedavg"] + [f"fedprox_mu{m}" for m in MU_VALUES] + ["fedper"]
+    if has_cluster_fl:
+        methods.append("cluster_fl")
+    methods.append("local_only")
+    fig, axes = plt.subplots(1, 3, figsize=(12.5, 5.0), sharey=True)
     fig.patch.set_facecolor(SURFACE)
 
     for ax, proto in zip(axes, PROTOCOLS):
@@ -162,9 +167,11 @@ def fig1_detection(study: dict, by_seed_method: dict) -> str:
 # sequential blue ramp, with the seed-to-seed noise floor shown alongside
 # ---------------------------------------------------------------------------
 def fig2_divergence_heatmap(study: dict, by_seed_method: dict) -> str:
-    methods = (
-        ["fedavg"] + [f"fedprox_mu{m}" for m in MU_VALUES] + ["fedper", "local_only"]
-    )
+    has_cluster_fl = any(r.get("aggregator") == "cluster_fl" for r in study.get("runs", []))
+    methods = ["fedavg"] + [f"fedprox_mu{m}" for m in MU_VALUES] + ["fedper"]
+    if has_cluster_fl:
+        methods.append("cluster_fl")
+    methods.append("local_only")
     pairs = [f"{a}-{b}" for a, b in zip(PROTOCOLS[:-1], PROTOCOLS[1:])] + [
         f"{PROTOCOLS[0]}-{PROTOCOLS[-1]}"
     ]
@@ -304,9 +311,11 @@ def fig3_mu_sweep(study: dict, by_seed_method: dict) -> str:
 # Figure 4: trade-off scatter - detection quality vs explanation consistency
 # ---------------------------------------------------------------------------
 def fig4_tradeoff(study: dict, by_seed_method: dict) -> str:
-    methods = (
-        ["fedavg"] + [f"fedprox_mu{m}" for m in MU_VALUES] + ["fedper", "local_only"]
-    )
+    has_cluster_fl = any(r.get("aggregator") == "cluster_fl" for r in study.get("runs", []))
+    methods = ["fedavg"] + [f"fedprox_mu{m}" for m in MU_VALUES] + ["fedper"]
+    if has_cluster_fl:
+        methods.append("cluster_fl")
+    methods.append("local_only")
 
     def avg_macro_f1(r: dict) -> float:
         return float(np.mean([r["client_metrics"][p]["f1_macro"] for p in PROTOCOLS]))
@@ -336,6 +345,7 @@ def fig4_tradeoff(study: dict, by_seed_method: dict) -> str:
         "fedprox_mu0.05": (-0.012, 0.008),
         "fedprox_mu0.1": (-0.012, -0.014),
         "fedper": (0.014, 0.006),
+        "cluster_fl": (0.014, 0.006),
         "local_only": (0.014, -0.031),
     }
     for m in methods:

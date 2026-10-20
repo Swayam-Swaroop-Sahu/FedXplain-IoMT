@@ -172,6 +172,8 @@ def main() -> int:
 
     # --- Derived blocks ---
     nf_labels = {"fedavg"} | {f"fedprox_mu{m}" for m in MU_VALUES} | {"fedper", "local_only"}
+    if any(r.get("aggregator") == "cluster_fl" for r in runs):
+        nf_labels.add("cluster_fl")
     nf = study.get("preliminary_noise_floor", {})
     for label in sorted(nf_labels):
         if label not in nf:

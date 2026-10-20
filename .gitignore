@@ -34,3 +34,8 @@ results/*.json
 
 # Logs
 *.log
+*.tex
+.DS_Store
+results/checkpoints/
+*.pth
+*.pt

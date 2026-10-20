@@ -166,6 +166,9 @@ def compute_noise_floor(
             r for r in runs_data if r["aggregator"] == "fedprox" and r["mu"] == mu
         ]
     method_runs["fedper"] = [r for r in runs_data if r["aggregator"] == "fedper"]
+    cluster_runs = [r for r in runs_data if r.get("aggregator") == "cluster_fl"]
+    if cluster_runs:
+        method_runs["cluster_fl"] = cluster_runs
     if local_only_runs:
         method_runs["local_only"] = local_only_runs
 
@@ -298,8 +301,36 @@ def build_divergence_summary(
             entry["noise_floor_seed_to_seed"] = noise_ref
         summary["local_only"] = entry
 
-    # Empty slot placeholder: replaced by real cluster_fl entries at merge time.
-    summary["cluster_fl"] = {"status": "slot empty - cluster_fl results pending"}
+    # Cluster-FL slot: populated when runs are present; placeholder otherwise.
+    cluster_runs = sorted(
+        [r for r in runs_data if r.get("aggregator") == "cluster_fl"],
+        key=lambda r: r["seed"],
+    )
+    if cluster_runs:
+        entry = {
+            "scope": cluster_runs[0].get(
+                "divergence_scope", "across cluster-personalized models"
+            ),
+        }
+        for run in cluster_runs:
+            entry[f"seed{run['seed']}"] = _pair_metrics(run)
+        if len(cluster_runs) >= 2:
+            by_seed = {r["seed"]: r for r in cluster_runs}
+            r42, r7 = by_seed.get(42, cluster_runs[0]), by_seed.get(7, cluster_runs[1])
+            noise_ref = {}
+            for pair in PAIR_LABELS:
+                m42 = _pair_metrics(r42)[pair]
+                m7 = _pair_metrics(r7)[pair]
+                noise_ref[pair] = {
+                    "jaccard_abs_diff": round(abs(_metric_or_zero(m42["jaccard"]) - _metric_or_zero(m7["jaccard"])), 4),
+                    "spearman_abs_diff": round(abs(_metric_or_zero(m42["spearman"]) - _metric_or_zero(m7["spearman"])), 4),
+                    "cosine_abs_diff": round(abs(_metric_or_zero(m42["cosine"]) - _metric_or_zero(m7["cosine"])), 4),
+                }
+            entry["noise_floor_seed_to_seed"] = noise_ref
+        summary["cluster_fl"] = entry
+    else:
+        # Empty slot placeholder: replaced by real cluster_fl entries at merge time.
+        summary["cluster_fl"] = {"status": "slot empty - cluster_fl results pending"}
 
     return summary
 

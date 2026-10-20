@@ -116,8 +116,9 @@ def _recompute_divergence_summary(study: dict, actions: list[str]) -> None:
     study["divergence_summary"] = build_divergence_summary(
         study.get("runs", []), study.get("local_only", [])
     )
-    actions.append("divergence_summary: built consolidated per-method x seed x pair block "
-                   "(cluster_fl placeholder: slot empty)")
+    cfl_status = "populated" if any(r.get("aggregator") == "cluster_fl" for r in study.get("runs", [])) else "slot empty"
+    actions.append(f"divergence_summary: built consolidated per-method x seed x pair block "
+                   f"(cluster_fl: {cfl_status})")
 
 
 def main() -> None:

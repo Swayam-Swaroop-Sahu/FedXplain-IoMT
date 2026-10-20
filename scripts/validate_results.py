@@ -307,9 +307,17 @@ def validate_results_file(results_path=STUDY_RESULTS_PATH) -> tuple[bool, list[s
 
     ds = study.get("divergence_summary", {})
     if "cluster_fl" not in ds:
-        errors.append("divergence_summary missing cluster_fl placeholder")
-    elif ds["cluster_fl"].get("status") != "slot empty - cluster_fl results pending":
-        errors.append(f"divergence_summary cluster_fl unexpected status: {ds['cluster_fl']}")
+        errors.append("divergence_summary missing cluster_fl")
+    else:
+        cfl = ds["cluster_fl"]
+        if "status" in cfl:
+            if cfl["status"] != "slot empty - cluster_fl results pending":
+                errors.append(f"divergence_summary cluster_fl unexpected status: {cfl}")
+        else:
+            for seed in SEEDS:
+                skey = f"seed{seed}"
+                if skey not in cfl:
+                    errors.append(f"divergence_summary.cluster_fl missing {skey}")
 
     return (len(errors) == 0, errors)
 

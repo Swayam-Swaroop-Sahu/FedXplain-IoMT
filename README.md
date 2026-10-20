@@ -11,7 +11,7 @@
 
 ---
 
-## 1. The Problem in Plain Language
+## 1. Problem Statement
 
 Hospitals cannot pool raw patient and device network traffic onto a central server due to strict healthcare privacy regulations (HIPAA, GDPR), making Federated Learning necessary for collaborative defense. However, modern medical facilities deploy devices operating across physically dissimilar communication protocols—such as high-throughput Wi-Fi telemetry monitors, lightweight MQTT bedside sensors, and short-range Bluetooth diagnostic peripherals. Forcing these structurally conflicting network behaviors into a single shared neural network creates an unseen failure mode: a global model may achieve acceptable accuracy numbers on paper while relying on completely disjointed or contradictory reasons to flag attacks on different wards. When clinicians and hospital security teams cannot rely on consistent decision logic across departments, automated network containment policies cannot be safely trusted.
 
@@ -19,7 +19,7 @@ Hospitals cannot pool raw patient and device network traffic onto a central serv
 
 ## 2. Key Findings
 
-> ### 📌 Headline Empirical Findings (Seeds 42 & 7)
+> ### Headline Empirical Findings (Seeds 42 & 7)
 >
 > - **No $\mu$ saves Bluetooth**: Under standard FedAvg, Bluetooth benign recall collapses to **0.3666** (seed 42) and **0.4238** (seed 7). Across the entire FedProx proximal sweep ($\mu \in \{0.001, 0.01, 0.05, 0.1\}$), proximal regularization makes the collapse strictly worse (**0.0073–0.2090**), flagging 97–99% of benign Bluetooth packets as attacks. Model sharing drives the collapse, and proximal anchoring deepens it.
 > - **Local-only outperforms all sharing on detection (0.9708 vs 0.7988 avg macro F1)**: Isolated models trained completely without federation achieve an average macro F1 of **0.9715** (seed 42) and **0.9702** (seed 7) with **0.9984 / 0.9990** Bluetooth benign recall. Training alone completely avoids the collapse and beats every tested federated sharing strategy (+0.1720 vs FedAvg, +0.0467 vs FedPer).
@@ -29,7 +29,7 @@ Hospitals cannot pool raw patient and device network traffic onto a central serv
 
 ---
 
-## 3. Method Lineup
+## 3. Federated Learning Methods
 
 | Method | What It Is | What It Tests | Status |
 |---|---|---|:---:|
@@ -37,7 +37,7 @@ Hospitals cannot pool raw patient and device network traffic onto a central serv
 | **FedProx** | Proximal regularization penalizing local client drift from global weights ($\mu \in \{0.001, 0.01, 0.05, 0.1\}$). | Tests whether penalizing parameter divergence prevents explanatory drift or rescues minority protocol performance. | Completed |
 | **Local-only** | Isolated per-client training (30 epochs matching federated compute) with zero weight sharing. | Control baseline ("does federating help or hurt?") and empirical reference for heterogeneous clients. | Completed |
 | **FedPer** | Personalized FL sharing the 4-array trunk (45→64, 64→32) while keeping the 2-array head (32→1) private. | Tests whether personalizing output boundaries restores local calibration while maintaining trunk representation sharing. | Completed |
-| **Cluster-FL** | Clustered federated learning grouping structurally similar protocols into separate clusters. | Evaluates whether protocol-aware clustering achieves personalization without private head divergence. | *In progress (slot ready)* |
+| **Cluster-FL** | Clustered federated learning grouping structurally similar protocols into separate clusters. | Evaluates whether protocol-aware clustering achieves personalization without private head divergence. | Completed |
 
 ---
 
@@ -200,8 +200,7 @@ The master payload `results/study_results.json` serves as the single source of t
   - `full_metric_spread`: Absolute difference in Spearman $\rho$ and cosine similarity between seeds.
 - **`divergence_summary`** (`dict`): Consolidated matrix summarizing all methods, seeds, and client pairs with noise floor spreads, including the graceful placeholder for `"cluster_fl"`.
 
-### Cluster-FL Teammate Drop-in Specification
-To merge Cluster-FL results, a teammate drops a JSON array at `results/cluster_fl_results.json` adhering to `CLUSTER_FL_RUN_SCHEMA` (in `src/run_study_experiments.py`):
+### Cluster-FL Specification
 ```json
 [
   {
@@ -221,7 +220,7 @@ To merge Cluster-FL results, a teammate drops a JSON array at `results/cluster_f
   }
 ]
 ```
-Then run `python src/merge_cluster_fl.py`. No additional codebase changes are required.
+Then run `python src/merge_cluster_fl.py`.
 
 ---
 

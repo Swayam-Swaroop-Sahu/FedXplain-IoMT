@@ -1,0 +1,386 @@
+{
+  "method": "Cluster-FL",
+  "seed": 42,
+  "config": {
+    "warmup_rounds": 5,
+    "cluster_rounds": 5,
+    "total_rounds": 10,
+    "local_epochs": 3,
+    "data_dir": "data/study",
+    "clients": [
+      "wifi",
+      "mqtt",
+      "bluetooth"
+    ],
+    "clustering_method": "two-way partition minimizing maximum cross-cluster cosine similarity of final warm-up local updates"
+  },
+  "clusters": {
+    "0": [
+      "wifi"
+    ],
+    "1": [
+      "mqtt",
+      "bluetooth"
+    ]
+  },
+  "client_cluster": {
+    "wifi": 0,
+    "mqtt": 1,
+    "bluetooth": 1
+  },
+  "update_cosine_similarity": {
+    "wifi": {
+      "wifi": 1.0,
+      "mqtt": -0.2688746008091061,
+      "bluetooth": -0.15866621499383618
+    },
+    "mqtt": {
+      "wifi": -0.2688746008091061,
+      "mqtt": 1.0,
+      "bluetooth": 0.2504316350971547
+    },
+    "bluetooth": {
+      "wifi": -0.15866621499383618,
+      "mqtt": 0.2504316350971547,
+      "bluetooth": 1.0
+    }
+  },
+  "candidate_partitions": [
+    {
+      "clusters": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "max_cross_similarity": -0.15866621499383618,
+      "mean_cross_similarity": -0.21377040790147112
+    },
+    {
+      "clusters": [
+        [
+          "wifi",
+          "bluetooth"
+        ],
+        [
+          "mqtt"
+        ]
+      ],
+      "max_cross_similarity": 0.2504316350971547,
+      "mean_cross_similarity": -0.009221482855975682
+    },
+    {
+      "clusters": [
+        [
+          "wifi",
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "max_cross_similarity": 0.2504316350971547,
+      "mean_cross_similarity": 0.04588271005165927
+    }
+  ],
+  "warmup_history": [
+    {
+      "round": 1,
+      "update_norms": {
+        "wifi": 7.10918772854442,
+        "mqtt": 6.436854282875714,
+        "bluetooth": 5.012942734819929
+      }
+    },
+    {
+      "round": 2,
+      "update_norms": {
+        "wifi": 4.661619672524309,
+        "mqtt": 4.166257313679949,
+        "bluetooth": 3.235267514495939
+      }
+    },
+    {
+      "round": 3,
+      "update_norms": {
+        "wifi": 3.9743168747358153,
+        "mqtt": 3.82299590995556,
+        "bluetooth": 2.838615795462727
+      }
+    },
+    {
+      "round": 4,
+      "update_norms": {
+        "wifi": 4.169006249890908,
+        "mqtt": 3.534195589498418,
+        "bluetooth": 2.7988197797695293
+      }
+    },
+    {
+      "round": 5,
+      "update_norms": {
+        "wifi": 3.549034869269177,
+        "mqtt": 3.818441765050859,
+        "bluetooth": 2.587536266161164
+      }
+    }
+  ],
+  "cluster_history": [
+    {
+      "round": 1,
+      "clusters": {
+        "0": {
+          "clients": [
+            "wifi"
+          ],
+          "client_fit": {
+            "wifi": {
+              "n_train": 79994,
+              "fit_metrics": {
+                "loss": 0.01970932047009
+              }
+            }
+          }
+        },
+        "1": {
+          "clients": [
+            "mqtt",
+            "bluetooth"
+          ],
+          "client_fit": {
+            "mqtt": {
+              "n_train": 39997,
+              "fit_metrics": {
+                "loss": 0.05095233653155839
+              }
+            },
+            "bluetooth": {
+              "n_train": 13076,
+              "fit_metrics": {
+                "loss": 0.0592974902074539
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 2,
+      "clusters": {
+        "0": {
+          "clients": [
+            "wifi"
+          ],
+          "client_fit": {
+            "wifi": {
+              "n_train": 79994,
+              "fit_metrics": {
+                "loss": 0.020396598369050157
+              }
+            }
+          }
+        },
+        "1": {
+          "clients": [
+            "mqtt",
+            "bluetooth"
+          ],
+          "client_fit": {
+            "mqtt": {
+              "n_train": 39997,
+              "fit_metrics": {
+                "loss": 0.04628554398811608
+              }
+            },
+            "bluetooth": {
+              "n_train": 13076,
+              "fit_metrics": {
+                "loss": 0.05111350358454422
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 3,
+      "clusters": {
+        "0": {
+          "clients": [
+            "wifi"
+          ],
+          "client_fit": {
+            "wifi": {
+              "n_train": 79994,
+              "fit_metrics": {
+                "loss": 0.018801797797969103
+              }
+            }
+          }
+        },
+        "1": {
+          "clients": [
+            "mqtt",
+            "bluetooth"
+          ],
+          "client_fit": {
+            "mqtt": {
+              "n_train": 39997,
+              "fit_metrics": {
+                "loss": 0.04342800743318494
+              }
+            },
+            "bluetooth": {
+              "n_train": 13076,
+              "fit_metrics": {
+                "loss": 0.046663949991419394
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 4,
+      "clusters": {
+        "0": {
+          "clients": [
+            "wifi"
+          ],
+          "client_fit": {
+            "wifi": {
+              "n_train": 79994,
+              "fit_metrics": {
+                "loss": 0.017577118528421514
+              }
+            }
+          }
+        },
+        "1": {
+          "clients": [
+            "mqtt",
+            "bluetooth"
+          ],
+          "client_fit": {
+            "mqtt": {
+              "n_train": 39997,
+              "fit_metrics": {
+                "loss": 0.04137169928545035
+              }
+            },
+            "bluetooth": {
+              "n_train": 13076,
+              "fit_metrics": {
+                "loss": 0.04524230998113145
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "round": 5,
+      "clusters": {
+        "0": {
+          "clients": [
+            "wifi"
+          ],
+          "client_fit": {
+            "wifi": {
+              "n_train": 79994,
+              "fit_metrics": {
+                "loss": 0.019044484811354147
+              }
+            }
+          }
+        },
+        "1": {
+          "clients": [
+            "mqtt",
+            "bluetooth"
+          ],
+          "client_fit": {
+            "mqtt": {
+              "n_train": 39997,
+              "fit_metrics": {
+                "loss": 0.04016421376761168
+              }
+            },
+            "bluetooth": {
+              "n_train": 13076,
+              "fit_metrics": {
+                "loss": 0.04641983673943998
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "evaluation": {
+    "0": {
+      "wifi": {
+        "loss": 0.031446605920791626,
+        "n_test": 19999,
+        "f1": 0.9962977346278317,
+        "f1_binary": 0.9962977346278317,
+        "f1_macro": 0.9460731207734934,
+        "f1_weighted": 0.9926663134751054,
+        "accuracy": 0.9928496424821242,
+        "benign_precision": 0.9461538461538461,
+        "benign_recall": 0.8506224066390041,
+        "attack_precision": 0.9944183161920512,
+        "attack_recall": 0.9981842705955593,
+        "tn": 615,
+        "fp": 108,
+        "fn": 35,
+        "tp": 19241,
+        "n_benign": 723,
+        "n_attack": 19276
+      }
+    },
+    "1": {
+      "mqtt": {
+        "loss": 0.04238569363951683,
+        "n_test": 10000,
+        "f1": 0.9867407701468837,
+        "f1_binary": 0.9867407701468837,
+        "f1_macro": 0.9820942203198969,
+        "f1_weighted": 0.9833227680941522,
+        "accuracy": 0.9833,
+        "benign_precision": 0.9710222699221894,
+        "benign_recall": 0.9839586731919522,
+        "attack_precision": 0.9905946118284712,
+        "attack_recall": 0.9829167984814932,
+        "tn": 3619,
+        "fp": 59,
+        "fn": 108,
+        "tp": 6214,
+        "n_benign": 3678,
+        "n_attack": 6322
+      },
+      "bluetooth": {
+        "loss": 0.10728471726179123,
+        "n_test": 3270,
+        "f1": 0.9785472337222432,
+        "f1_binary": 0.9785472337222432,
+        "f1_macro": 0.9819339310511808,
+        "f1_weighted": 0.982530486910957,
+        "accuracy": 0.9825688073394495,
+        "benign_precision": 0.9760204081632653,
+        "benign_recall": 0.9947997919916797,
+        "attack_precision": 0.9923664122137404,
+        "attack_recall": 0.9651076466221232,
+        "tn": 1913,
+        "fp": 10,
+        "fn": 47,
+        "tp": 1300,
+        "n_benign": 1923,
+        "n_attack": 1347
+      }
+    }
+  }
+}
