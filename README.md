@@ -1,249 +1,238 @@
-# FedXplain-IoMT: Federated Learning & Explainable AI for Heterogeneous Medical IoT
+# FedXplain-IoMT: Diagnosing Cross-Protocol Explanation Divergence in Federated Intrusion Detection for Medical IoT
 
-[![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.14](https://img.shields.io/badge/Python-3.14.7-blue.svg)](https://www.python.org/)
 [![PyTorch 2.14](https://img.shields.io/badge/PyTorch-2.14.1-ee4c2c.svg)](https://pytorch.org/)
 [![Flower 1.39](https://img.shields.io/badge/Flower-1.39.0-gold.svg)](https://flower.ai/)
 [![SHAP 0.53](https://img.shields.io/badge/SHAP-0.53.0-brightgreen.svg)](https://shap.readthedocs.io/)
 [![Dataset: CICIoMT2024](https://img.shields.io/badge/Dataset-CICIoMT2024-purple.svg)](https://www.unb.ca/cic/datasets/iomt-dataset-2024.html)
-[![Dashboard: Streamlit](https://img.shields.io/badge/UI-Streamlit-red.svg)](https://streamlit.io/)
+[![Submission: IEEE Access](https://img.shields.io/badge/Submission-IEEE%20Access-orange.svg)](#citation)
 
-**FedXplain-IoMT** is an empirical research framework investigating **cross-client explanation divergence** in Federated Learning (FL) for Internet of Medical Things (IoMT) intrusion detection. While conventional federated evaluation focuses exclusively on global accuracy and F1 scores, FedXplain-IoMT evaluates whether a converged global model relies on fundamentally disjoint or consistent decision logic across hospital clients operating on heterogeneous physical network protocols (Wi-Fi, MQTT, Bluetooth). Using post-hoc feature attributions (SHAP) and multidimensional divergence metrics (Jaccard similarity, Spearman rank correlation, cosine similarity), this project provides quantitative and visual evidence of explanatory drift in privacy-preserving clinical device environments.
-
----
-
-## 1. Problem Statement
-
-Hospitals cannot pool raw patient and device network traffic onto a central server due to strict healthcare privacy regulations (HIPAA, GDPR), making Federated Learning necessary for collaborative defense. However, modern medical facilities deploy devices operating across physically dissimilar communication protocols—such as high-throughput Wi-Fi telemetry monitors, lightweight MQTT bedside sensors, and short-range Bluetooth diagnostic peripherals. Forcing these structurally conflicting network behaviors into a single shared neural network creates an unseen failure mode: a global model may achieve acceptable accuracy numbers on paper while relying on completely disjointed or contradictory reasons to flag attacks on different wards. When clinicians and hospital security teams cannot rely on consistent decision logic across departments, automated network containment policies cannot be safely trusted.
+**FedXplain-IoMT** is an empirical research framework investigating **cross-client explanation divergence** in Federated Learning (FL) for Internet of Medical Things (IoMT) intrusion detection, introducing cross-protocol explanation consistency as an essential evaluation axis because conventional global accuracy and macro F1 metrics obscure catastrophic localized client collapses.
 
 ---
 
-## 2. Key Findings
+## Key Findings
 
-> ### Headline Empirical Findings (Seeds 42 & 7)
->
-> - **No $\mu$ saves Bluetooth**: Under standard FedAvg, Bluetooth benign recall collapses to **0.3666** (seed 42) and **0.4238** (seed 7). Across the entire FedProx proximal sweep ($\mu \in \{0.001, 0.01, 0.05, 0.1\}$), proximal regularization makes the collapse strictly worse (**0.0073–0.2090**), flagging 97–99% of benign Bluetooth packets as attacks. Model sharing drives the collapse, and proximal anchoring deepens it.
-> - **Local-only outperforms all sharing on detection (0.9708 vs 0.7988 avg macro F1)**: Isolated models trained completely without federation achieve an average macro F1 of **0.9715** (seed 42) and **0.9702** (seed 7) with **0.9984 / 0.9990** Bluetooth benign recall. Training alone completely avoids the collapse and beats every tested federated sharing strategy (+0.1720 vs FedAvg, +0.0467 vs FedPer).
-> - **FedPer's measured trade-off position**: Personalizing the final output layer (keeping trunk shared) recovers **72.7%** (seed 42) and **77.9%** (seed 7) of the Bluetooth benign recall gap (reaching **0.8258 / 0.8721**) and retains **95.2%** of local-only's detection quality (**0.9241** two-seed mean avg macro F1), while preserving FedAvg-level cross-client explanation consistency ($\rho \ge 0.89$ vs FedAvg across all clients).
->
-> Full tabular results and publication figures are documented in [`docs/final_results.md`](docs/final_results.md).
+Evaluating federated models across heterogeneous physical communication protocols (Wi-Fi, MQTT, Bluetooth) reveals an acute failure mode: global aggregation drives minority-protocol benign classification to near-total failure, even while global detection metrics appear robust.
 
----
+### Benchmark Summary Table (Ground Truth)
 
-## 3. Federated Learning Methods
+All metrics report evaluations across held-out test partitions ($n=2$ random seeds $\{42, 7\}$) verified against `results/study_results.json`.
 
-| Method | What It Is | What It Tests | Status |
-|---|---|---|:---:|
-| **FedAvg** | Standard federated averaging aggregating full model weights sample-count-weighted each round. | Baseline shared-model detection accuracy and cross-client attribution divergence under heterogeneous protocols. | Completed |
-| **FedProx** | Proximal regularization penalizing local client drift from global weights ($\mu \in \{0.001, 0.01, 0.05, 0.1\}$). | Tests whether penalizing parameter divergence prevents explanatory drift or rescues minority protocol performance. | Completed |
-| **Local-only** | Isolated per-client training (30 epochs matching federated compute) with zero weight sharing. | Control baseline ("does federating help or hurt?") and empirical reference for heterogeneous clients. | Completed |
-| **FedPer** | Personalized FL sharing the 4-array trunk (45→64, 64→32) while keeping the 2-array head (32→1) private. | Tests whether personalizing output boundaries restores local calibration while maintaining trunk representation sharing. | Completed |
-| **Cluster-FL** | Clustered federated learning grouping structurally similar protocols into separate clusters. | Evaluates whether protocol-aware clustering achieves personalization without private head divergence. | Completed |
+| Method | Avg Macro F1 (Mean) | Wi-Fi F1 (Mean) | MQTT F1 (Mean) | Bluetooth F1 (Mean) | Bluetooth Benign Recall (Seed 42 / Seed 7 \| Mean) | Key Takeaway |
+|:---|:---:|:---:|:---:|:---:|:---:|:---|
+| **Centralized** (Ceiling) | 0.9792 | — | — | — | 0.9681 / 0.9692 \| **0.9687** | Pooled 10-epoch training upper bound |
+| **Local-Only** (Control) | 0.9708 | 0.9406 | 0.9828 | 0.9891 | 0.9984 / 0.9990 \| **0.9987** | Isolated per-client training; zero sharing |
+| **Cluster-FL** | 0.9665 | 0.9389 | 0.9777 | 0.9827 | 0.9906 / 0.9948 \| **0.9927** | Protocol clustering ({Wi-Fi: 0}, {MQTT, BT: 1}) |
+| **FedPer** | 0.9241 | 0.9387 | 0.9345 | 0.8990 | 0.8258 / 0.8721 \| **0.8489** | Shared trunk + private classification head |
+| **FedAvg** | 0.7988 | 0.9354 | 0.8314 | 0.6298 | 0.3666 / 0.4238 \| **0.3952** | Baseline FL; catastrophic Bluetooth collapse |
+| **FedProx** ($\mu=0.001$) | 0.7680 | 0.9242 | 0.9347 | 0.4451 | 0.2090 / 0.1092 \| **0.1591** | Proximal penalty initiates monotonic collapse |
+| **FedProx** ($\mu=0.01$) | 0.7179 | 0.9216 | 0.9027 | 0.3295 | 0.0364 / 0.0333 \| **0.0349** | Severe benign suppression |
+| **FedProx** ($\mu=0.05$) | 0.7017 | 0.9093 | 0.8759 | 0.3198 | 0.0192 / 0.0322 \| **0.0257** | Benign recall falls below 3% |
+| **FedProx** ($\mu=0.1$) | 0.6959 | 0.9022 | 0.8712 | 0.3143 | 0.0073 / 0.0343 \| **0.0208** | 97%–99% of benign packets falsely flagged |
 
----
+### Core Empirical Insights
 
-## 4. System Architecture
-
-![FedXplain-IoMT System Architecture](docs/system_architecture.png)
-
-### 6-Step End-to-End Pipeline
-
-1. **Data Ingestion & Schema Guardrails**: Network flow records from CICIoMT2024 (Wi-Fi, MQTT, Bluetooth) are ingested from CSVs, stripped of identifier/leakage columns (IPs, MACs, timestamps), and validated against the strict 45-feature schema.
-2. **Stratified Split & Scaling**: Partitions are divided 80/20 with label stratification (`stratify=y`). A `StandardScaler` is fitted strictly on training data and applied to test data to prevent data snooping.
-3. **Federated Optimization**: Clients execute mini-batch SGD on PyTorch models over 10 communication rounds using Flower/custom loops under selected aggregation methods (FedAvg, FedProx, FedPer, or Local-only control).
-4. **Post-Hoc Attribution (SHAP)**: Converged global or personalized models are explained on held-out attack samples using `shap.DeepExplainer` with 100 protocol-specific benign samples as background reference.
-5. **Divergence Quantification**: Attributions are evaluated pairwise across clients using Top-5 Jaccard overlap, Spearman rank correlation ($\rho$), and cosine similarity on full 45-dimensional mean-$|\text{SHAP}|$ vectors.
-6. **Interactive Dashboard**: Experiment payloads are validated and rendered in a 5-tab BCG-style Streamlit dashboard (`app.py`) for comparative analysis, noise floor calibration, and visual reporting.
+1. **Catastrophic Bluetooth Benign Recall Collapse under FedAvg**: Standard FedAvg degrades Bluetooth benign recall from 0.9987 (Local-only) down to **0.3666** (seed 42) and **0.4238** (seed 7), averaging 0.3952. Over 60% of legitimate Bluetooth medical traffic is falsely flagged as malicious attacks, dropping Bluetooth macro F1 to 0.6298 and overall average macro F1 to 0.7988.
+2. **Monotonic Failure of FedProx Proximal Regularization**: Sweeping proximal penalty $\mu \in \{0.001, 0.01, 0.05, 0.1\}$ does not alleviate client drift; it monotonically deepens the collapse. At $\mu=0.1$, Bluetooth benign recall plummets to **0.0073** (seed 42) and **0.0343** (seed 7). Proximal anchoring tightly binds the Bluetooth client's parameters to the global model, which is dominated by majority Wi-Fi gradients (79,994 training flows, 96.4% attack), effectively suppressing minority benign representations.
+3. **SHAP Explanation Diagnosis (Calibration vs. Representation)**: Post-hoc attribution using `shap.DeepExplainer` reveals that the collapse is an **output calibration failure**, not a representation divergence. Cross-client feature attribution rank correlation remains exceptionally strong: the Spearman correlation between FedPer and FedAvg feature importance vectors on the Bluetooth client is **$\rho = 0.9888$** across both seeds (and $\ge 0.8856$ across all clients). Both models leverage identical underlying feature importance rankings; however, shared output layer weights shift the classification decision threshold toward the majority attack class.
+4. **FedPer Restores Local Calibration**: By decoupling the model into a shared representation trunk (layers 1–2, 4 parameter arrays) and a personalized classification head (layer 3, 2 parameter arrays), FedPer recovers **72.7%** (seed 42) and **77.9%** (seed 7) of the lost Bluetooth benign-recall gap (reaching 0.8258 / 0.8721). FedPer achieves **0.9241** average macro F1 (95.2% of the local-only ceiling) while maintaining high cross-client explanation consistency ($\rho \ge 0.88$ against FedAvg).
+5. **Cluster-FL Macro-Segregation**: Segregating clients into protocol-aligned clusters ({Wi-Fi: 0}, {MQTT: 1, Bluetooth: 1}) completely prevents inter-protocol gradient conflict, attaining **0.9665** average macro F1 and **0.9927** Bluetooth benign recall.
 
 ---
 
-## 5. Repository Map
+## Quickstart
 
-```
-FedXplain-IoMT/
-├── app.py                              # Interactive 5-tab Streamlit research dashboard
-├── requirements.txt                    # Pinned package dependencies for Python 3.14
-├── README.md                           # Master front-door documentation
-├── data/
-│   ├── README.md                       # CICIoMT2024 dataset documentation
-│   ├── poc/                            # Sampled POC subsets (~10k rows total)
-│   │   ├── bluetooth_poc.csv
-│   │   ├── mqtt_poc.csv
-│   │   └── wifi_poc.csv
-│   └── study/                          # Full study partitions (~166k rows total)
-│       ├── bluetooth_study.csv         # 16,346 rows (13,076 train / 3,270 test)
-│       ├── mqtt_study.csv              # 49,997 rows (39,997 train / 10,000 test)
-│       └── wifi_study.csv              # 99,993 rows (79,994 train / 19,999 test)
-├── docs/
-│   ├── agent_fix_report.md             # Engineering history & environment pinning notes
-│   ├── final_results.md                # Comprehensive result tables and figures
-│   ├── poc_summary.md                  # Preliminary pilot summary report
-│   ├── qa_findings.md                  # Formal QA correctness audit findings & evidence
-│   ├── system_architecture.png         # Publication architecture diagram
-│   └── ui_guide.md                     # Dashboard UI structure and presentation guide
-├── figures/                            # Publication-quality 300-DPI PNG figures
-│   ├── fig1_detection_macro_f1.png     # Per-client detection quality by method
-│   ├── fig2_spearman_divergence_heatmap.png # Cross-client Spearman agreement & noise floor
-│   ├── fig3_bluetooth_mu_sweep.png     # Bluetooth benign recall vs FedProx mu
-│   └── fig4_tradeoff_scatter.png       # Detection quality vs explanation consistency
-├── models/                             # Saved PyTorch model checkpoints (.pth) [gitignored]
-├── results/
-│   ├── cluster_fl_results.json         # Drop-in path for teammate's Cluster-FL runs (pending)
-│   ├── divergence_report.md            # POC FedAvg divergence report
-│   ├── divergence_report_fedprox.md    # POC FedProx divergence report
-│   ├── fedavg_vs_fedprox_comparison.md # POC comparative analysis
-│   ├── shap_*.png                      # Individual SHAP attribution plots
-│   └── study_results.json              # Master JSON payload (single source of truth)
-├── scripts/
-│   ├── audit_results.py                # Completeness matrix validator (exit 0 on pass)
-│   ├── backfill_completions.py         # Idempotent derived-key backfiller
-│   ├── make_figures.py                 # Regenerates all 4 publication figures from JSON
-│   ├── test_dashboard.py               # Streamlit AppTest headless verification script
-│   └── validate_results.py             # Schema & value-range validator (exit 0 on pass)
-└── src/
-    ├── __init__.py
-    ├── centralized.py                  # Pooled data centralized baseline benchmark
-    ├── client.py                       # Flower NumPyClient with proximal regularization
-    ├── config.py                       # Centralized experiment hyperparameters
-    ├── explain.py                      # SHAP DeepExplainer & divergence calculation
-    ├── explain_prox.py                 # FedProx explainability wrapper
-    ├── merge_cluster_fl.py             # Merge utility for teammate Cluster-FL runs
-    ├── model.py                        # IoMTMLP 3-layer neural network architecture
-    ├── run_federated.py                # FedAvg orchestration runner
-    ├── run_federated_prox.py           # FedProx orchestration runner
-    ├── run_fedper.py                   # FedPer (personalized FL) orchestration runner
-    ├── run_local_only.py               # Local-only (no sharing) control baseline
-    ├── run_study_experiments.py        # Master suite orchestrator (centralized + FL + local + SHAP)
-    └── utils.py                        # Data ingestion, scaling, caching & 45-feature guardrails
-```
+### 1. Installation
 
----
+Set up a Python 3.14 environment (tested on Python 3.14.7, 64-bit CPU) and install dependencies:
 
-## 6. Reproduction Guide
-
-Follow these exact steps to reproduce the environment, experiments, and results:
-
-### Step 1: Clone Repository & Verify Python Environment
-Ensure **Python 3.14** (tested on 3.14.7, 64-bit CPU):
-```bash
-git clone https://github.com/Swayam-Swaroop-Sahu/FedXplain-IoMT.git
-cd FedXplain-IoMT
-python --version
-# Expected: Python 3.14.x
-```
-
-### Step 2: Install Pinned Dependencies
-Install the exact pinned dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-*Key pinned versions*: `torch==2.14.1`, `flwr==1.39.0`, `shap==0.53.0`, `scikit-learn==1.9.1`, `pandas==3.0.6`, `scipy==1.18.1`, `streamlit==1.65.0`, `plotly==7.1.0`.
 
-### Step 3: Run Master Experiment Suite
-Execute the full experimental suite (centralized baseline + 10 federated runs + 2 local-only runs + 2 FedPer runs + SHAP pipeline):
+*Core pinned packages*: `torch==2.14.1`, `flwr==1.39.0`, `shap==0.53.0`, `scikit-learn==1.9.1`, `pandas==3.0.6`, `scipy==1.18.1`, `streamlit==1.65.0`, `plotly==7.1.0`.
+
+### 2. Launch the Research Dashboard
+
+FedXplain-IoMT provides an offline, interactive Streamlit dashboard for exploring results, attributions, and figures:
+
 ```bash
-python -m src.run_study_experiments
+python -m streamlit run app.py
 ```
-*Expected Runtime*: Approximately **75 minutes** on modern multi-core CPU.  
-*Environment note*: Minor numerical differences ($\le \pm 0.1$ macro F1) can occur across different operating system BLAS/MKL builds (as documented in `docs/agent_fix_report.md`).
 
-### Step 4: Verify Results Integrity & Completeness
-Run the automated QA validators to confirm schema compliance and matrix completeness:
+*Note: Use `python -m streamlit run app.py` rather than running bare `python app.py` to ensure proper Streamlit execution context.*
+
+### 3. Running Experiment Modules Directly
+
+Individual learning baselines can be executed directly from the repo root:
+
+- **Centralized Ceiling Benchmark**:
+  ```bash
+  python src/centralized.py
+  ```
+- **Standard Federated Averaging (FedAvg)**:
+  ```bash
+  python src/run_federated.py
+  ```
+- **Proximal Regularized FL (FedProx)**:
+  ```bash
+  python src/run_federated_prox.py
+  ```
+- **Personalized Federated Learning (FedPer)**:
+  ```bash
+  python src/run_fedper.py
+  ```
+- **Isolated Local-Only Control**:
+  ```bash
+  python src/run_local_only.py
+  ```
+- **Full Master Suite Execution**:
+  ```bash
+  python -m src.run_study_experiments
+  ```
+
+---
+
+## Repository Structure
+
+```
+FedXplain-IoMT/
+├── app.py                          # Offline interactive 5-tab Streamlit research dashboard
+├── access.tex                      # IEEE Access journal article LaTeX source
+├── requirements.txt                # Pinned package dependencies (Python 3.14.7)
+├── README.md                       # Master project documentation
+├── data/
+│   ├── README.md                   # Dataset partition documentation and provenance
+│   ├── poc/                        # Sampled POC subsets (~10k rows total)
+│   └── study/                      # Full study partitions (~166k rows total)
+│       ├── wifi_study.csv          # Wi-Fi partition (99,993 rows; 45 features + label)
+│       ├── mqtt_study.csv          # MQTT partition (49,997 rows; 45 features + label)
+│       └── bluetooth_study.csv     # Bluetooth partition (16,346 rows; 45 features + label)
+├── docs/
+│   ├── agent_fix_report.md         # Historical QA audit log & environment divergence notes
+│   ├── final_results.md            # Comprehensive tabular results and figure catalog
+│   ├── qa_findings.md              # Systematic metric correctness audit evidence
+│   └── system_architecture.png     # End-to-end framework architecture diagram
+├── figures/
+│   ├── fig1_detection_macro_f1.png          # Per-client detection quality across methods
+│   ├── fig2_spearman_divergence_heatmap.png # Cross-client Spearman rank correlation heatmap
+│   ├── fig3_bluetooth_mu_sweep.png          # Bluetooth benign recall vs FedProx mu
+│   └── fig4_tradeoff_scatter.png            # Detection performance vs explanation consistency
+├── results/
+│   ├── study_results.json          # Master JSON payload (single source of truth)
+│   ├── cluster_fl_results.json     # Teammate Cluster-FL payload for merging
+│   └── shap_*.png                  # Pre-computed SHAP summary plots
+├── scripts/
+│   ├── audit_results.py            # Completeness matrix validator across all runs
+│   ├── backfill_completions.py     # Idempotent derived-key backfill utility
+│   ├── make_figures.py             # Generates all four 300-DPI publication figures
+│   ├── test_dashboard.py           # Headless Streamlit AppTest verification suite
+│   └── validate_results.py         # Schema, value-range, and type-assertion validator
+└── src/
+    ├── __init__.py                 # Package marker
+    ├── centralized.py              # Centralized pooled-data training baseline (ceiling)
+    ├── client.py                   # Flower client with custom local training and FedProx loss
+    ├── config.py                   # Central hyperparameter configuration and constants
+    ├── explain.py                  # SHAP DeepExplainer orchestration and metric computation
+    ├── explain_prox.py             # FedProx explainability wrapper
+    ├── merge_cluster_fl.py         # Utility to merge Cluster-FL into master results JSON
+    ├── model.py                    # IoMTMLP PyTorch architecture definition
+    ├── run_federated.py            # FedAvg experiment runner
+    ├── run_federated_prox.py       # FedProx experiment runner across mu sweep
+    ├── run_fedper.py               # FedPer personalized head experiment runner
+    ├── run_local_only.py           # Local-only isolated client runner (control baseline)
+    ├── run_study_experiments.py    # Master batch orchestrator for all methods and seeds
+    └── utils.py                    # Data ingestion, train/test split, scaling & guardrails
+```
+
+---
+
+## Reproducibility & Verification
+
+The repository enforces automated verification gates to ensure complete reproducibility and schema integrity. All five gate scripts must exit with return code `0`:
+
+| Script | Purpose & Verification Scope | Pass Condition |
+|:---|:---|:---:|
+| `scripts/validate_results.py` | Validates JSON schema structure, data types, metric ranges $[0, 1]$, and asserts required keys for all federated and local runs. | `Exit 0 (PASS)` |
+| `scripts/audit_results.py` | Confirms experimental completeness across all methods (Centralized, FedAvg, FedProx, FedPer, Cluster-FL, Local-only), seeds $\{42, 7\}$, and pairwise client attribution matrices. | `Exit 0 (PASS)` |
+| `scripts/test_dashboard.py` | Executes headless Streamlit `AppTest` simulation, verifying that all tabs, selector widgets, Plotly figures, and metric containers render without exceptions. | `Exit 0 (PASS)` |
+| `scripts/make_figures.py` | Re-generates all four 300-DPI publication-quality PNG figures (`fig1`–`fig4`) directly from `results/study_results.json`. | `Exit 0 (PASS)` |
+| `scripts/backfill_completions.py` | Idempotently populates derived summary statistics, pairwise divergence spreads, and noise-floor comparisons without mutating existing raw results. | `Exit 0 (PASS)` |
+
+To run the complete gate pipeline in PowerShell or Bash:
+
 ```bash
 python scripts/validate_results.py
 python scripts/audit_results.py
-```
-Both commands must exit with status code 0 (`PASS`).
-
-### Step 5: Regenerate Publication Figures
-Regenerate all 4 figures from the results file:
-```bash
+python scripts/test_dashboard.py
 python scripts/make_figures.py
 ```
-Output files will be written to `figures/`.
 
-### Step 6: Launch the Research Dashboard
-Launch the offline interactive dashboard:
-```bash
-streamlit run app.py
+---
+
+## Dataset: CICIoMT2024
+
+The study benchmarks on the **CICIoMT2024** dataset (Canadian Institute for Cybersecurity, University of New Brunswick), captured from 40 real IoMT devices. The study partitions cover **19 distinct attack label values** (13 Wi-Fi, 5 MQTT, 1 Bluetooth) spanning DoS, DDoS, Reconnaissance, ARP spoofing, and protocol-specific exploits (MQTT flood/malformed-data attacks and a Bluetooth DoS class).
+
+### Protocol Partition Statistics
+
+Each protocol represents an isolated clinical network silo. Partitions use an 80/20 stratified train/test split (`stratify=y`):
+
+| Protocol Silo | File | Total Flows | Train Flows (80%) | Test Flows (20%) | Attack Flows (%) | Benign Flows (%) | Notes |
+|:---|:---|:---:|:---:|:---:|:---:|:---|:---|
+| **Wi-Fi** | `wifi_study.csv` | 99,993 | 79,994 | 19,999 | 96.4% | 3.6% | High-throughput clinical telemetry |
+| **MQTT** | `mqtt_study.csv` | 49,997 | 39,997 | 10,000 | 63.2% | 36.8% | Bedside monitors & telemetry brokers |
+| **Bluetooth** | `bluetooth_study.csv` | 16,346 | 13,076 | 3,270 | 41.2% | 58.8% | Extracted from HCI H4 `.pcap`; non-applicable TCP/IP flags zeroed |
+| **Total** | — | **166,336** | **133,067** | **33,269** | — | — | Exactly 45 flow features asserted |
+
+---
+
+## Architectural Guardrails & Rules
+
+The codebase enforces four strict technical invariants:
+
+1. **45-Feature Assertion**: Every data partition must contain exactly 45 network flow features (stripped of non-generalizable network identifiers such as IP addresses, MAC addresses, and timestamps). Any missing or superfluous column triggers an immediate assertion failure in `src/utils.py`.
+2. **Train-Only Scaler Fitting**: `StandardScaler` is fitted strictly on the training partition ($80\%$) and applied via `.transform()` to the test partition ($20\%$). Fitting scalers on pooled or test data is strictly prohibited to prevent data snooping.
+3. **Offline JSON-Driven Dashboard**: The Streamlit user interface (`app.py`) functions purely as a visualization renderer reading from `results/study_results.json`. It never triggers background training, SHAP computations, or model inference at render time.
+4. **Strict Results Schema**: All experiment scripts write directly to or merge with `results/study_results.json` adhering to the schema checked by `validate_results.py`. Hand-edited or unverifiable metrics are rejected.
+
+---
+
+## Hardware & Environment Specifications
+
+- **Python Version**: 3.14.7 (64-bit)
+- **Deep Learning Framework**: PyTorch 2.14.1 (CPU-only execution)
+- **Federated Orchestration**: Flower 1.39.0
+- **Explainability**: SHAP 0.53.0 (`shap.DeepExplainer`)
+- **Seeds Tested**: $n=2$ seeds ($\text{seed} \in \{42, 7\}$)
+- **Cross-Platform Numerical Note**: As documented in `docs/agent_fix_report.md`, minor floating-point divergence ($\le \pm 0.1$ macro F1) can manifest across disparate OS/BLAS/MKL linear algebra implementations due to differences in CPU SIMD vectorization. All claims in this repository are directional and evaluated against calibrated seed-to-seed noise floors.
+
+---
+
+## Citation
+
+If you utilize this codebase, the experimental protocol, or the processed CICIoMT2024 partitions, please cite:
+
+```bibtex
+@software{sahu2026fedxplain,
+  author    = {Sahu, Swayam Swaroop},
+  title     = {FedXplain-IoMT: Diagnosing Cross-Protocol Explanation Divergence in Federated Intrusion Detection for Medical IoT},
+  year      = {2026},
+  url       = {https://github.com/Swayam-Swaroop-Sahu/FedXplain-IoMT}
+}
 ```
-Dashboard will open at `http://localhost:8501`.
 
----
+Please also cite the underlying CICIoMT2024 benchmark:
 
-## 7. Results File Schema (`results/study_results.json`)
-
-The master payload `results/study_results.json` serves as the single source of truth for the dashboard, reports, and figure generation. Below is the key-by-key structure:
-
-- **`run_metadata`** (`dict`): Experiment metadata including `n_rounds` (10), `n_local_epochs` (3), `data_dir` ("data/study"), `seeds` ([42, 7]), `mu_values` ([0.001, 0.01, 0.05, 0.1]), and execution timestamp.
-- **`centralized`** (`dict`): Pooled dataset reference metrics for seed 42 (`f1_macro`, `f1_binary`, `accuracy`, `benign_recall`, `confusion_matrix`, etc.).
-- **`centralized_by_seed`** (`dict`): Mapping from seed string (`"42"`, `"7"`) to pooled reference evaluation metrics.
-- **`poc_baseline_reference`** (`dict`): Historical small-scale POC benchmark figures for reference.
-- **`runs`** (`list[dict]`): List of 12 federated experiment objects (10 FedAvg/FedProx runs + 2 FedPer runs). Each entry contains:
-  - `seed` (`int`): Random seed (42 or 7).
-  - `aggregator` (`str`): `"fedavg"`, `"fedprox"`, or `"fedper"`.
-  - `mu` (`float | None`): Proximal regularization coefficient (or `None`).
-  - `client_metrics` (`dict`): Per-protocol metrics for `"wifi"`, `"mqtt"`, and `"bluetooth"`, each with `f1_macro`, `f1_binary`, `accuracy`, `benign_precision`, `benign_recall`, `attack_precision`, `attack_recall`, and confusion counts `tn, fp, fn, tp`.
-  - `shap_top10_per_client` (`dict`): List of 10 `[feature_name, mean_abs_shap]` pairs per client.
-  - `shap_top5_per_client` (`dict`): List of top 5 feature name strings per client.
-  - `shap_full_vectors_per_client` (`dict`): Complete 45-feature vectors per client (`"feature_names"` and `"values"`).
-  - `jaccard_pairwise` (`dict`): Top-5 Jaccard overlap for `"wifi-mqtt"`, `"wifi-bluetooth"`, and `"mqtt-bluetooth"`.
-  - `divergence_full` (`dict`): Full-vector Spearman $\rho$ and cosine similarity per pair.
-  - `shared_features` (`dict`): Shared top-5 feature names per pair.
-  - `avg_macro_f1` (`float`, FedPer only): Mean macro F1 across the 3 clients.
-  - `fedper_vs_fedavg` (`dict`, FedPer only): Client-by-client comparison of FedPer attributions vs FedAvg.
-  - `fedper_vs_local_only` (`dict`, FedPer only): Client-by-client comparison of FedPer attributions vs Local-only.
-- **`local_only`** (`list[dict]`): List of local-only isolated runs for seeds 42 and 7 (same metric and attribution schema as federated runs).
-- **`local_vs_global`** (`dict`): Comparison of local-only explanations vs global FedAvg explanations for seeds 42 and 7 (`"top5_jaccard"`, `"spearman"`, `"cosine"` per protocol).
-- **`preliminary_noise_floor`** (`dict`): Seed-to-seed stability metrics for each method:
-  - `per_client_top5_stability`: Top-5 agreement between seed 42 and seed 7 per protocol.
-  - `pairwise_divergence_spread`: Absolute difference between seed 42 and seed 7 Jaccard values.
-  - `full_metric_spread`: Absolute difference in Spearman $\rho$ and cosine similarity between seeds.
-- **`divergence_summary`** (`dict`): Consolidated matrix summarizing all methods, seeds, and client pairs with noise floor spreads, including the graceful placeholder for `"cluster_fl"`.
-
-### Cluster-FL Specification
-```json
-[
-  {
-    "aggregator": "cluster_fl",
-    "seed": 42,
-    "mu": null,
-    "clusters": {"wifi": 0, "mqtt": 0, "bluetooth": 1},
-    "client_metrics": { ... },
-    "avg_macro_f1": 0.9250,
-    "shap_top10_per_client": { ... },
-    "shap_top5_per_client": { ... },
-    "shap_full_vectors_per_client": { ... },
-    "jaccard_pairwise": { ... },
-    "divergence_full": { ... },
-    "shared_features": { ... },
-    "divergence_scope": "across cluster-personalized models"
-  }
-]
+```bibtex
+@article{dadkhah2024towards,
+  author    = {Dadkhah, Sajjad and Mahdikhani, Hamid and Danso, Philip K. and Zohourian, Amirhossein and Truong, Kevin A. and Ghorbani, Ali A.},
+  title     = {Towards the Development of a Realistic Multidimensional IoMT Dataset for Machine Learning-Based Intrusion Detection},
+  journal   = {IEEE Access},
+  volume    = {12},
+  pages     = {31718--31733},
+  year      = {2024},
+  doi       = {10.1109/ACCESS.2024.3371077}
+}
 ```
-Then run `python src/merge_cluster_fl.py`.
-
----
-
-## 8. Known Limitations
-
-1. **Two Random Seeds ($n = 2$)**: All claims in this benchmark are directional rather than formal statistical inferences. While seed spreads and noise floors are explicitly quantified, variance bounds represent min-max ranges rather than standard deviations.
-2. **Binary Classification Focus**: Models are evaluated on binary intrusion detection (attack vs benign). Attack granularity (e.g., distinguishing DDoS-SYN from DDoS-UDP or MQTT Connect Flood) is not evaluated.
-3. **Dataset Scope**: The study is scoped to the Canadian Institute for Cybersecurity CICIoMT2024 flow benchmark. Physical IoT device constraints (embedded MCU RAM, CPU thermal throttling) are simulated logically rather than tested on bare metal.
-4. **Environment Wobble ($\pm 0.1$)**: Disparate PyTorch, BLAS, and NumPy compilation builds on different OS architectures can introduce slight floating-point variations in local SGD convergence trajectories.
-
----
-
-## 9. Project Roadmap
-
-- [ ] **Phase 1: Cluster-FL Drop-in Port**: Merge teammate Cluster-FL runs into `results/cluster_fl_results.json` and validate against the divergence summary.
-- [ ] **Phase 2: Advanced Federated Aggregators**: Benchmark SCAFFOLD (control variates for client drift), FedNova (normalized averaging for heterogeneous epochs), and FedOpt (adaptive server momentum).
-- [ ] **Phase 3: Client Partition Scale-up**: Transition from 3 physical protocol silos to $K \ge 10$ virtual hospital clinic subnets with non-IID protocol distributions.
-- [ ] **Phase 4: Full Seed Calibration**: Scale evaluation from 2 pilot seeds to 10 random seeds to establish statistical significance testing (p-values, 95% confidence intervals).
-
----
-
-## 10. Citation & Attribution
-
-If you utilize this framework or the extracted CICIoMT2024 partitions, please cite:
-- **CICIoMT2024 Dataset**: Canadian Institute for Cybersecurity (CIC), University of New Brunswick.
-- **Repository**: [Swayam-Swaroop-Sahu/FedXplain-IoMT](https://github.com/Swayam-Swaroop-Sahu/FedXplain-IoMT)

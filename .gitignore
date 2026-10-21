@@ -32,10 +32,28 @@ results/*.png
 results/*.json
 !results/study_results.json
 
-# Logs
-*.log
-*.tex
-.DS_Store
+# Checkpoints and temporary files
 results/checkpoints/
 *.pth
 *.pt
+.DS_Store
+
+# LaTeX and paper assets (kept local for Overleaf, excluded from git)
+*.tex
+*.pdf
+*.cls
+*.aux
+*.log
+*.out
+*.synctex.gz
+access.*
+overleaf_package/
+overleaf_package.zip
+Logo.png
+notaglineLogo.png
+bullet.png
+a1.png
+a2.png
+a3.png
+scratch_pdf_render/
+docs/submission_qa_report.md
