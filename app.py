@@ -128,7 +128,7 @@ def method_label(key: str) -> str:
     if key == "local_only":
         return "Local-only"
     if key == "cluster_fl":
-        return "Cluster-FL (pending)"
+        return "Cluster-FL"
     return key
 
 def method_run(data: Dict, key: str, seed: int) -> Optional[Dict]:
@@ -312,7 +312,13 @@ with st.sidebar:
         unsafe_allow_html=True
     )
     st.markdown("---")
-    st.markdown(f"**Cluster‑FL status**: {CLUSTER_FL_STATUS}")
+    _cluster_fl_merged = all(
+        find_run(data.get("runs", []), "cluster_fl", s) is not None for s in seeds_of(data)
+    )
+    _cluster_fl_status = (
+        "Merged — results in Tabs 1–3" if _cluster_fl_merged else CLUSTER_FL_STATUS
+    )
+    st.markdown(f"**Cluster‑FL status**: {_cluster_fl_status}")
 
 # ---- Header ----
 st.markdown('<div class="main-header">FedXplain-IoMT</div>', unsafe_allow_html=True)
@@ -430,7 +436,6 @@ with tab0:
         st.markdown(
             """
             - **Statistical significance**: n=2 seeds provide directional trends only; no p‑values or confidence intervals.
-            - **Cluster‑FL**: Awaiting teammate’s port (see Tab 4).
             - **Full noise floor**: Preliminary (n=2) only; more seeds needed for robust variance estimates.
             - **Other aggregators**: SCAFFOLD, FedNova, etc. remain for future work.
             """
@@ -925,7 +930,7 @@ with tab3:
     # Secondary chart: avg macro F1 per method
     st.markdown("#### Average macro F1 per method (two‑seed mean)")
     fig_f1 = go.Figure()
-    methods_for_f1 = ["fedavg"] + [f"fedprox_mu{m}" for m in fedprox_mus(data.get("runs", []))] + ["fedper", "local_only", "centralized"]
+    methods_for_f1 = ["fedavg"] + [f"fedprox_mu{m}" for m in fedprox_mus(data.get("runs", []))] + ["fedper", "cluster_fl", "local_only", "centralized"]
     x_labels = []
     y_means = []
     y_errors = []  # half spread for error bars
@@ -956,13 +961,15 @@ with tab3:
                 x_labels.append(method_label(method_key))
                 y_means.append(mean_val)
                 y_errors.append(spread / 2)
-    # Assign colors: FedAvg/FedProx → BLUE, FedPer → AMBER, Local‑only → TEAL, Centralized → GREY
+    # Assign colors: FedAvg/FedProx → BLUE, FedPer → AMBER, Cluster-FL → NAVY, Local‑only → TEAL, Centralized → GREY
     colors = []
     for label in x_labels:
         if label.startswith("FedProx") or label == "FedAvg":
             colors.append(BLUE)
         elif label == "FedPer":
             colors.append(AMBER)
+        elif label == "Cluster-FL":
+            colors.append(NAVY)
         elif label == "Local-only":
             colors.append(TEAL)
         else:  # Centralized
@@ -993,11 +1000,16 @@ with tab3:
     st.markdown('<div class="section-header">Written findings</div>', unsafe_allow_html=True)
     fedper_f1_means = [avg_macro_f1(r) for s in seeds if (r := method_run(data, "fedper", s))]
     fedper_f1_mean = sum(fedper_f1_means) / len(fedper_f1_means) if fedper_f1_means else 0.0
+    cluster_f1_means = [avg_macro_f1(r) for s in seeds if (r := method_run(data, "cluster_fl", s))]
+    cluster_f1_mean = sum(cluster_f1_means) / len(cluster_f1_means) if cluster_f1_means else 0.0
+    cluster_bt_means = [client_metric(r, "bluetooth", "benign_recall") for s in seeds if (r := method_run(data, "cluster_fl", s))]
+    cluster_bt_mean = sum(cluster_bt_means) / len(cluster_bt_means) if cluster_bt_means else 0.0
     st.markdown(
         f"""
         - **No μ saves Bluetooth**: Even the gentlest proximal term (μ=0.001) lowers Bluetooth benign recall below FedAvg ({fmt(client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall'))} → {fmt(client_metric(method_run(data, f'fedprox_mu{fedprox_mus(data.get("runs", []))[0]}', seeds_of(data)[0]), 'bluetooth', 'benign_recall'))}). By μ=0.1 the model flags ~97–99% of Bluetooth benign traffic as attack. Local‑only sits at {fmt(local_bt_min)} — the collapse is caused by *sharing*, and proximal anchoring only deepens it.
         - **Local‑only beats all sharing**: Local‑only achieves {fmt(local_mean)} avg macro F1 vs {fmt(best_shared_mean)} for the best shared model ({method_label(best_shared_label)}) — a {local_mean - best_shared_mean:+.4f} absolute gain. It matches the pooled centralized reference ({fmt(data.get('centralized_by_seed', {}).get('42', {}).get('f1_macro', 0.0))}/{fmt(data.get('centralized_by_seed', {}).get('7', {}).get('f1_macro', 0.0))}) within {abs(local_mean - 0.9792):.4f} points and beats it on Bluetooth benign recall ({fmt(local_bt_min)} vs {fmt(data.get('centralized_by_seed', {}).get('42', {}).get('bluetooth_benign_recall', data.get('centralized_by_seed', {}).get('42', {}).get('benign_recall', 0.0)))}/{fmt(data.get('centralized_by_seed', {}).get('7', {}).get('bluetooth_benign_recall', data.get('centralized_by_seed', {}).get('7', {}).get('benign_recall', 0.0)))}).
         - **FedPer’s trade‑off position**: FedPer recovers {fmt(fedper_bt_mean)} Bluetooth benign recall — {(fedper_bt_mean - client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall')) / (local_bt_min - client_metric(method_run(data, 'fedavg', seeds_of(data)[0]), 'bluetooth', 'benign_recall')) * 100:.0f}% of the FedAvg→local‑only gap. Its avg macro F1 ({fmt(fedper_f1_mean)}) is {fedper_f1_mean / local_mean * 100:.0f}% of local‑only, and cross‑client explanation similarity remains at FedAvg level (see Tab 2).
+        - **Cluster‑FL resolves the collapse structurally**: Protocol‑aligned clusters ({'{Wi‑Fi}'}, {'{MQTT, Bluetooth}'}) avoid inter‑protocol gradient conflict entirely — {fmt(cluster_f1_mean)} avg macro F1 with {fmt(cluster_bt_mean)} Bluetooth benign recall, without a private per‑client head.
         """
     )
 
@@ -1020,7 +1032,7 @@ with tab4:
           - **FedPer**: Shared trunk (first 4 parameter arrays) + private per‑client output head (last 2 arrays).
           - **Local‑only**: No sharing (control).
           - **Centralized**: Pooled data (upper reference).
-          - **Cluster‑FL**: Empty slot — awaiting teammate’s port.
+          - **Cluster‑FL**: Protocol‑aligned clusters ({Wi‑Fi}, {MQTT, Bluetooth}) — one shared model per cluster, no inter‑cluster sharing.
         """
     )
     st.markdown("---")
@@ -1036,6 +1048,7 @@ with tab4:
             - FedProx proximal term integration (μ=0.001, 0.01, 0.05, 0.1)
             - Diagnostic robustness check (Wi‑Fi class imbalance, weight norms)
             - Scaled‑up study run on `data/study` with 2‑seed pilot
+            - Cluster‑FL port (protocol‑aligned clusters, merged from `results/cluster_fl_results.json`)
             - Interactive Streamlit research dashboard (this app)
             """
         )
@@ -1046,30 +1059,46 @@ with tab4:
             - Full 10‑seed noise‑floor calibration & logarithmic μ sweep
             - Advanced aggregators (SCAFFOLD, FedNova, FedOpt)
             - Gradient‑based explainers (Integrated Gradients, etc.)
-            - Teammate’s Cluster‑FL port (see below)
             """
         )
 
     st.markdown("---")
-    st.markdown('<div class="section-header">Cluster‑FL status</div>', unsafe_allow_html=True)
-    st.info(
-        f"""
-        **Current status**: {CLUSTER_FL_STATUS}
-        **Expected schema**: See `CLUSTER_FL_RUN_SCHEMA` in `src/run_study_experiments.py` (requires `aggregator="cluster_fl"`, `mu=null`, `seed`, `clusters`, `client_metrics`, `avg_macro_f1`, `shap_*` keys, `jaccard_pairwise`, `divergence_full`, `shared_features`, `divergence_scope`, plus comparison sets `cluster_fl_vs_fedavg` and `cluster_fl_vs_local_only` — these are auto‑backfilled at merge by `enrich_cluster_fl_comparisons()`).
-        **Merge workflow**:
-        1. Teammate drops JSON array at `results/cluster_fl_results.json` following the schema.
-        2. Run `python src/merge_cluster_fl.py` from repo root.
-        3. The tool validates, enriches with missing comparison sets, and merges into `study_results.json` (replacing any existing `aggregator='cluster_fl'` entries).
-        No other keys in `studresults.json` are touched; no retraining is performed.
-        """
-    )
+    st.markdown('<div class="section-header">Cluster‑FL results</div>', unsafe_allow_html=True)
+    _cf_runs = [(s, method_run(data, "cluster_fl", s)) for s in seeds]
+    if all(r is not None for _, r in _cf_runs):
+        _cf_f1 = [avg_macro_f1(r) for _, r in _cf_runs]
+        _cf_bt = [client_metric(r, "bluetooth", "benign_recall") for _, r in _cf_runs]
+        _cf_mu = sum(_cf_f1) / len(_cf_f1)
+        _cf_bt_m = sum(_cf_bt) / len(_cf_bt)
+        st.success(
+            f"""
+            **Status**: Merged (2 seeds) — protocol‑aligned clusters {{Wi‑Fi}} and {{MQTT, Bluetooth}}, one shared model per cluster.
+
+            - **Avg macro F1**: {fmt(_cf_f1[0])} (seed 42) / {fmt(_cf_f1[1])} (seed 7) — two‑seed mean **{fmt(_cf_mu)}**
+            - **Bluetooth benign recall**: {fmt(_cf_bt[0])} / {fmt(_cf_bt[1])} — two‑seed mean **{fmt(_cf_bt_m)}**
+            - **Divergence scope**: {data.get('divergence_summary', {}).get('cluster_fl', {}).get('scope', 'across cluster‑personalized models')}
+            - **Provenance**: merged from `results/cluster_fl_results.json` via `src/merge_cluster_fl.py` (no retraining; no other keys touched).
+            """
+        )
+    else:
+        st.info(
+            f"""
+            **Current status**: {CLUSTER_FL_STATUS}
+            **Expected schema**: See `CLUSTER_FL_RUN_SCHEMA` in `src/run_study_experiments.py` (requires `aggregator="cluster_fl"`, `mu=null`, `seed`, `clusters`, `client_metrics`, `avg_macro_f1`, `shap_*` keys, `jaccard_pairwise`, `divergence_full`, `shared_features`, `divergence_scope`, plus comparison sets `cluster_fl_vs_fedavg` and `cluster_fl_vs_local_only` — these are auto‑backfilled at merge by `enrich_cluster_fl_comparisons()`).
+            **Merge workflow**:
+            1. Teammate drops JSON array at `results/cluster_fl_results.json` following the schema.
+            2. Run `python src/merge_cluster_fl.py` from repo root.
+            3. The tool validates, enriches with missing comparison sets, and merges into `study_results.json` (replacing any existing `aggregator='cluster_fl'` entries).
+            No other keys in `studresults.json` are touched; no retraining is performed.
+            """
+        )
 
     st.markdown("---")
     st.markdown('<div class="section-header">Seed‑to‑seed stability table (all aggregators)</div>', unsafe_allow_html=True)
     # Build stability table from preliminary_noise_floor for all aggregators
     prelim = data.get("preliminary_noise_floor", {})
-    agg_keys = ["fedavg"] + [f"fedprox_mu{m}" for m in [0.001, 0.01, 0.05, 0.1]] + ["fedper", "local_only"]
-    # Ensure we have entries for all aggregators in prelim; if not, compute from data? But spec says prelim covers all 7 non‑cluster aggregators.
+    agg_keys = ["fedavg"] + [f"fedprox_mu{m}" for m in [0.001, 0.01, 0.05, 0.1]] + ["fedper", "local_only", "cluster_fl"]
+    # prelim covers all non-centralized aggregators incl. cluster_fl (noise floor present in study_results.json)
     stab_rows = []
     for agg in agg_keys:
         key = agg.replace("fedprox_mu", "fedprox_mu")  # just in case

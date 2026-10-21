@@ -4,7 +4,7 @@
 
 **CICIoMT2024** — Canadian Institute for Cybersecurity, Internet of Medical Things 2024 dataset.
 - 40 IoMT devices across 3 protocols (Wi-Fi, MQTT, Bluetooth)
-- 18 attack types across 5 categories (DDoS, DoS, Recon, MQTT-specific, Spoofing)
+- 19 attack label values across 5 categories (DDoS, DoS, Recon, MQTT-specific, Spoofing) — see class tables below; the upstream CICIoMT2024 release documents 18 canonical attack profiles
 - Original dataset: ~8.8 million rows, ~2.2 GB of CSV data (plus ~30 GB of raw pcap files)
 
 ## Extracted Datasets

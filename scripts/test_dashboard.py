@@ -94,12 +94,14 @@ def main():
         else:
             print("[OK] No exceptions after setting cluster_fl.")
 
-        # Check that placeholder text appears in the app
+        # Check that cluster_fl renders as REAL results (not placeholder charts).
         placeholder_found = False
         placeholder_texts = [
             "slot empty - cluster_fl results pending",
             "in progress - port pending",
-            "Cluster-FL (pending)"
+            "Cluster-FL (pending)",
+            "Top‑10 SHAP values (placeholder)",
+            "Jaccard similarity heatmap (placeholder)",
         ]
         # Search in all elements' values and labels
         for el in at.main:
@@ -123,23 +125,11 @@ def main():
                     break
 
         if placeholder_found:
-            print("[OK] Found expected placeholder text for cluster_fl slot.")
+            print("[FAIL] Placeholder text found for cluster_fl, but results are merged "
+                  "(divergence_summary.cluster_fl is populated in study_results.json).")
+            sys.exit(1)
         else:
-            print("[WARN] Did not find expected placeholder text; but no exception is acceptable for this test.")
-            # We'll not fail on this since the spec says to assert placeholder OK via element values
-            # Let's do a more thorough search in the markdown elements
-            # Actually, the test design said: assert "slot empty" found in element values over at.main
-            # Let's do exactly that:
-            slot_empty_found = False
-            for el in at.main:
-                val = str(getattr(el, "value", ""))
-                if "slot empty" in val.lower():
-                    slot_empty_found = True
-                    break
-            if slot_empty_found:
-                print("[OK] Found 'slot empty' in element values.")
-            else:
-                print("[WARN] Could not find 'slot empty' in element values, but continuing as no exception occurred.")
+            print("[OK] No placeholder text for cluster_fl; real results render.")
 
     except Exception as e:
         print(f"[FAIL] Error during cluster_fl test: {e}")
@@ -152,8 +142,8 @@ def main():
     print("\n[SUCCESS] All tests passed:")
     print("  - 0 exceptions during initial run")
     print("  - 5 tabs present")
-    print("  - 0 exceptions after setting cluster_fl placeholder")
-    print("  - Placeholder text found (or at least no exception)")
+    print("  - 0 exceptions after setting cluster_fl")
+    print("  - cluster_fl renders real results (no placeholder)")
 
     # Exit with success
     sys.exit(0)
