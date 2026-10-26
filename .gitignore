@@ -26,11 +26,13 @@ data/_extract_temp/
 models/*.pth
 models/*.pkl
 models/*.h5
+models/generalization/
 
 # Results (regenerable)
 results/*.png
 results/*.json
 !results/study_results.json
+!results/generalization_results.json
 
 # Checkpoints and temporary files
 results/checkpoints/

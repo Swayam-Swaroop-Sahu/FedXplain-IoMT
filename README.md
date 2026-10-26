@@ -91,6 +91,49 @@ Individual learning baselines can be executed directly from the repo root:
   ```bash
   python -m src.run_study_experiments
   ```
+- **Zero-Day & Data-Scarcity Generalization Study** (writes only `results/generalization_results.json`):
+  ```bash
+  python -m src.run_generalization_study
+  ```
+  Or run it interactively, cell by cell, in `notebooks/generalization_study.ipynb` (needs `pip install ipykernel nbformat` in the same environment).
+
+---
+
+## Generalization Experiments: Zero-Day & Data Scarcity
+
+Local-only beats every federated method on each client's *own* test set (0.9708 vs 0.7988 avg macro F1 for FedAvg). These experiments test whether FL helps where Local-only should be weakest. They are run by `src/run_generalization_study.py`, which never modifies `results/study_results.json` or existing checkpoints. Models are loaded from `models/` if present; otherwise they are retrained with the study's seeds and settings into `models/generalization/`.
+
+### Experiment 1 — Zero-day (novel attack) detection
+
+Each target client's model is scored on attack types that never appear in its training data. These are taken from the other protocols' **held-out test splits** (same seed), so no FL model has seen those exact flows. Inputs are standardized with the target client's own scaler.
+
+**Control:** benign traffic from the same foreign protocols is scored the same way. *Detection margin* = unseen-attack recall − foreign-benign flag rate. A margin ≤ 0 means the model is flagging unfamiliar traffic, not recognising the attack.
+
+| Target | Method | Unseen-attack recall | Foreign benign flagged | Margin | In-dist macro F1 |
+|:---|:---|:---:|:---:|:---:|:---:|
+| MQTT | Local-only | 0.449 | 0.021 (Wi-Fi) | +0.430 | 0.983 |
+| MQTT | FedAvg | **0.922** | 0.338 (Wi-Fi) | **+0.606** | 0.847 |
+| MQTT | FedPer | 0.690 | 0.180 (Wi-Fi) | +0.523 | 0.928 |
+| MQTT | Cluster-FL | 0.454 | 0.021 (Wi-Fi) | +0.435 | 0.981 |
+| Bluetooth | Local-only | 0.228 | 0.79 (Wi-Fi/MQTT) | −0.567 | 0.989 |
+| Bluetooth | FedAvg | 0.981 | 1.00 | −0.019 | 0.636 |
+| Bluetooth | FedPer | 0.836 | 0.99 | −0.149 | 0.891 |
+| Bluetooth | Cluster-FL | 0.449 | 0.12 | **+0.328** | 0.983 |
+
+(Two-seed means; seeds 42 and 7.)
+
+- **MQTT:** sharing gives real zero-day coverage. FedAvg detects unseen Wi-Fi attacks (ICMP/UDP floods, Ping Sweep, ARP spoofing) that MQTT Local-only misses entirely, but its in-distribution F1 drops from 0.983 to 0.847. FedPer sits between the two. Cluster-FL matches Local-only because MQTT is clustered with Bluetooth, not Wi-Fi.
+- **Bluetooth:** the high recall of FedAvg and FedPer is not evidence of attack knowledge, because they flag nearly all foreign traffic, benign included. Only Cluster-FL has a positive margin, and it varies between seeds.
+
+### Experiment 2 — Small-clinic sample efficiency
+
+For each client, the training split is subsampled (stratified) to N ∈ {50, 100, 250, 500, 1000, 5000, full}, with 3 draws per seed. The scaler is refit on the N samples, and every model is scored on the full held-out test split. Three arms get the same optimizer budget:
+
+- `local_only`: a fresh IoMTMLP with all 5,057 parameters trained.
+- `fedper_head`: the frozen FedPer trunk plus a fresh 33-parameter head. The target client was part of that federation with its full data, so this is an **optimistic upper bound**.
+- `fedper_head_unseen`: the frozen trunk from a FedPer federation **without** the target client (a late-joining clinic) plus a fresh head. This is the fair comparison.
+
+Results are being re-run with a larger optimizer budget (≥ 5,000 steps). The first run's 200-step floor left the head-only arms under-trained.
 
 ---
 
@@ -98,7 +141,7 @@ Individual learning baselines can be executed directly from the repo root:
 
 ```
 FedXplain-IoMT/
-├── app.py                          # Offline interactive 5-tab Streamlit research dashboard
+├── app.py                          # Offline interactive 6-tab Streamlit research dashboard
 ├── access.tex                      # IEEE Access journal article LaTeX source
 ├── requirements.txt                # Pinned package dependencies (Python 3.14.7)
 ├── README.md                       # Master project documentation
@@ -119,8 +162,11 @@ FedXplain-IoMT/
 │   ├── fig2_spearman_divergence_heatmap.png # Cross-client Spearman rank correlation heatmap
 │   ├── fig3_bluetooth_mu_sweep.png          # Bluetooth benign recall vs FedProx mu
 │   └── fig4_tradeoff_scatter.png            # Detection performance vs explanation consistency
+├── notebooks/
+│   └── generalization_study.ipynb  # Interactive runner for the zero-day / data-scarcity study
 ├── results/
 │   ├── study_results.json          # Master JSON payload (single source of truth)
+│   ├── generalization_results.json # Zero-day & data-scarcity results (dashboard Tab 6)
 │   ├── cluster_fl_results.json     # Teammate Cluster-FL payload for merging
 │   └── shap_*.png                  # Pre-computed SHAP summary plots
 ├── scripts/
@@ -141,6 +187,7 @@ FedXplain-IoMT/
     ├── run_federated.py            # FedAvg experiment runner
     ├── run_federated_prox.py       # FedProx experiment runner across mu sweep
     ├── run_fedper.py               # FedPer personalized head experiment runner
+    ├── run_generalization_study.py # Zero-day & data-scarcity experiments (parallel results file)
     ├── run_local_only.py           # Local-only isolated client runner (control baseline)
     ├── run_study_experiments.py    # Master batch orchestrator for all methods and seeds
     └── utils.py                    # Data ingestion, train/test split, scaling & guardrails
@@ -194,7 +241,7 @@ The codebase enforces four strict technical invariants:
 
 1. **45-Feature Assertion**: Every data partition must contain exactly 45 network flow features (stripped of non-generalizable network identifiers such as IP addresses, MAC addresses, and timestamps). Any missing or superfluous column triggers an immediate assertion failure in `src/utils.py`.
 2. **Train-Only Scaler Fitting**: `StandardScaler` is fitted strictly on the training partition ($80\%$) and applied via `.transform()` to the test partition ($20\%$). Fitting scalers on pooled or test data is strictly prohibited to prevent data snooping.
-3. **Offline JSON-Driven Dashboard**: The Streamlit user interface (`app.py`) functions purely as a visualization renderer reading from `results/study_results.json`. It never triggers background training, SHAP computations, or model inference at render time.
+3. **Offline JSON-Driven Dashboard**: The Streamlit user interface (`app.py`) functions purely as a visualization renderer reading from `results/study_results.json` (and `results/generalization_results.json` for the Zero-Day & Data Scarcity tab). It never triggers background training, SHAP computations, or model inference at render time.
 4. **Strict Results Schema**: All experiment scripts write directly to or merge with `results/study_results.json` adhering to the schema checked by `validate_results.py`. Hand-edited or unverifiable metrics are rejected.
 
 ---

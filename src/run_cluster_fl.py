@@ -70,7 +70,7 @@ def evaluate_client(client, params):
     return float(loss), int(n), dict(metrics or {})
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--warmup-rounds", type=int, default=5)
@@ -78,7 +78,8 @@ def main():
     parser.add_argument("--local-epochs", type=int, default=3)
     parser.add_argument("--data-dir", default="data/study")
     parser.add_argument("--output", default=None)
-    args = parser.parse_args()
+    parser.add_argument("--models-dir", default="models")
+    args = parser.parse_args(argv)
 
     if min(args.warmup_rounds, args.cluster_rounds, args.local_epochs) < 1:
         raise ValueError("Round counts and local epochs must be >= 1.")
@@ -178,7 +179,7 @@ def main():
     from src.model import IoMTMLP
     from src.utils import get_input_dim
 
-    models_dir = Path("models")
+    models_dir = Path(args.models_dir)
     models_dir.mkdir(parents=True, exist_ok=True)
 
     input_dim = get_input_dim("wifi", data_dir=args.data_dir)
