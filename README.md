@@ -133,7 +133,25 @@ For each client, the training split is subsampled (stratified) to N ∈ {50, 100
 - `fedper_head`: the frozen FedPer trunk plus a fresh 33-parameter head. The target client was part of that federation with its full data, so this is an **optimistic upper bound**.
 - `fedper_head_unseen`: the frozen trunk from a FedPer federation **without** the target client (a late-joining clinic) plus a fresh head. This is the fair comparison.
 
-Results are being re-run with a larger optimizer budget (≥ 5,000 steps). The first run's 200-step floor left the head-only arms under-trained.
+Every arm runs at least 5,000 optimizer steps. An earlier 200-step floor left the head-only arms under-trained and is superseded.
+
+Macro F1 by training-set size N (mean over 2 seeds × 3 draws):
+
+| Client | Arm | N=50 | N=250 | N=1000 | N=5000 | Full |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|
+| Bluetooth | Local-only | 0.982 | 0.983 | 0.985 | 0.988 | 0.988 |
+| Bluetooth | FedPer head (trunk saw target) | 0.983 | 0.982 | 0.982 | 0.983 | 0.983 |
+| Bluetooth | FedPer head (trunk without target) | 0.977 | 0.979 | 0.979 | 0.976 | 0.977 |
+| MQTT | Local-only | 0.930 | 0.959 | 0.969 | 0.975 | 0.979 |
+| MQTT | FedPer head (trunk saw target) | **0.957** | **0.972** | **0.975** | 0.975 | 0.976 |
+| MQTT | FedPer head (trunk without target) | 0.922 | 0.939 | 0.936 | 0.940 | 0.941 |
+| Wi-Fi | Local-only | 0.814 | 0.847 | 0.887 | **0.920** | 0.935 |
+| Wi-Fi | FedPer head (trunk saw target) | **0.868** | **0.916** | **0.925** | **0.937** | **0.941** |
+| Wi-Fi | FedPer head (trunk without target) | **0.837** | **0.891** | **0.896** | 0.899 | 0.908 |
+
+- **Bluetooth:** no headroom. Local-only already reaches 0.98 with 50 samples, so Benign vs BT-DoS is too easy to separate for sharing to help.
+- **MQTT:** a frozen federated trunk helps at small N only when the clinic's own data shaped the trunk (+0.027 at N=50). A late-joining clinic's trunk does not beat Local-only at any N.
+- **Wi-Fi** (96% attack, so very few benign samples at small N): both FedPer arms beat Local-only up to N=1000. The fair late-joining arm gains +0.02 to +0.04 (+0.044 at N=250), and Local-only overtakes it by N=5000. At N=50 the seed/draw spread (±0.04) overlaps the gain.
 
 ---
 
