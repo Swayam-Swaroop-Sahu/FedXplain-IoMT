@@ -1,4 +1,3 @@
-import html
 import json
 import os
 import sys
@@ -19,28 +18,31 @@ NAVY = "#0F2A43"
 TEAL = "#2A9D8F"
 BLUE = "#2A78D6"
 AMBER = "#C98500"
-SURFACE = "#F5F5F2"
 HIGHLIGHT = "#E76F51"
+# Darker text variants of the accent colours (>= 4.5:1 on white) for chart labels
+TEAL_TEXT = "#1D6F65"
+AMBER_TEXT = "#8A5B00"
+ALERT_TEXT = "#A63A1F"
 CARD_BORDER = "#E5E5DE"
 MUTED = "#5B6B7A"
 GREY = "#8896A6"
 GRID = "#D8D8D2"
 FONT_STACK = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-MONO_STACK = 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace'
 
 # Charts are rendered with theme=None, so this template fully controls their look
 # (otherwise Streamlit's dark theme paints light text onto the white plot backgrounds).
 _AXIS = dict(
-    gridcolor="#ECECE6", linecolor=GRID, zerolinecolor=GRID, automargin=True,
-    tickfont=dict(color=MUTED), title=dict(font=dict(color=MUTED, size=12)),
+    gridcolor="#ECECE6", linecolor=GRID, zerolinecolor=GRID, automargin=True, ticklabelstandoff=6,
+    tickfont=dict(color=MUTED, size=12), title=dict(font=dict(color=MUTED, size=13), standoff=10),
 )
 pio.templates["fedxplain"] = go.layout.Template(pio.templates["plotly_white"])
 pio.templates["fedxplain"].layout.update(
-    font=dict(family=FONT_STACK, color=NAVY, size=12),
+    font=dict(family=FONT_STACK, color=NAVY, size=13),
     title=dict(font=dict(color=NAVY, size=14), x=0, xanchor="left"),
     paper_bgcolor="white",
     plot_bgcolor="white",
-    margin=dict(l=8, r=8, t=44, b=16),
+    margin=dict(l=8, r=8, t=36, b=16),
+    annotationdefaults=dict(font=dict(color=MUTED, size=12)),
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
                 font=dict(color=MUTED), bgcolor="rgba(0,0,0,0)"),
     hoverlabel=dict(bgcolor="white", bordercolor=CARD_BORDER, font=dict(family=FONT_STACK, color=NAVY)),
@@ -50,8 +52,17 @@ pio.templates["fedxplain"].layout.update(
 pio.templates.default = "fedxplain"
 
 
-def show_chart(fig: go.Figure) -> None:
-    st.plotly_chart(fig, width="stretch", theme=None, config={"displayModeBar": False})
+def show_chart(fig: go.Figure, alt: str) -> None:
+    # Set explicitly: the template's backgrounds are not always honoured once Streamlit serializes the figure
+    fig.update_layout(paper_bgcolor="white", plot_bgcolor="white")
+    st.plotly_chart(fig, width="stretch", theme=None, config={"displayModeBar": False}, alt=alt)
+
+# One colour per method family, used by every chart.
+METHOD_COLOR = {"fedavg": BLUE, "fedprox": BLUE, "fedper": AMBER, "cluster_fl": NAVY,
+                "local_only": TEAL, "centralized": GREY}
+
+def method_color(key: str) -> str:
+    return METHOD_COLOR.get("fedprox" if key.startswith("fedprox") else key, GREY)
 
 # Paths
 RESULTS_PATH = os.path.join("results", "study_results.json")
@@ -179,196 +190,34 @@ def bt_recall(data: Dict, key: str, seed: int) -> Optional[float]:
     """Bluetooth benign recall for a method key and seed, or None."""
     return client_metric(method_run(data, key, seed), "bluetooth", "benign_recall")
 
-def kpi_card(label: str, value: str, caption: str, delta: Optional[str] = None, good: bool = True,
-             tip: Optional[str] = None) -> str:
-    """Return HTML for a KPI card; `delta` renders as a green (good) or red (bad) chip, `tip` as a hover tooltip."""
-    main, _, spread = value.partition(" ± ")
-    spread_html = f'<span class="kpi-spread">± {spread}</span>' if spread else ""
-    chip = f'<span class="chip chip-{"good" if good else "bad"}">{delta}</span>' if delta else ""
-    title = f' title="{html.escape(tip, quote=True)}"' if tip else ""
-    return (
-        f'<div class="kpi-card"{title}><div class="kpi-label">{label}</div>'
-        f'<div class="kpi-value">{main}{spread_html}</div>'
-        f'<div class="kpi-foot">{chip}<span class="kpi-caption">{caption}</span></div></div>'
-    )
+def kpi_card(label: str, value: str, caption: str, delta: Optional[str] = None,
+             delta_description: Optional[str] = None, tip: Optional[str] = None,
+             chart: Optional[List[float]] = None, delta_color: str = "normal",
+             delta_arrow: str = "auto") -> None:
+    """Bordered, equal-height KPI card: native metric (optional sparkline) plus a caption."""
+    with st.container(border=True, height="stretch", gap="xsmall"):
+        st.metric(label, value, delta, delta_color=delta_color, delta_arrow=delta_arrow, help=tip,
+                  delta_description=delta_description, chart_data=chart or None, chart_type="line")
+        st.caption(caption)
 
-def pill(text: str, tone: str = "neutral") -> str:
-    """Return HTML for a small rounded badge (tone: neutral, good, warn)."""
-    return f'<span class="pill pill-{tone}">{html.escape(str(text))}</span>'
+def takeaway(text: str) -> None:
+    """One-sentence lede that opens every tab."""
+    st.markdown(f":material/lightbulb: **{text}**")
 
-def callout(body: str, kind: str = "info", title: Optional[str] = None) -> None:
-    """Render a callout (kind: info, warning, success); `body` is trusted HTML."""
-    head = f'<div class="callout-title">{title}</div>' if title else ""
-    st.markdown(f'<div class="callout callout-{kind}">{head}{body}</div>', unsafe_allow_html=True)
-
-def card(key: str, title: str, subtitle: Optional[str] = None):
+def card(key: str, title: str, subtitle: Optional[str] = None, height: str = "content"):
     """Bordered card container with its header inside; use with `with`."""
-    box = st.container(border=True, key=f"card_{key}")
-    sub = f'<div class="card-sub">{subtitle}</div>' if subtitle else ""
-    box.markdown(f'<div class="card-head"><div class="card-title">{title}</div>{sub}</div>', unsafe_allow_html=True)
+    box = st.container(border=True, key=f"card_{key}", height=height)
+    box.subheader(title, anchor=False)
+    if subtitle:
+        box.caption(subtitle)
     return box
 
-# ---- Streamlit page config and CSS ----
+# ---- Streamlit page config (look comes from .streamlit/config.toml) ----
 st.set_page_config(
     page_title="FedXplain-IoMT Dashboard",
-    page_icon="🏥",
+    page_icon=":material/local_hospital:",
     layout="wide",
     initial_sidebar_state="expanded"
-)
-
-# Custom CSS
-st.markdown(
-    f"""
-    <style>
-        /* Hide Streamlit chrome, but keep the header: it hosts the expand-sidebar button */
-        header[data-testid="stHeader"] {{background: transparent;}}
-        [data-testid="stAppDeployButton"], [data-testid="stMainMenu"] {{display: none;}}
-        footer {{visibility: hidden;}}
-
-        /* Base & typography */
-        .stApp {{ background-color: {SURFACE}; color: {NAVY}; font-family: {FONT_STACK}; }}
-        .stApp p, .stApp li, .stApp label, .stApp h1, .stApp h2, .stApp h3 {{ font-family: {FONT_STACK}; }}
-        [data-testid="stMainBlockContainer"] {{ max-width: 1360px; padding: 3.5rem 2.5rem 3rem; }}
-        [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {{ line-height: 1.6; }}
-        [data-testid="stMarkdownContainer"] li {{ margin-bottom: 0.55rem; }}
-        [data-testid="stMarkdownContainer"] li:last-child {{ margin-bottom: 0; }}
-        [data-testid="stMarkdownContainer"] ul ul {{ margin-top: 0.5rem; }}
-        /* Readable measure for prose; charts and tables keep full width */
-        [data-testid="stMarkdownContainer"] > p, [data-testid="stMarkdownContainer"] > ul {{ max-width: 78ch; }}
-        [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p {{
-            color: {MUTED}; opacity: 1; font-size: 0.82rem; line-height: 1.55;
-        }}
-        [data-testid="stWidgetLabel"] {{ margin-bottom: 0.25rem; }}
-        [data-testid="stWidgetLabel"] p {{ font-size: 0.78rem; font-weight: 600; color: {MUTED}; }}
-        [data-testid="stSelectbox"] div:has(> input) {{ background: #FAFAF7; border-color: {CARD_BORDER}; border-radius: 8px; }}
-        hr {{ border-color: {CARD_BORDER} !important; }}
-        code {{ font-family: {MONO_STACK}; }}
-        .js-plotly-plot .main-svg text {{ font-variant-numeric: tabular-nums; }}
-
-        /* Sidebar */
-        [data-testid="stSidebar"] {{ background-color: #FFFFFF; border-right: 1px solid {CARD_BORDER}; }}
-        .side-title {{
-            font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em;
-            color: {MUTED}; margin: 0.25rem 0 0.4rem;
-        }}
-        .kv {{
-            display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem;
-            font-size: 0.78rem; padding: 0.32rem 0; border-bottom: 1px solid #EFEFEA;
-        }}
-        .kv:last-child {{ border-bottom: none; }}
-        .kv-k {{ color: {MUTED}; white-space: nowrap; }}
-        .kv-v {{ color: {NAVY}; font-family: {MONO_STACK}; font-size: 0.74rem; text-align: right; overflow-wrap: anywhere; }}
-        .side-note {{ font-size: 0.78rem; color: {MUTED}; line-height: 1.45; margin-top: 0.45rem; }}
-
-        /* Hero header */
-        .hero {{ padding: 0 0 1.5rem; }}
-        .hero-eyebrow {{ font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #1D6F65; }}
-        .hero-title {{ font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: {NAVY}; margin: 0.15rem 0 0.2rem; }}
-        .hero-sub {{ font-size: 1rem; color: {MUTED}; margin-bottom: 1.1rem; }}
-        .pill-row {{ display: flex; flex-wrap: wrap; gap: 0.5rem; }}
-        .pill {{
-            display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.22rem 0.7rem;
-            border: 1px solid {CARD_BORDER}; border-radius: 999px; background: #FFFFFF; color: {NAVY};
-            font-size: 0.75rem; font-weight: 500; line-height: 1.45; white-space: nowrap; font-variant-numeric: tabular-nums;
-        }}
-        .pill-good {{ background: #E8F5F3; border-color: #BFE3DE; color: #1D6F65; }}
-        .pill-warn {{ background: #FFF4E0; border-color: #F2D8A7; color: #8A5A00; }}
-        .pill-good::before, .pill-warn::before {{ content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }}
-
-        /* Tabs: underline style (Streamlit 1.65 renders [data-testid="stTab"] with role="tab") */
-        .stTabs [role="tablist"] {{ gap: 0; }}
-        .stTabs [data-testid="stTab"] {{
-            background: transparent; border-radius: 0; margin: 0; padding: 0.55rem 0.7rem;
-            border-bottom: 2px solid transparent; color: {MUTED}; transition: color 0.15s, border-color 0.15s;
-        }}
-        .stTabs [data-testid="stTab"] p {{ color: inherit; font-size: 0.84rem; font-weight: 600; white-space: nowrap; }}
-        .stTabs [data-testid="stTab"]:hover {{ color: {NAVY}; }}
-        .stTabs [data-testid="stTab"][aria-selected="true"] {{ color: {NAVY}; border-bottom-color: {TEAL}; }}
-        /* Replace Streamlit's sliding indicator with the static border above */
-        .stTabs .react-aria-SelectionIndicator {{ display: none; }}
-        [data-testid="stTabPanel"] {{ padding-top: 1.75rem; }}
-        /* Section rhythm: larger gap between top-level blocks than inside cards */
-        [data-testid="stTabPanel"] > [data-testid="stVerticalBlock"] {{ gap: 1.75rem; }}
-
-        /* Cards (st.container(border=True, key="card_*")) */
-        [class*="st-key-card_"] {{
-            background-color: #FFFFFF; border: 1px solid {CARD_BORDER} !important; border-radius: 12px !important;
-            box-shadow: 0 1px 2px rgba(15, 42, 67, 0.04), 0 1px 3px rgba(15, 42, 67, 0.06);
-            padding: 1.5rem 1.5rem 1.5rem !important; gap: 1.1rem;
-        }}
-        .card-title {{ font-size: 1.02rem; font-weight: 600; letter-spacing: -0.01em; color: {NAVY}; }}
-        .card-sub {{ font-size: 0.84rem; line-height: 1.5; color: {MUTED}; margin-top: 0.3rem; }}
-        .card-head {{ padding-bottom: 0.6rem; }}
-        /* The PNG has large baked-in fonts; cap its width so it doesn't dominate the page */
-        .st-key-card_fig4 img {{ max-width: 920px !important; display: block; margin: 0 auto; }}
-        .sub-head {{ font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: {MUTED}; margin-bottom: 0.6rem; }}
-        [data-testid="stExpander"] details {{ border: 1px solid {CARD_BORDER}; border-radius: 8px; background: #FCFCFA; }}
-        [data-testid="stExpander"] summary p {{ font-size: 0.82rem; font-weight: 600; color: {MUTED}; }}
-        [data-testid="stExpander"] [data-testid="stMarkdownContainer"] p,
-        [data-testid="stExpander"] [data-testid="stMarkdownContainer"] li {{ font-size: 0.86rem; color: #33475B; }}
-        [data-testid="stDataFrame"] {{ font-variant-numeric: tabular-nums; }}
-
-        /* KPI cards */
-        .kpi-card {{
-            display: flex; flex-direction: column; gap: 0.5rem; min-height: 156px; height: 100%;
-            background-color: #FFFFFF; border: 1px solid {CARD_BORDER}; border-radius: 12px; padding: 1.2rem 1.3rem;
-            box-shadow: 0 1px 2px rgba(15, 42, 67, 0.04), 0 1px 3px rgba(15, 42, 67, 0.06);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }}
-        .kpi-card:hover {{ transform: translateY(-2px); box-shadow: 0 6px 16px rgba(15, 42, 67, 0.08); }}
-        .kpi-label {{ font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: {MUTED}; }}
-        .kpi-value {{
-            font-size: 1.75rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.15; color: {NAVY};
-            font-variant-numeric: tabular-nums; white-space: nowrap;
-        }}
-        .kpi-spread {{ font-size: 0.95rem; font-weight: 500; color: {MUTED}; margin-left: 0.35rem; }}
-        .kpi-foot {{ margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.5rem; }}
-        .kpi-caption {{ font-size: 0.78rem; line-height: 1.4; color: {MUTED}; }}
-        .chip {{
-            display: inline-block; padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.74rem; font-weight: 600;
-            font-variant-numeric: tabular-nums; white-space: nowrap;
-        }}
-        .chip-good {{ background: #E6F4EA; color: #1E6B3A; }}
-        .chip-bad {{ background: #FCEDE5; color: #9A3412; }}
-
-        /* Callouts (custom HTML + native st.info/success/warning share one look) */
-        .callout {{
-            border: 1px solid; border-left-width: 4px; border-radius: 8px; padding: 1.1rem 1.35rem;
-            font-size: 0.9rem; line-height: 1.6;
-        }}
-        .callout-title {{ font-weight: 600; margin-bottom: 0.4rem; }}
-        .callout ul {{ margin: 0.5rem 0 0.6rem 1.1rem; padding: 0; }}
-        .callout li {{ margin-bottom: 0.2rem; }}
-        .callout-info {{ background: #EEF5FC; border-color: #CFE0F3; border-left-color: {BLUE}; color: #163E66; }}
-        .callout-warning {{ background: #FDF1EA; border-color: #F6D5C3; border-left-color: {HIGHLIGHT}; color: #7C2D12; }}
-        .callout-success {{ background: #E9F6F4; border-color: #C4E6E1; border-left-color: {TEAL}; color: #145049; }}
-        [data-testid="stAlertContainer"] {{
-            border: 1px solid #CFE0F3; border-left: 4px solid {BLUE}; border-radius: 8px;
-            background: #EEF5FC !important; color: #163E66 !important;
-        }}
-        [data-testid="stAlertContainer"]:has([data-testid="stAlertContentSuccess"]) {{
-            border-color: #C4E6E1; border-left-color: {TEAL}; background: #E9F6F4 !important; color: #145049 !important;
-        }}
-        [data-testid="stAlertContainer"]:has([data-testid="stAlertContentWarning"]) {{
-            border-color: #F6D5C3; border-left-color: {HIGHLIGHT}; background: #FDF1EA !important; color: #7C2D12 !important;
-        }}
-        [data-testid="stAlertContainer"] p, [data-testid="stAlertContainer"] li {{ color: inherit; }}
-
-        /* Thesis lead */
-        .thesis {{
-            font-size: 1.02rem; line-height: 1.6; color: {NAVY}; background: #FFFFFF;
-            border: 1px solid {CARD_BORDER}; border-left: 4px solid {TEAL}; border-radius: 12px;
-            padding: 1.1rem 1.5rem;
-        }}
-        .footer {{
-            margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid {CARD_BORDER};
-            font-size: 0.78rem; color: {MUTED};
-        }}
-        /* Offset Markdown's trailing -1rem margin so HTML blocks keep the 1rem block gap */
-        .kpi-card, .thesis, .callout {{ margin-bottom: 1rem; }}
-    </style>
-    """,
-    unsafe_allow_html=True
 )
 
 # ---- Load data ----
@@ -402,60 +251,151 @@ cent_f1 = {s: _cents.get(str(s), {}).get("f1_macro") for s in seeds}
 cent_benign = {s: _cents.get(str(s), {}).get("benign_recall") for s in seeds}
 
 # ---- Sidebar ----
-def _kv_rows(items) -> str:
-    return "".join(
-        f'<div class="kv"><span class="kv-k">{html.escape(str(k))}</span>'
-        f'<span class="kv-v">{html.escape(", ".join(map(str, v)) if isinstance(v, list) else str(v))}</span></div>'
-        for k, v in items
+def _kv_table(items, alt: str) -> None:
+    st.table(
+        {str(k): ", ".join(map(str, v)) if isinstance(v, list) else str(v) for k, v in items},
+        border="horizontal",
+        alt=alt,
     )
 
 with st.sidebar:
-    st.markdown('<div class="side-title">About this run</div>', unsafe_allow_html=True)
+    st.subheader("About this run", anchor=False)
     if run_meta:
-        st.markdown(_kv_rows((k.replace("_", " "), v) for k, v in run_meta.items()), unsafe_allow_html=True)
-    st.markdown("---")
-    st.markdown('<div class="side-title">Study</div>', unsafe_allow_html=True)
-    st.markdown(
-        _kv_rows([
-            ("Benchmark", "CICIoMT2024"),
-            ("Protocols", "Wi‑Fi, MQTT, Bluetooth"),
-            ("Seeds", f"{', '.join(map(str, seeds))} (directional only)"),
-            ("Mode", "Read‑only, runs fully offline"),
-        ]),
-        unsafe_allow_html=True
-    )
-    st.markdown("---")
+        _kv_table(((k.replace("_", " "), v) for k, v in run_meta.items()), alt="Run metadata")
+    st.subheader("Study", anchor=False)
+    _kv_table([
+        ("Benchmark", "CICIoMT2024"),
+        ("Protocols", "Wi‑Fi, MQTT, Bluetooth"),
+        ("Seeds", f"{', '.join(map(str, seeds))} (directional only)"),
+        ("Mode", "Read‑only, runs fully offline"),
+    ], alt="Study summary")
     _cluster_fl_merged = bool(seeds) and all(
         find_run(data.get("runs", []), "cluster_fl", s) is not None for s in seeds
     )
-    st.markdown('<div class="side-title">Cluster‑FL status</div>', unsafe_allow_html=True)
+    st.subheader("Cluster‑FL status", anchor=False)
     if _cluster_fl_merged:
-        st.markdown(
-            pill("Merged", "good")
-            + '<div class="side-note">Results in Detection, Explanation Divergence and Methods Compared</div>',
-            unsafe_allow_html=True
-        )
+        st.badge("Merged", icon=":material/check_circle:", color="green")
+        st.caption("Results in Detection, Explanation Divergence and Methods Compared")
     else:
-        st.markdown(pill(CLUSTER_FL_STATUS, "warn"), unsafe_allow_html=True)
+        st.badge(CLUSTER_FL_STATUS, icon=":material/pending:", color="orange")
+
+# ---- Headline numbers (computed once, reused by every tab) ----
+shared_methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus]
+
+# KPI 1: Best shared-model avg macro F1
+best_shared_mean = -1.0
+best_shared_label = ""
+shared_f1_sweep = []  # seed-mean avg macro F1 along FedAvg → FedProx μ sweep (sparkline)
+for method in shared_methods:
+    seed_vals = []
+    for seed in seeds:
+        run = method_run(data, method, seed)
+        if run:
+            seed_vals.append(avg_macro_f1(run))
+    if seed_vals:
+        mean_val, _ = mean_spread(seed_vals)
+        shared_f1_sweep.append(mean_val)
+        if mean_val > best_shared_mean:
+            best_shared_mean = mean_val
+            best_shared_label = method
+
+# KPI 2: Local-only avg macro F1 + delta vs best shared
+local_seed_vals = []
+for seed in seeds:
+    run = local_entry(data, seed)
+    if run:
+        local_seed_vals.append(avg_macro_f1(run))
+local_mean, local_spread = mean_spread(local_seed_vals)
+kpi2_delta = f"{local_mean - best_shared_mean:+.4f}"
+
+# KPI 3: Worst FedProx BT benign recall vs local-only
+worst_bt_recall = None
+worst_mu = None
+worst_seed = None
+for mu in mus:
+    for seed in seeds:
+        bt_rec = bt_recall(data, f"fedprox_mu{mu}", seed)
+        if bt_rec is not None and (worst_bt_recall is None or bt_rec < worst_bt_recall):
+            worst_bt_recall = bt_rec
+            worst_mu = mu
+            worst_seed = seed
+local_bt_recalls = [bt_recall(data, "local_only", s) for s in seeds]
+local_bt_min = min([v for v in local_bt_recalls if v is not None], default=None)
+worst_seed_sweep = [v for k in shared_methods if (v := bt_recall(data, k, worst_seed)) is not None]
+
+# KPI 4: FedAvg Wi‑Fi–Bluetooth Spearman (two‑seed mean)
+def wb_spearman(key: str, seed: int) -> Optional[float]:
+    run = method_run(data, key, seed)
+    return run.get("divergence_full", {}).get("wifi-bluetooth", {}).get("spearman") if run else None
+
+spear_seeds = [v for s in seeds if (v := wb_spearman("fedavg", s)) is not None]
+spear_mean, spear_spread = mean_spread(spear_seeds)
+spear_sweep = [
+    mean_spread(vals)[0] for k in shared_methods
+    if (vals := [v for s in seeds if (v := wb_spearman(k, s)) is not None])
+]
+
+# Per-seed derived quantities shared by Tabs 0, 1 and 3
+mu_min = mus[0] if mus else None
+smallest_mu_text = "; ".join(
+    f"{fmt(bt_recall(data, 'fedavg', s))} → {fmt(bt_recall(data, f'fedprox_mu{mu_min}', s))} (seed {s})"
+    for s in seeds
+) if mu_min is not None else "—"
+fedper_gap = {}
+for s in seeds:
+    fa, fp, lo = (bt_recall(data, k, s) for k in ("fedavg", "fedper", "local_only"))
+    if None not in (fa, fp, lo) and lo != fa:
+        fedper_gap[s] = (fp - fa) / (lo - fa) * 100
+fedper_gap_text = " / ".join(f"{v:.1f}% (seed {s})" for s, v in fedper_gap.items()) or "—"
+fedper_f1_means = [avg_macro_f1(r) for s in seeds if (r := method_run(data, "fedper", s))]
+fedper_f1_mean = sum(fedper_f1_means) / len(fedper_f1_means) if fedper_f1_means else None
+fedper_vs_local_text = (
+    f"{fedper_f1_mean / local_mean * 100:.1f}%" if fedper_f1_mean is not None and local_mean else "—"
+)
+_sweep_tip = "Sparkline: FedAvg → FedProx μ=" + " → ".join(map(str, mus))
 
 # ---- Header ----
-_hero_pills = [
-    pill("CICIoMT2024"),
-    pill(f"{len(PROTOS)} protocols · " + " / ".join(PROTO_LABEL[p] for p in PROTOS)),
-    pill(f"Seeds {', '.join(map(str, seeds))}"),
-]
-if run_meta.get("n_rounds") is not None:
-    _hero_pills.append(pill(f"{run_meta['n_rounds']} rounds × {run_meta.get('n_local_epochs', '—')} local epochs"))
-if run_meta.get("timestamp"):
-    _hero_pills.append(pill(f"Results {run_meta['timestamp']}"))
-_hero_pills.append(pill("Offline · read‑only", "good"))
-st.markdown(
-    '<div class="hero"><div class="hero-eyebrow">Research dashboard</div>'
-    '<div class="hero-title">FedXplain-IoMT</div>'
-    '<div class="hero-sub">Federated Learning &amp; Explainable AI for Heterogeneous Medical IoT</div>'
-    f'<div class="pill-row">{"".join(_hero_pills)}</div></div>',
-    unsafe_allow_html=True
-)
+st.title("FedXplain-IoMT", anchor=False)
+st.markdown(":gray[Federated learning & explainable AI for heterogeneous medical IoT]")
+with st.container(horizontal=True, gap="small"):
+    st.badge("CICIoMT2024", color="gray")
+    st.badge(f"{len(PROTOS)} protocols · " + " / ".join(PROTO_LABEL[p] for p in PROTOS), color="gray")
+    st.badge(f"Seeds {', '.join(map(str, seeds))}", color="gray")
+    if run_meta.get("n_rounds") is not None:
+        st.badge(f"{run_meta['n_rounds']} rounds × {run_meta.get('n_local_epochs', '—')} local epochs", color="gray")
+    if run_meta.get("timestamp"):
+        st.badge(f"Results {run_meta['timestamp']}", color="gray")
+    st.badge(f"Directional only (n={len(seeds)})", icon=":material/info:", color="orange",
+             help="Two seeds show trends, not statistical significance")
+    if _cluster_fl_merged:
+        st.badge("Cluster‑FL merged", icon=":material/check_circle:", color="green")
+    st.badge("Offline · read‑only", icon=":material/wifi_off:", color="green")
+
+# Headline numbers row; columns keep the four cards equal height
+kpi1, kpi2, kpi3, kpi4 = st.columns(4, gap="medium")
+with kpi1:
+    kpi_card("Best shared-model F1", fmt(best_shared_mean),
+             f"{method_label(best_shared_label)} · seed mean",
+             tip=f"Best shared-model: {method_label(best_shared_label)} (avg macro F1, seed mean). {_sweep_tip}.",
+             chart=shared_f1_sweep)
+with kpi2:
+    kpi_card("Local-only F1", fmt(local_mean),
+             f"± {local_spread:.4f} seed spread · {len(seeds)}-seed mean",
+             kpi2_delta, delta_description="vs best shared",
+             tip=f"{kpi2_delta} vs best shared model ({method_label(best_shared_label)})")
+with kpi3:
+    kpi_card("BT benign recall (worst)", fmt(worst_bt_recall),
+             f"FedProx μ={worst_mu}, seed {worst_seed}",
+             f"{worst_bt_recall - local_bt_min:+.4f}" if None not in (worst_bt_recall, local_bt_min) else None,
+             delta_description="vs local‑only min",
+             tip=f"Worst FedProx (μ={worst_mu}, seed={worst_seed}) vs local-only min {fmt(local_bt_min)}. "
+                 f"{_sweep_tip} (seed {worst_seed}).",
+             chart=worst_seed_sweep)
+with kpi4:
+    kpi_card("Wi‑Fi–BT Spearman", fmt(spear_mean), f"FedAvg · {len(seeds)}‑seed mean",
+             f"± {spear_spread:.4f}", delta_description="seed spread", delta_color="off", delta_arrow="off",
+             tip=f"FedAvg Wi‑Fi–Bluetooth Spearman ρ ({len(seeds)}‑seed mean ± spread). {_sweep_tip} (seed mean).",
+             chart=spear_sweep)
 
 # ---- Tabs ----
 tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
@@ -469,140 +409,45 @@ tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
 
 # ===== TAB 0: Executive Summary =====
 with tab0:
-    st.markdown('<div class="thesis">One shared detector cannot serve three structurally different hospital protocols: on this benchmark the shared model collapses on Bluetooth, no proximal strength rescues it, and only personalizing the final layer — or not sharing at all — does.</div>', unsafe_allow_html=True)
+    takeaway("One shared detector cannot serve three structurally different hospital protocols: on this benchmark "
+             "the shared model collapses on Bluetooth, no proximal strength rescues it, and only personalizing "
+             "the final layer — or not sharing at all — does.")
 
-    # KPI cards row
-    kpi1, kpi2, kpi3, kpi4 = st.columns(4, gap="medium")
-
-    # KPI 1: Best shared-model avg macro F1
-    shared_methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus]
-    best_shared_mean = -1.0
-    best_shared_label = ""
-    for method in shared_methods:
-        seed_vals = []
-        for seed in seeds:
-            run = method_run(data, method, seed)
-            if run:
-                seed_vals.append(avg_macro_f1(run))
-        if seed_vals:
-            mean_val, _ = mean_spread(seed_vals)
-            if mean_val > best_shared_mean:
-                best_shared_mean = mean_val
-                best_shared_label = method
-    kpi1_value = fmt(best_shared_mean)
-    kpi1_caption = method_label(best_shared_label)
-    with kpi1:
-        st.markdown(
-            kpi_card("BEST SHARED-MODEL F1", kpi1_value, kpi1_caption,
-                     tip=f"Best shared-model: {method_label(best_shared_label)} (avg macro F1, seed mean)"),
-            unsafe_allow_html=True
-        )
-
-    # KPI 2: Local-only avg macro F1 + delta vs best shared
-    local_seed_vals = []
-    for seed in seeds:
-        run = local_entry(data, seed)
-        if run:
-            local_seed_vals.append(avg_macro_f1(run))
-    local_mean, local_spread = mean_spread(local_seed_vals)
-    kpi2_value = f"{fmt(local_mean)} ± {local_spread:.4f}"
-    kpi2_delta = f"{local_mean - best_shared_mean:+.4f} vs best shared"
-    kpi2_caption = f"{len(seeds)}-seed mean"
-    with kpi2:
-        # Higher macro F1 than the best shared model is the good direction.
-        st.markdown(
-            kpi_card("LOCAL-ONLY F1", kpi2_value, kpi2_caption, kpi2_delta, local_mean >= best_shared_mean,
-                     tip=f"{kpi2_delta} model ({method_label(best_shared_label)})"),
-            unsafe_allow_html=True
-        )
-
-    # KPI 3: Worst FedProx BT benign recall vs local-only
-    worst_bt_recall = None
-    worst_mu = None
-    worst_seed = None
-    for mu in mus:
-        for seed in seeds:
-            bt_rec = bt_recall(data, f"fedprox_mu{mu}", seed)
-            if bt_rec is not None and (worst_bt_recall is None or bt_rec < worst_bt_recall):
-                worst_bt_recall = bt_rec
-                worst_mu = mu
-                worst_seed = seed
-    local_bt_recalls = [bt_recall(data, "local_only", s) for s in seeds]
-    local_bt_min = min([v for v in local_bt_recalls if v is not None], default=None)
-    kpi3_value = fmt(worst_bt_recall)
-    kpi3_caption = f"FedProx μ={worst_mu}, seed {worst_seed}"
-    with kpi3:
-        st.markdown(
-            kpi_card("BT BENIGN RECALL (WORST)", kpi3_value, kpi3_caption,
-                     tip=f"Worst FedProx (μ={worst_mu}, seed={worst_seed}) vs local-only min {fmt(local_bt_min)}"),
-            unsafe_allow_html=True
-        )
-
-    # KPI 4: FedAvg Wi‑Fi–Bluetooth Spearman (two‑seed mean)
-    spear_seeds = []
-    for seed in seeds:
-        run = method_run(data, "fedavg", seed)
-        if run:
-            div_full = run.get("divergence_full", {})
-            spear = div_full.get("wifi-bluetooth", {}).get("spearman")
-            if spear is not None:
-                spear_seeds.append(spear)
-    kpi4_value = fmt_pm(spear_seeds)
-    kpi4_caption = f"FedAvg · {len(seeds)}‑seed mean ± spread"
-    with kpi4:
-        st.markdown(
-            kpi_card("WI‑FI–BT SPEARMAN", kpi4_value, kpi4_caption,
-                     tip=f"FedAvg Wi‑Fi–Bluetooth Spearman ρ ({len(seeds)}‑seed mean ± spread)"),
-            unsafe_allow_html=True
-        )
-
+    fig_col, text_col = st.columns([3, 2], gap="medium")
     # Figure 4 (the image carries its own title and error-bar note)
-    with card("fig4", "Figure 4 · Personalization trade‑off"):
+    with fig_col, card("fig4", "Personalization trade‑off", "Figure 4 · detection quality vs explanation consistency",
+                       height="stretch"):
         if os.path.exists(FIG4_PATH):
-            st.image(FIG4_PATH, width="stretch")
+            st.image(FIG4_PATH, width="stretch",
+                     alt="Scatter plot of average macro F1 versus cross-client explanation consistency per method")
         else:
             st.warning(f"Figure not found: {FIG4_PATH}")
 
-    # Per-seed derived quantities shared by Tabs 0, 1 and 3
-    mu_min = mus[0] if mus else None
-    smallest_mu_text = "; ".join(
-        f"{fmt(bt_recall(data, 'fedavg', s))} → {fmt(bt_recall(data, f'fedprox_mu{mu_min}', s))} (seed {s})"
-        for s in seeds
-    ) if mu_min is not None else "—"
-    fedper_gap = {}
-    for s in seeds:
-        fa, fp, lo = (bt_recall(data, k, s) for k in ("fedavg", "fedper", "local_only"))
-        if None not in (fa, fp, lo) and lo != fa:
-            fedper_gap[s] = (fp - fa) / (lo - fa) * 100
-    fedper_gap_text = " / ".join(f"{v:.1f}% (seed {s})" for s, v in fedper_gap.items()) or "—"
-    fedper_f1_means = [avg_macro_f1(r) for s in seeds if (r := method_run(data, "fedper", s))]
-    fedper_f1_mean = sum(fedper_f1_means) / len(fedper_f1_means) if fedper_f1_means else None
-    fedper_vs_local_text = (
-        f"{fedper_f1_mean / local_mean * 100:.1f}%" if fedper_f1_mean is not None and local_mean else "—"
-    )
-
-    # Two‑column findings
-    col1, col2 = st.columns(2, gap="medium")
-    with col1, card("found", "What we found"):
-        st.markdown(
-            f"""
-            - **Bluetooth collapse**: Shared models drop BT benign recall to as low as {fmt(worst_bt_recall)} (μ={worst_mu}, seed {worst_seed}), while local‑only stays at {fmt(local_bt_min)}.
-            - **No safe μ**: Even μ={mu_min} worsens BT benign recall vs FedAvg ({smallest_mu_text}).
-            - **FedPer’s trade‑off**: Recovers {fedper_gap_text} of the FedAvg→local‑only BT benign‑recall gap, with avg macro F1 {fmt(fedper_f1_mean)} ({fedper_vs_local_text} of local‑only {fmt(local_mean)}).
-            - **Explanation consistency**: FedPer’s cross‑client similarity stays at FedAvg level (see the Explanation Divergence tab).
-            """
-        )
-    with col2, card("not_proven", "What we didn’t prove yet"):
-        st.markdown(
-            """
-            - **Statistical significance**: n=2 seeds provide directional trends only; no p‑values or confidence intervals.
-            - **Full noise floor**: Preliminary (n=2) only; more seeds needed for robust variance estimates.
-            - **Other aggregators**: SCAFFOLD, FedNova, etc. remain for future work.
-            """
-        )
+    with text_col:
+        with card("found", "What we found"):
+            st.markdown(
+                f"""
+                - **Bluetooth collapse**: Shared models drop BT benign recall to as low as {fmt(worst_bt_recall)} (μ={worst_mu}, seed {worst_seed}), while local‑only stays at {fmt(local_bt_min)}.
+                - **No safe μ**: Even μ={mu_min} worsens BT benign recall vs FedAvg ({smallest_mu_text}).
+                - **FedPer’s trade‑off**: Recovers {fedper_gap_text} of the FedAvg→local‑only BT benign‑recall gap, with avg macro F1 {fmt(fedper_f1_mean)} ({fedper_vs_local_text} of local‑only {fmt(local_mean)}).
+                - **Explanation consistency**: FedPer’s cross‑client similarity stays at FedAvg level (see the Explanation Divergence tab).
+                """
+            )
+        with card("not_proven", "What we didn’t prove yet"):
+            st.badge(f"Directional only (n={len(seeds)})", icon=":material/info:", color="orange")
+            st.markdown(
+                """
+                - **Statistical significance**: n=2 seeds provide directional trends only; no p‑values or confidence intervals.
+                - **Full noise floor**: Preliminary (n=2) only; more seeds needed for robust variance estimates.
+                - **Other aggregators**: SCAFFOLD, FedNova, etc. remain for future work.
+                """
+            )
 
 # ===== TAB 1: Detection =====
 with tab1:
+    takeaway(f"Sharing is what breaks Bluetooth: benign recall falls to {fmt(worst_bt_recall)} in the worst FedProx run "
+             f"while local‑only keeps at least {fmt(local_bt_min)}, and personalizing the final layer (FedPer) "
+             "recovers most of the gap.")
     # Build unified table
     def unified_detection_rows(data_dict: Dict) -> List[Dict]:
         rows = []
@@ -642,19 +487,10 @@ with tab1:
     # Streamlit renders nulls as a grey "None" regardless of Styler na_rep, so pre-format.
     for c in cols[1:-1]:
         df_unified[c] = df_unified[c].map(lambda v: "—" if v is None or pd.isna(v) else f"{v:.4f}")
-    with card("unified", "Unified detection table (macro F1)", "Per‑client macro F1 by seed, then per‑seed averages"):
-        st.dataframe(
-            df_unified,
-            hide_index=True,
-            height=(len(df_unified) + 1) * 35 + 3,
-            width="stretch"
-        )
-        st.caption("Centralized stores only pooled metrics: per‑client cells are empty and its Avg columns show pooled macro F1.")
-
-    # Build BT benign recall table with styling
+    # Build BT benign recall rows (chart + table)
     bt_rows = []
-    methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "cluster_fl", "local_only", "centralized"]
-    for method_key in methods:
+    bt_methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "cluster_fl", "local_only", "centralized"]
+    for method_key in bt_methods:
         if method_key == "centralized":
             row = {"Method": "Centralized (pooled, all protocols)"}
             row.update({str(s): cent_benign.get(s) for s in seeds})
@@ -663,6 +499,45 @@ with tab1:
             row.update({str(s): bt_recall(data, method_key, s) for s in seeds})
         bt_rows.append(row)
     df_bt = pd.DataFrame(bt_rows)
+    seed_cols = [str(s) for s in seeds]
+
+    # Dot plot: one row per method, one marker per seed, a faint bar spanning the seeds
+    SEED_SYMBOLS = [("circle", "●"), ("circle-open", "○"), ("diamond", "◆"), ("square", "■")]
+    fig_btm = go.Figure()
+    for method_key, row in zip(bt_methods, bt_rows):
+        color = method_color(method_key)
+        y_lab = "Centralized (pooled)" if method_key == "centralized" else row["Method"]
+        vals = [row[c] for c in seed_cols if row[c] is not None]
+        if len(vals) > 1:
+            fig_btm.add_trace(go.Scatter(
+                x=[min(vals), max(vals)], y=[y_lab] * 2, mode="lines",
+                line=dict(color=color, width=4), opacity=0.3, hoverinfo="skip",
+            ))
+        for i, s in enumerate(seeds):
+            if row[str(s)] is None:
+                continue
+            fig_btm.add_trace(go.Scatter(
+                x=[row[str(s)]], y=[y_lab], mode="markers", name=f"Seed {s}",
+                marker=dict(color=color, size=11, symbol=SEED_SYMBOLS[i % 4][0], line=dict(width=2, color=color)),
+                hovertemplate=f"Seed {s}: %{{x:.4f}}<extra></extra>",
+            ))
+        fig_btm.add_annotation(xref="paper", x=1, xanchor="left", xshift=12, yref="y", y=y_lab,
+                               text=" / ".join(fmt(row[c]) for c in seed_cols), showarrow=False,
+                               font=dict(color=NAVY, size=12))
+    fig_btm.add_annotation(xref="paper", x=1, xanchor="left", xshift=12, yref="paper", y=1, yanchor="bottom",
+                           text="Seeds " + " / ".join(seed_cols), showarrow=False)
+    fig_btm.add_vline(x=0.5, line_dash="dot", line_color=HIGHLIGHT)
+    fig_btm.add_annotation(x=0.5, xanchor="center", yref="paper", y=1, yanchor="bottom", showarrow=False,
+                           text="0.5 = half of benign traffic flagged", font=dict(color=ALERT_TEXT))
+    fig_btm.update_layout(
+        showlegend=False,
+        hovermode="y unified",
+        height=60 + 40 * len(bt_rows),
+        margin=dict(l=8, r=110, t=32, b=16),
+        xaxis=dict(title="Bluetooth benign recall", range=[-0.02, 1.02]),
+        yaxis=dict(autorange="reversed", title=None),
+    )
+
     # Styling function to highlight cells < 0.5
     def highlight_bad(val):
         try:
@@ -670,42 +545,60 @@ with tab1:
                 return ""
             v = float(val)
             if v < 0.5:
-                return f"background-color:#FCEDE5; color:{HIGHLIGHT}; font-weight:700;"
+                return f"background-color:#FCEDE5; color:{ALERT_TEXT}; font-weight:700;"
             return ""
         except (TypeError, ValueError):
             return ""
-    # Apply styling to seed columns only
-    seed_cols = [str(s) for s in seeds]
-    styled_bt = df_bt.style.format(
-        {c: lambda x: fmt(x) if isinstance(x, (float, int)) else x for c in df_bt.columns if c != "Method"}
-    ).map(highlight_bad, subset=seed_cols)
-    bt_col, callout_col = st.columns([3, 2], gap="medium")
-    with bt_col, card("bt_recall", "Bluetooth benign‑recall table", "Values below 0.5 highlighted"):
-        st.dataframe(styled_bt, hide_index=True, height=(len(df_bt) + 1) * 35 + 3, width="stretch")
-        st.caption("< 0.5 means >50% false positives on benign traffic. Centralized stores only pooled benign recall, not a Bluetooth‑specific value.")
+    styled_bt = df_bt.style.map(highlight_bad, subset=seed_cols)
+
+    seed_legend = ", ".join(f"{SEED_SYMBOLS[i % 4][1]} seed {s}" for i, s in enumerate(seeds))
+    bt_col, callout_col = st.columns([7, 3], gap="medium")
+    with bt_col, card("bt_recall", "Bluetooth benign recall by method", f"{seed_legend}; values below 0.5 highlighted",
+                      height="stretch"):
+        show_chart(fig_btm, alt="Dot plot of Bluetooth benign recall per method and seed; shared models fall far below 0.5 while local-only stays near 1")
+        with st.expander("Table view", icon=":material/table_chart:"):
+            st.dataframe(
+                styled_bt,
+                hide_index=True,
+                column_config={c: st.column_config.NumberColumn(f"Seed {c}", format="%.4f") for c in seed_cols},
+                height=(len(df_bt) + 1) * 35 + 3,
+                width="stretch",
+                alt="Bluetooth benign recall per method and seed",
+            )
 
     # Bluetooth collapse callout
     bt_by_seed = {k: " / ".join(fmt(bt_recall(data, k, s)) for s in seeds) for k in ("fedavg", "fedper", "local_only")}
-    with callout_col:
-        callout(
-            f"BT benign recall, seeds {' / '.join(map(str, seeds))}"
-            "<ul>"
-            f"<li>FedAvg: {bt_by_seed['fedavg']}</li>"
-            f"<li>Worst FedProx (μ={worst_mu}, seed {worst_seed}): {fmt(worst_bt_recall)}</li>"
-            f"<li>FedPer: {bt_by_seed['fedper']}</li>"
-            f"<li>Local‑only: {bt_by_seed['local_only']}</li>"
-            "</ul>"
+    with callout_col, card("bt_callout", "Bluetooth collapse", f"BT benign recall, seeds {' / '.join(map(str, seeds))}",
+                           height="stretch"):
+        st.badge("Shared models collapse", icon=":material/warning:", color="red")
+        st.markdown(
+            f"- **FedAvg**: {bt_by_seed['fedavg']}\n"
+            f"- **Worst FedProx** (μ={worst_mu}, seed {worst_seed}): {fmt(worst_bt_recall)}\n"
+            f"- **FedPer**: {bt_by_seed['fedper']}\n"
+            f"- **Local‑only**: {bt_by_seed['local_only']}\n\n"
             "The collapse is driven by sharing; the proximal term exacerbates it. "
-            "Personalizing the final layer (FedPer) recovers most of the gap.",
-            kind="warning",
-            title="Bluetooth collapse"
+            "Personalizing the final layer (FedPer) recovers most of the gap."
         )
+        st.caption("< 0.5 means >50% false positives on benign traffic. Centralized stores only pooled benign recall, not a Bluetooth‑specific value.")
+
+    with card("unified", "Unified detection table (macro F1)", "Per‑client macro F1 by seed, then per‑seed averages"):
+        st.dataframe(
+            df_unified,
+            hide_index=True,
+            column_config={"Method": st.column_config.TextColumn(pinned=True)},
+            height=(len(df_unified) + 1) * 35 + 3,
+            width="stretch",
+            alt="Per-client and average macro F1 for every method and seed",
+        )
+        st.caption("Centralized stores only pooled metrics: per‑client cells are empty and its Avg columns show pooled macro F1.")
 
     det_card = card("det_detail", "Detailed per‑seed metrics", "Binary F1 and benign recall per client; collapsed rows highlighted")
     # Seed selector
-    det_seed = det_card.columns([1, 4])[0].selectbox(
+    det_seed = det_card.segmented_control(
         "Seed",
         options=seeds,
+        default=seeds[0],
+        required=True,
         key="det_seed"
     )
     # Build detailed table for selected seed
@@ -717,12 +610,12 @@ with tab1:
             continue
         row = {
             "Method": method_label(method_key),
-            "Wi‑Fi binary F1": fmt(client_metric(run, "wifi", "f1")),
-            "Wi‑Fi benign recall": fmt(client_metric(run, "wifi", "benign_recall")),
-            "MQTT binary F1": fmt(client_metric(run, "mqtt", "f1")),
-            "MQTT benign recall": fmt(client_metric(run, "mqtt", "benign_recall")),
-            "Bluetooth binary F1": fmt(client_metric(run, "bluetooth", "f1")),
-            "Bluetooth benign recall": fmt(client_metric(run, "bluetooth", "benign_recall")),
+            "Wi‑Fi binary F1": client_metric(run, "wifi", "f1"),
+            "Wi‑Fi benign recall": client_metric(run, "wifi", "benign_recall"),
+            "MQTT binary F1": client_metric(run, "mqtt", "f1"),
+            "MQTT benign recall": client_metric(run, "mqtt", "benign_recall"),
+            "Bluetooth binary F1": client_metric(run, "bluetooth", "f1"),
+            "Bluetooth benign recall": client_metric(run, "bluetooth", "benign_recall"),
         }
         # Status flag for collapse
         bt_rec = client_metric(run, "bluetooth", "benign_recall")
@@ -738,10 +631,19 @@ with tab1:
         if row["Status"] == "Collapsed":
             return ["background-color:#FCEDE5; color:#7C2D12; font-weight:600"] * len(row)
         return [""] * len(row)
-    styled_det = df_det.style.format(
-        {c: lambda x: fmt(x) if isinstance(x, (float, int)) else x for c in df_det.columns if c not in ["Method", "Status"]}
-    ).apply(row_style, axis=1)
-    det_card.dataframe(styled_det, hide_index=True, height=(len(df_det) + 1) * 35 + 3, width="stretch")
+    styled_det = df_det.style.apply(row_style, axis=1)
+    _recall_col = st.column_config.ProgressColumn(format="%.4f", min_value=0.0, max_value=1.0)
+    det_card.dataframe(
+        styled_det,
+        hide_index=True,
+        column_config={
+            c: _recall_col if "recall" in c else st.column_config.NumberColumn(format="%.4f")
+            for c in df_det.columns if c not in ("Method", "Status")
+        } | {"Method": st.column_config.TextColumn(pinned=True)},
+        height=(len(df_det) + 1) * 35 + 3,
+        width="stretch",
+        alt=f"Binary F1 and benign recall per client for seed {det_seed}",
+    )
     _wifi_att = client_metric(method_run(data, "fedavg", det_seed), "wifi", "n_attack")
     _wifi_ben = client_metric(method_run(data, "fedavg", det_seed), "wifi", "n_benign")
     wifi_attack_share = f"{_wifi_att / (_wifi_att + _wifi_ben) * 100:.1f}%" if _wifi_att and _wifi_ben is not None else "—"
@@ -749,19 +651,23 @@ with tab1:
 
 # ===== TAB 2: Explanation Divergence =====
 with tab2:
-    # Method and seed selectors
+    takeaway("FedPer’s cross‑client explanation similarity stays at FedAvg level; read any between‑method gap "
+             "against the seed‑to‑seed noise floor before treating it as real.")
+    # Method and seed selectors, placed directly above the charts they drive
     div_methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "local_only", "cluster_fl"]
-    with card("div_select", "Explanation divergence across clients", "Choose a method and seed to inspect its explanations"):
-        sel_method, sel_seed, _ = st.columns([2, 1, 3])
-        div_method = sel_method.selectbox(
+    with st.container(horizontal=True, vertical_alignment="top", gap="medium"):
+        div_method = st.selectbox(
             "Method",
             options=div_methods,
             format_func=method_label,
-            key="div_method"
+            key="div_method",
+            width=260,
         )
-        div_seed = sel_seed.selectbox(
+        div_seed = st.segmented_control(
             "Seed",
             options=seeds,
+            default=seeds[0],
+            required=True,
             key="div_seed"
         )
 
@@ -793,7 +699,8 @@ with tab2:
                     yaxis_title="Feature",
                     plot_bgcolor="white",
                     paper_bgcolor="white"
-                )
+                ),
+                alt="Empty placeholder for the top-10 SHAP chart",
             )
         with col2:
             show_chart(
@@ -801,14 +708,25 @@ with tab2:
                     title="Jaccard similarity heatmap (placeholder)",
                     plot_bgcolor="white",
                     paper_bgcolor="white"
-                )
+                ),
+                alt="Empty placeholder for the Jaccard heatmap",
             )
     elif run is None:
         st.warning(f"No {method_label(div_method)} run found for seed {div_seed} in `{RESULTS_PATH}`.")
     else:
+        ds_entry = data.get("divergence_summary", {}).get(run_key(run), {})
+        # Divergence scope caption
+        scope = ds_entry.get("scope", "Scope not available")
+        with st.container(horizontal=True, vertical_alignment="center", gap="small"):
+            st.caption(f":material/info: **Divergence scope**: {scope}", width="content")
+            if div_method == "cluster_fl":
+                st.badge("Merged", icon=":material/check_circle:", color="green")
+            st.badge(f"Directional only (n={len(seeds)})", icon=":material/info:", color="orange")
+        div_color = method_color(div_method)
+
         # Charts
-        col1, col2 = st.columns([3, 2], gap="medium")
-        with col1, card("div_shap", "Top‑10 mean |SHAP| values", "Averaged across clients"):
+        col1, col2 = st.columns([1, 1], gap="medium")
+        with col1, card("div_shap", "Top‑10 mean |SHAP| values", "Averaged across clients", height="stretch"):
             # Top‑10 SHAP bar chart
             shap_top10 = run.get("shap_top10_per_client", {})
             # Aggregate across clients: mean |SHAP| per feature
@@ -828,51 +746,48 @@ with tab2:
                         x=list(values),
                         y=list(features),
                         orientation="h",
-                        marker=dict(
-                            color=list(values),
-                            colorscale=[[0, "#D7EBE9"], [1, NAVY]],
-                            showscale=False
-                        )
+                        marker_color=div_color,
+                        text=[fmt(v) for v in values],
+                        textposition="outside",
+                        cliponaxis=False,
+                        hovertemplate="%{y}: %{x:.4f}<extra></extra>",
                     )
                 )
                 fig_shap.update_layout(
-                    xaxis_title="Mean |SHAP|",
-                    yaxis_title="",
-                    height=360,
+                    xaxis=dict(title="Mean |SHAP|", range=[0, max(values) * 1.18]),
+                    yaxis=dict(title=None, autorange="reversed"),
+                    height=380,
                     margin=dict(l=8, r=8, t=8, b=16),
-                    plot_bgcolor="white",
-                    paper_bgcolor="white"
                 )
-                show_chart(fig_shap)
+                show_chart(fig_shap, alt=f"Bar chart of top-10 mean absolute SHAP features for {method_label(div_method)}, seed {div_seed}")
             else:
                 st.warning("SHAP top‑10 data not available.")
-        with col2, card("div_jaccard", "Jaccard similarity", "Top‑5 feature sets, per client pair"):
-            # Jaccard similarity per client pair (1×3 heatmap)
+        with col2, card("div_jaccard", "Jaccard similarity", "Top‑5 feature sets, per client pair", height="stretch"):
+            # Jaccard similarity per client pair; bars on a fixed 0–1 scale
             jaccard_pairwise = run.get("jaccard_pairwise", {})
             jac_vals = [jaccard_pairwise.get(p) for p in PAIRS]
-            fig_heat = go.Figure(
-                go.Heatmap(
-                    z=[jac_vals],
-                    x=[PAIR_LABEL[p] for p in PAIRS],
-                    y=[""],
-                    zmin=0,
-                    zmax=1,
-                    colorscale=[[0, "#FFFFFF"], [1, TEAL]],
-                    text=[[fmt(v) for v in jac_vals]],
-                    texttemplate="%{text}",
-                    textfont={"color": "black"}
+            fig_jac = go.Figure(
+                go.Bar(
+                    x=jac_vals,
+                    y=[PAIR_LABEL[p] for p in PAIRS],
+                    orientation="h",
+                    marker_color=div_color,
+                    text=[fmt(v) for v in jac_vals],
+                    textposition="outside",
+                    cliponaxis=False,
+                    hovertemplate="%{y}: %{x:.4f}<extra></extra>",
                 )
             )
-            fig_heat.update_layout(
-                height=360,
+            fig_jac.update_layout(
+                xaxis=dict(title="Top‑5 Jaccard", range=[0, 1.15], tickvals=[0, 0.25, 0.5, 0.75, 1]),
+                yaxis=dict(title=None, autorange="reversed"),
+                bargap=0.55,
+                height=380,
                 margin=dict(l=8, r=8, t=8, b=16),
-                plot_bgcolor="white",
-                paper_bgcolor="white"
             )
-            show_chart(fig_heat)
+            show_chart(fig_jac, alt=f"Bar chart of top-5 Jaccard similarity per client pair for {method_label(div_method)}, seed {div_seed}")
 
         # Full‑metrics table
-        ds_entry = data.get("divergence_summary", {}).get(run_key(run), {})
         seed42 = ds_entry.get("seed42", {})
         seed7 = ds_entry.get("seed7", {})
         noise_floor = ds_entry.get("noise_floor_seed_to_seed", {})
@@ -902,21 +817,23 @@ with tab2:
                 "|Δcos|": dc
             })
         df_full = pd.DataFrame(full_rows)
+        _unit = st.column_config.ProgressColumn(format="%.4f", min_value=0.0, max_value=1.0)
         with card("div_full", "Full divergence metrics", "Top‑5 Jaccard (J), Spearman (ρ) and cosine per client pair and seed, with seed‑to‑seed noise floor"):
             st.dataframe(
                 df_full,
                 hide_index=True,
-                column_config={c: st.column_config.NumberColumn(format="%.4f") for c in df_full.columns if c != "Pair"},
+                column_config={
+                    c: _unit if c.startswith(("J ·", "cos ·")) else st.column_config.NumberColumn(format="%.4f")
+                    for c in df_full.columns if c != "Pair"
+                } | {"Pair": st.column_config.TextColumn(pinned=True)},
                 height=(len(df_full) + 1) * 35 + 3,
-                width="stretch"
+                width="stretch",
+                alt="Jaccard, Spearman and cosine similarity per client pair and seed, with noise floor",
             )
             st.caption("|Δ| columns = seed‑to‑seed noise floor. A between‑method gap smaller than its noise‑floor cell is within seed noise.")
 
-        # Divergence scope caption
-        scope = ds_entry.get("scope", "Scope not available")
-        callout(f"<b>Divergence scope</b>: {html.escape(str(scope))}", kind="info")
-
         # FedPer and local‑only comparison tables
+        _sim_cfg = {"Jaccard": _unit, "Spearman ρ": st.column_config.NumberColumn(format="%.4f"), "Cosine": _unit}
         if div_method == "fedper":
             with card("div_fedper", "FedPer explanation similarity vs baselines", "Per client, against FedAvg and Local‑only"):
                 comp_vs = {"FedAvg": run.get("fedper_vs_fedavg", {}), "Local‑only": run.get("fedper_vs_local_only", {})}
@@ -924,13 +841,15 @@ with tab2:
                     {
                         "Client": PROTO_LABEL[proto],
                         "Compared with": base,
-                        "Jaccard": fmt(comp.get(proto, {}).get("top5_jaccard")),
-                        "Spearman ρ": fmt(comp.get(proto, {}).get("spearman")),
-                        "Cosine": fmt(comp.get(proto, {}).get("cosine")),
+                        "Jaccard": comp.get(proto, {}).get("top5_jaccard"),
+                        "Spearman ρ": comp.get(proto, {}).get("spearman"),
+                        "Cosine": comp.get(proto, {}).get("cosine"),
                     }
                     for proto in PROTOS for base, comp in comp_vs.items()
                 ])
-                st.dataframe(df_comp, hide_index=True, height=(len(df_comp) + 1) * 35 + 3, width="stretch")
+                st.dataframe(df_comp, hide_index=True, column_config=_sim_cfg,
+                             height=(len(df_comp) + 1) * 35 + 3, width="stretch",
+                             alt="FedPer explanation similarity per client against FedAvg and local-only")
         elif div_method == "local_only":
             with card("div_local", "Local‑only vs FedAvg", "Per‑client explanation similarity"):
                 local_vs_global = data.get("local_vs_global", {})
@@ -940,23 +859,28 @@ with tab2:
                     df_local = pd.DataFrame([
                         {
                             "Client": PROTO_LABEL[proto],
-                            "Jaccard": fmt(comp.get(f"{proto}_top5_jaccard")),
-                            "Spearman ρ": fmt(comp.get(f"{proto}_spearman")),
-                            "Cosine": fmt(comp.get(f"{proto}_cosine")),
+                            "Jaccard": comp.get(f"{proto}_top5_jaccard"),
+                            "Spearman ρ": comp.get(f"{proto}_spearman"),
+                            "Cosine": comp.get(f"{proto}_cosine"),
                         }
                         for proto in PROTOS
                     ])
-                    st.dataframe(df_local, hide_index=True, height=(len(df_local) + 1) * 35 + 3, width="stretch")
+                    st.dataframe(df_local, hide_index=True, column_config=_sim_cfg,
+                                 height=(len(df_local) + 1) * 35 + 3, width="stretch",
+                                 alt="Local-only versus FedAvg explanation similarity per client")
                 else:
                     st.warning("Local‑vs‑global comparison data not available for this seed.")
 
 # ===== TAB 3: Methods Compared =====
 with tab3:
+    takeaway(f"Local‑only beats every shared model ({local_mean - best_shared_mean:+.4f} avg macro F1) and no μ rescues "
+             "Bluetooth; FedPer recovers most of the gap and Cluster‑FL resolves the collapse structurally.")
+
     # Centerpiece: BT benign recall vs μ
     fig_bt = go.Figure()
-    # Lines per seed (FedAvg/FedProx family → BLUE; seeds distinguished by dash)
+    # Lines per seed (FedAvg/FedProx family → BLUE; seeds distinguished by dash), labelled at the line end
+    seed_ends = []
     for i, seed in enumerate(seeds):
-        # Collect points: FedAvg (μ=0) + FedProx mus
         x_vals = ["FedAvg (μ=0)"] + [f"μ={m}" for m in mus]
         y_vals = [bt_recall(data, "fedavg", seed)] + [bt_recall(data, f"fedprox_mu{mu}", seed) for mu in mus]
         # Filter out None
@@ -970,9 +894,16 @@ with tab3:
                     mode="lines+markers",
                     name=f"Seed {seed}",
                     line=dict(color=BLUE, width=2, dash="solid" if i == 0 else "dashdot"),
-                    marker=dict(size=8)
+                    marker=dict(size=8),
+                    hovertemplate="%{y:.4f}",
                 )
             )
+            seed_ends.append((y_pts[-1], x_pts[-1], seed))
+    # End labels stacked above the points (highest value on top) so they never touch the x tick labels
+    for k, (y_end, x_end, seed) in enumerate(sorted(seed_ends, reverse=True)):
+        fig_bt.add_annotation(x=x_end, y=y_end, text=f"Seed {seed}", showarrow=False, xanchor="left",
+                              xshift=6, yanchor="bottom", yshift=6 + 16 * (len(seed_ends) - 1 - k),
+                              font=dict(color=BLUE))
     # Reference lines: local‑only (dashed teal) and FedPer (dotted amber)
     local_bt_means = [v for s in seeds if (v := bt_recall(data, "local_only", s)) is not None]
     local_bt_mean = sum(local_bt_means) / len(local_bt_means) if local_bt_means else None
@@ -982,7 +913,8 @@ with tab3:
             line_dash="dash",
             line_color=TEAL,
             annotation_text=f"Local‑only ({fmt(local_bt_mean)})",
-            annotation_position="top left"
+            annotation_position="top left",
+            annotation_font_color=TEAL_TEXT,
         )
     fedper_bt_means = [v for s in seeds if (v := bt_recall(data, "fedper", s)) is not None]
     fedper_bt_mean = sum(fedper_bt_means) / len(fedper_bt_means) if fedper_bt_means else None
@@ -992,84 +924,61 @@ with tab3:
             line_dash="dot",
             line_color=AMBER,
             annotation_text=f"FedPer ({fmt(fedper_bt_mean)})",
-            annotation_position="top right"
+            annotation_position="top right",
+            annotation_font_color=AMBER_TEXT,
         )
     fig_bt.update_layout(
-        xaxis_title="Method",
-        yaxis_title="Benign recall",
+        xaxis_title="Aggregator (μ = FedProx proximal strength)",
+        yaxis_title="Bluetooth benign recall",
         yaxis=dict(range=[0, 1.05]),
         hovermode="x unified",
-        height=420,
-        plot_bgcolor="white",
-        paper_bgcolor="white"
+        showlegend=False,
+        height=400,
+        margin=dict(l=8, r=72, t=24, b=16),
     )
-    with card("bt_vs_mu", "Bluetooth benign recall vs μ", "FedAvg and FedProx per seed (held‑out test), with local‑only and FedPer reference lines"):
-        show_chart(fig_bt)
 
-    # Secondary chart: avg macro F1 per method
+    # Secondary chart: avg macro F1 per method (horizontal: long method names stay readable)
     fig_f1 = go.Figure()
     methods_for_f1 = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "cluster_fl", "local_only", "centralized"]
-    x_labels = []
-    y_means = []
-    y_errors = []  # half spread for error bars
+    y_labels = []
+    x_means = []
+    x_errors = []  # half spread for error bars
+    colors = []  # FedAvg/FedProx → BLUE, FedPer → AMBER, Cluster-FL → NAVY, Local‑only → TEAL, Centralized → GREY
     for method_key in methods_for_f1:
         if method_key == "centralized":
             # Only pooled macro F1 is stored for centralized
             seed_vals = [v for v in cent_f1.values() if v is not None]
-            if seed_vals:
-                mean_val, spread = mean_spread(seed_vals)
-                x_labels.append("Centralized (pooled)")
-                y_means.append(mean_val)
-                y_errors.append(spread / 2)
+            label = "Centralized (pooled)"
         else:
-            seed_vals = []
-            for seed in seeds:
-                run = method_run(data, method_key, seed)
-                if run:
-                    seed_vals.append(avg_macro_f1(run))
-            if seed_vals:
-                mean_val, spread = mean_spread(seed_vals)
-                x_labels.append(method_label(method_key))
-                y_means.append(mean_val)
-                y_errors.append(spread / 2)
-    # Assign colors: FedAvg/FedProx → BLUE, FedPer → AMBER, Cluster-FL → NAVY, Local‑only → TEAL, Centralized → GREY
-    colors = []
-    for label in x_labels:
-        if label.startswith("FedProx") or label == "FedAvg":
-            colors.append(BLUE)
-        elif label == "FedPer":
-            colors.append(AMBER)
-        elif label == "Cluster-FL":
-            colors.append(NAVY)
-        elif label == "Local-only":
-            colors.append(TEAL)
-        else:  # Centralized
-            colors.append(GREY)
+            seed_vals = [avg_macro_f1(r) for seed in seeds if (r := method_run(data, method_key, seed))]
+            label = method_label(method_key)
+        if seed_vals:
+            mean_val, spread = mean_spread(seed_vals)
+            y_labels.append(label)
+            x_means.append(mean_val)
+            x_errors.append(spread / 2)
+            colors.append(method_color(method_key))
     fig_f1.add_trace(
         go.Bar(
-            x=x_labels,
-            y=y_means,
-            error_y=dict(type="data", array=y_errors, visible=True),
+            x=x_means,
+            y=y_labels,
+            orientation="h",
+            error_x=dict(type="data", array=x_errors, visible=True, color=NAVY, thickness=1.5, width=4),
             marker_color=colors,
-            text=[fmt(y) for y in y_means],
-            # Inside the bar so labels don't collide with the error bars
-            textposition="inside",
-            insidetextanchor="middle",
-            textfont=dict(color="white"),
+            hovertemplate="%{y}: %{x:.4f}<extra></extra>",
         )
     )
+    # Values sit in the right margin so they never collide with the error bars
+    for label, mean_val in zip(y_labels, x_means):
+        fig_f1.add_annotation(xref="paper", x=1, xanchor="left", xshift=12, yref="y", y=label,
+                              text=fmt(mean_val), showarrow=False, font=dict(color=NAVY, size=12))
     fig_f1.update_layout(
-        xaxis_title="Method",
-        yaxis_title="Macro F1",
-        yaxis=dict(range=[0, 1.0]),
-        uniformtext_minsize=8,
-        uniformtext_mode="hide",
-        height=420,
-        plot_bgcolor="white",
-        paper_bgcolor="white"
+        xaxis=dict(title="Avg macro F1 (seed mean)", range=[0, 1.0]),
+        yaxis=dict(title=None, autorange="reversed"),
+        bargap=0.35,
+        height=460,
+        margin=dict(l=8, r=72, t=24, b=16),
     )
-    with card("f1_methods", "Average macro F1 per method", "Seed mean; error bars span seed min–max"):
-        show_chart(fig_f1)
 
     cluster_f1_means = [avg_macro_f1(r) for s in seeds if (r := method_run(data, "cluster_fl", s))]
     cluster_f1_mean = sum(cluster_f1_means) / len(cluster_f1_means) if cluster_f1_means else 0.0
@@ -1085,10 +994,28 @@ with tab3:
     cent_gap_text = fmt(abs(local_mean - cent_f1_mean)) if cent_f1_mean is not None else "—"
     cent_f1_text = "/".join(fmt(cent_f1.get(s)) for s in seeds)
     cent_benign_text = "/".join(fmt(cent_benign.get(s)) for s in seeds)
-    with card("findings", "Written findings"):
+
+    chart_col, text_col = st.columns([3, 2], gap="medium")
+    with chart_col, card("bt_vs_mu", "Bluetooth benign recall vs μ",
+                         "FedAvg and FedProx per seed (held‑out test), with local‑only and FedPer reference lines",
+                         height="stretch"):
+        show_chart(fig_bt, alt="Line chart of Bluetooth benign recall across FedAvg and FedProx mu values per seed")
+    with text_col, card("findings_mu", "No μ saves Bluetooth", height="stretch"):
+        st.markdown(
+            f"Even the gentlest proximal term (μ={mu_min}) lowers Bluetooth benign recall below FedAvg "
+            f"({smallest_mu_text}).\n\n"
+            f"By μ={mu_max} the model flags **{flag_range_text}** of Bluetooth benign traffic as attack.\n\n"
+            f"Local‑only sits at {fmt(local_bt_min)} — the collapse is caused by *sharing*, and proximal anchoring "
+            "only deepens it."
+        )
+
+    chart_col, text_col = st.columns([3, 2], gap="medium")
+    with chart_col, card("f1_methods", "Average macro F1 per method", "Seed mean; error bars span seed min–max",
+                         height="stretch"):
+        show_chart(fig_f1, alt="Horizontal bar chart of average macro F1 per method with seed range error bars")
+    with text_col, card("findings", "What the comparison shows", height="stretch"):
         st.markdown(
             f"""
-            - **No μ saves Bluetooth**: Even the gentlest proximal term (μ={mu_min}) lowers Bluetooth benign recall below FedAvg ({smallest_mu_text}). By μ={mu_max} the model flags {flag_range_text} of Bluetooth benign traffic as attack. Local‑only sits at {fmt(local_bt_min)} — the collapse is caused by *sharing*, and proximal anchoring only deepens it.
             - **Local‑only beats all sharing**: Local‑only achieves {fmt(local_mean)} avg macro F1 vs {fmt(best_shared_mean)} for the best shared model ({method_label(best_shared_label)}) — a {local_mean - best_shared_mean:+.4f} absolute gain. It matches the pooled centralized reference ({cent_f1_text}) within {cent_gap_text} points and beats it on Bluetooth benign recall ({fmt(local_bt_min)} vs pooled {cent_benign_text}).
             - **FedPer’s trade‑off position**: FedPer recovers {fmt(fedper_bt_mean)} Bluetooth benign recall (seed mean) — {fedper_gap_text} of the FedAvg→local‑only gap. Its avg macro F1 ({fmt(fedper_f1_mean)}) is {fedper_vs_local_text} of local‑only, and cross‑client explanation similarity remains at FedAvg level (see the Explanation Divergence tab).
             - **Cluster‑FL resolves the collapse structurally**: Protocol‑aligned clusters ({'{Wi‑Fi}'}, {'{MQTT, Bluetooth}'}) avoid inter‑protocol gradient conflict entirely — {fmt(cluster_f1_mean)} avg macro F1 with {fmt(cluster_bt_mean)} Bluetooth benign recall, without a private per‑client head.
@@ -1097,10 +1024,12 @@ with tab3:
 
 # ===== TAB 4: Methodology & Limitations =====
 with tab4:
+    takeaway(f"{len(seeds)} seeds × {run_meta.get('n_rounds', '—')} rounds × {run_meta.get('n_local_epochs', '—')} local "
+             "epochs: every result in this dashboard is a directional trend, with no p‑values or confidence intervals.")
     _mu_list = ", ".join(map(str, mus))
     meth_card = card("methodology", "Study scale & methodology")
     scale_col, methods_col = meth_card.columns([3, 2], gap="large")
-    scale_col.markdown('<div class="sub-head">Setup</div>', unsafe_allow_html=True)
+    scale_col.markdown("**Setup**")
     scale_col.markdown(
         f"""
         - **Seeds**: {len(seeds)} ({', '.join(map(str, seeds))}) — directional trends only, no statistical inference.
@@ -1113,7 +1042,7 @@ with tab4:
         - **Noise floor**: Seed‑to‑seed |difference| of each statistic (n={len(seeds)} seeds).
         """
     )
-    methods_col.markdown('<div class="sub-head">Methods compared</div>', unsafe_allow_html=True)
+    methods_col.markdown("**Methods compared**")
     methods_col.markdown(
         f"""
         - **FedAvg**: Shared model, no proximal term.
@@ -1126,7 +1055,7 @@ with tab4:
     )
     verified_col, planned_col = card("verified_planned", "Verified vs. planned").columns(2, gap="large")
     with verified_col:
-        st.markdown('<div class="sub-head">Verified</div>', unsafe_allow_html=True)
+        st.badge("Verified", icon=":material/check_circle:", color="green")
         st.markdown(
             f"""
             - Centralized baseline benchmark
@@ -1140,7 +1069,7 @@ with tab4:
             """
         )
     with planned_col:
-        st.markdown('<div class="sub-head">Planned / Open</div>', unsafe_allow_html=True)
+        st.badge("Planned / open", icon=":material/schedule:", color="orange")
         st.markdown(
             """
             - Full 10‑seed noise‑floor calibration & logarithmic μ sweep
@@ -1158,15 +1087,16 @@ with tab4:
         _cf_mu = sum(_cf_f1) / len(_cf_f1)
         _cf_bt_m = sum(_cf_bt) / len(_cf_bt)
         _cf_seed_txt = " / ".join(map(str, seeds))
-        cf_card.success(
+        cf_card.badge(f"Merged ({len(seeds)} seeds)", icon=":material/check_circle:", color="green")
+        cf_card.markdown(
             f"""
-            **Status**: Merged ({len(seeds)} seeds) — protocol‑aligned clusters {{Wi‑Fi}} and {{MQTT, Bluetooth}}, one shared model per cluster.
+            Protocol‑aligned clusters {{Wi‑Fi}} and {{MQTT, Bluetooth}}, one shared model per cluster.
 
             - **Avg macro F1** (seeds {_cf_seed_txt}): {' / '.join(fmt(v) for v in _cf_f1)} — seed mean **{fmt(_cf_mu)}**
             - **Bluetooth benign recall** (seeds {_cf_seed_txt}): {' / '.join(fmt(v) for v in _cf_bt)} — seed mean **{fmt(_cf_bt_m)}**
             """
         )
-        cf_card.expander("Details").markdown(
+        cf_card.expander("Details", icon=":material/info:").markdown(
             f"""
             - **Divergence scope**: {data.get('divergence_summary', {}).get('cluster_fl', {}).get('scope', 'across cluster‑personalized models')}
             - **Provenance**: merged from `results/cluster_fl_results.json` via `src/merge_cluster_fl.py` (no retraining; no other keys touched).
@@ -1222,20 +1152,22 @@ with tab4:
         df_stab,
         hide_index=True,
         column_config={
+            "Aggregator": st.column_config.TextColumn(pinned=True),
             "Wi‑Fi Top‑5 Jaccard": _jac,
             "MQTT Top‑5 Jaccard": _jac,
             "Bluetooth Top‑5 Jaccard": _jac,
             "Max pairwise Jaccard |diff|": st.column_config.NumberColumn(format="%.4f"),
         },
         height=(len(df_stab) + 1) * 35 + 3,
-        width="stretch"
+        width="stretch",
+        alt="Seed-to-seed top-5 Jaccard stability per client for every aggregator",
     )
     if shared_status is not None:
         stab_card.caption(f"Status (all aggregators): {shared_status}")
 
     arch_card = card("architecture", "System architecture diagram")
     if os.path.exists(ARCH_IMG_PATH):
-        arch_card.image(ARCH_IMG_PATH, width="stretch")
+        arch_card.image(ARCH_IMG_PATH, width="stretch", alt="FedXplain-IoMT system architecture diagram")
         arch_card.caption("Figure 1: End‑to‑end FedXplain‑IoMT system architecture.")
     else:
         arch_card.warning(f"Architecture diagram not found: {ARCH_IMG_PATH}")
@@ -1248,19 +1180,27 @@ with tab5:
             "Run `python -m src.run_generalization_study` from the repo root."
         )
     else:
+        takeaway("FL is justified here only where its zero‑day recall exceeds local‑only with a positive detection "
+                 "margin, and where the head‑only curve (especially the trunk trained without the target client) "
+                 "stays above local‑only at small N.")
         GEN_COLORS = {"local_only": TEAL, "fedavg": BLUE, "fedper": AMBER, "cluster_fl": NAVY,
-                      "fedper_head": AMBER, "fedper_head_unseen": HIGHLIGHT}
+                      "fedper_head": AMBER, "fedper_head_unseen": AMBER}
+        # Both FedPer-head arms stay in the FedPer amber; the trunk-without-target arm is dashed.
+        GEN_DASH = {"fedper_head_unseen": "dash"}
         GEN_LABELS = {"fedper_head": "FedPer head (trunk saw target data)",
                       "fedper_head_unseen": "FedPer head (trunk without target)"}
+        _gen_seeds = gen_data.get("zero_day", {}).get("config", {}).get("seeds", seeds)
 
         # ---- Experiment 1: Zero-Day ----
         zd_card = card("zero_day", "Experiment 1 — Zero‑day (novel attack) detection", "Attack recall on attack types never seen in the target client's local training set")
         zd = gen_data.get("zero_day", {})
         zd_targets = list(zd.get("targets", {}).keys())
-        zd_target = zd_card.columns([1, 3])[0].selectbox(
+        zd_target = zd_card.segmented_control(
             "Target client",
             options=zd_targets,
             format_func=lambda p: PROTO_LABEL.get(p, p),
+            default=zd_targets[0] if zd_targets else None,
+            required=bool(zd_targets),
             key="zd_target",
             help="Attacks never seen in its local training set",
         )
@@ -1272,26 +1212,28 @@ with tab5:
             key=lambda a: (zd_entry["unseen_attacks"][a].get("source", ""), a),
         )
 
+        # Horizontal bars keep the (long) attack names readable instead of rotated x-ticks.
         fig_zd = go.Figure()
         for m in zd_methods:
             per_attack = zd_summary[m].get("per_attack", {})
             fig_zd.add_trace(go.Bar(
                 name=GEN_LABELS.get(m, method_label(m)),
-                x=attacks,
-                y=[per_attack.get(a, {}).get("mean") for a in attacks],
+                y=attacks,
+                x=[per_attack.get(a, {}).get("mean") for a in attacks],
+                orientation="h",
                 marker_color=GEN_COLORS.get(m, GREY),
+                hovertemplate="%{x:.4f}",
             ))
         fig_zd.update_layout(
             barmode="group",
-            xaxis_title="Unseen attack type (from other protocols' held‑out test splits)",
-            yaxis_title="Attack recall (seed mean)",
-            yaxis=dict(range=[0, 1.05]),
-            plot_bgcolor="white",
-            paper_bgcolor="white",
-            height=480,
+            yaxis=dict(title="Unseen attack type (from other protocols' held‑out test splits)", autorange="reversed"),
+            xaxis=dict(title="Attack recall (seed mean)", range=[0, 1.05]),
+            bargap=0.2,
+            hovermode="y unified",
+            height=max(360, 120 + len(attacks) * (7 * max(len(zd_methods), 1) + 10)),
         )
         with zd_card:
-            show_chart(fig_zd)
+            show_chart(fig_zd, alt=f"Grouped horizontal bar chart of per-attack recall on unseen attacks for the {PROTO_LABEL.get(zd_target, zd_target)} client")
 
         zd_rows = []
         for m in zd_methods:
@@ -1316,10 +1258,11 @@ with tab5:
                 if c == "Detection margin"
                 else st.column_config.ProgressColumn(format="%.4f", min_value=0.0, max_value=1.0)
                 for c in df_zd.columns if c != "Method"
-            },
+            } | {"Method": st.column_config.TextColumn(pinned=True)},
             width="stretch",
+            alt=f"Zero-day recall, detection margin and in-distribution metrics per method for the {PROTO_LABEL.get(zd_target, zd_target)} client",
         )
-        zd_card.expander("How to read this table").markdown(
+        zd_card.expander("How to read this table", icon=":material/help:").markdown(
             "Foreign inputs are standardized with the target client's own scaler. "
             "'Benign flagged' is the control: if foreign benign traffic is flagged as often as foreign attacks, "
             "the model is reacting to distribution shift, not recognising the attack. "
@@ -1331,10 +1274,12 @@ with tab5:
         ds_all = gen_data.get("data_scarcity", {})
         # Older single-target files store one experiment at the top level.
         ds_targets = ds_all.get("targets") or ({ds_all.get("config", {}).get("target", "bluetooth"): ds_all} if ds_all else {})
-        ds_target = ds_card.columns([1, 3])[0].selectbox(
+        ds_target = ds_card.segmented_control(
             "Target client",
             options=list(ds_targets.keys()),
             format_func=lambda p: PROTO_LABEL.get(p, p),
+            default=next(iter(ds_targets), None),
+            required=bool(ds_targets),
             key="ds_target",
             help="The small clinic whose training set is subsampled",
         )
@@ -1348,20 +1293,34 @@ with tab5:
                 y=[p["f1_macro_mean"] for p in points],
                 error_y=dict(type="data", array=[p["f1_macro_std"] for p in points], visible=True),
                 mode="lines+markers",
-                line=dict(color=GEN_COLORS.get(arm, GREY)),
+                line=dict(color=GEN_COLORS.get(arm, GREY), dash=GEN_DASH.get(arm, "solid")),
+                marker=dict(symbol="circle-open" if arm in GEN_DASH else "circle", size=7),
+                hovertemplate="%{y:.4f}",
             ))
+        _n_ticks = sorted({p["n_train"] for pts in ds_summary.values() for p in pts})
         fig_ds.update_layout(
-            xaxis=dict(title="Training samples available at the clinic (N, log scale)", type="log"),
+            # Label only the sampled N values; Plotly's default log ticks crowd the axis with minor labels
+            xaxis=dict(title="Training samples available at the clinic (N, log scale)", type="log",
+                       tickvals=_n_ticks, ticktext=[f"{n:,}" for n in _n_ticks]),
             yaxis=dict(title="Macro F1 on full held‑out test set", range=[0, 1.05]),
             hovermode="x unified",
-            height=440,
-            plot_bgcolor="white",
-            paper_bgcolor="white",
+            height=420,
         )
+        # Smallest-N value per arm (equal-width cards), then the full curve
+        _ds_arms = [(arm, pts) for arm, pts in ds_summary.items() if pts]
+        for col, (arm, points) in zip(ds_card.columns(max(len(_ds_arms), 1), gap="medium"), _ds_arms):
+            col.metric(
+                GEN_LABELS.get(arm, method_label(arm)),
+                fmt(points[0]["f1_macro_mean"]),
+                f"± {points[0]['f1_macro_std']:.4f}", delta_color="off", delta_arrow="off",
+                delta_description=f"std at N={points[0]['n_train']}",
+                border=True,
+                help=f"Macro F1 at the smallest training set (N={points[0]['n_train']}), mean ± std over seeds × repeats",
+            )
         with ds_card:
-            show_chart(fig_ds)
+            show_chart(fig_ds, alt=f"Line chart of macro F1 versus training samples for the {PROTO_LABEL.get(ds_target, ds_target)} client")
         ds_cfg = ds.get("config", {})
-        ds_card.expander("Method details").markdown(
+        ds_card.expander("Method details", icon=":material/science:").markdown(
             f"Seeds {ds_cfg.get('seeds')} × {ds_cfg.get('repeats_per_seed')} stratified draws per N; "
             f"{ds_cfg.get('epochs')} epochs with a floor of {ds_cfg.get('min_optimizer_steps')} optimizer steps for every arm; "
             "scaler refit on the N‑sample subset.\n\n"
@@ -1369,7 +1328,8 @@ with tab5:
         )
 
         # ---- Takeaway (computed from the JSON, not hard-coded) ----
-        tk_card = card("takeaway", "Takeaway")
+        tk_card = card("takeaway", "Results summary", "Computed from the generalization results file for the selected targets")
+        tk_card.badge(f"Directional only (n={len(_gen_seeds)} seeds)", icon=":material/info:", color="orange")
         lines = []
         if zd_summary:
             parts = ", ".join(
@@ -1390,17 +1350,11 @@ with tab5:
                 )
                 lines.append(f"- **Data scarcity ({PROTO_LABEL.get(ds_target, ds_target)})** — macro F1 at N={smallest['n_train']}: {parts}.")
         tk_card.markdown("\n".join(lines) if lines else "No results available.")
-        tk_card.caption("Two seeds — directional only.")
-        tk_card.expander("Interpretation guide").markdown(
-            "FL is justified here only where its zero‑day recall exceeds local‑only with a positive "
-            "detection margin, and where the head‑only curve (especially the trunk trained without the target client) "
-            "stays above local‑only at small N."
-        )
 
 # ---- Footer ----
-st.markdown(
-    '<div class="footer">FedXplain‑IoMT • Experimental research framework • '
+st.space("medium")
+st.caption(
+    "FedXplain‑IoMT • Experimental research framework • "
     f"Dashboard rendered with Python {'.'.join(map(str, sys.version_info[:3]))} • "
-    f"Study results timestamp: {html.escape(str(run_meta.get('timestamp', '—')))}</div>",
-    unsafe_allow_html=True
+    f"Study results timestamp: {run_meta.get('timestamp', '—')}"
 )
