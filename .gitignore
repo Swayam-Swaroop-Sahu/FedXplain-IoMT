@@ -22,20 +22,19 @@ data/_extract_temp/
 *.tar.gz
 *.pcap
 
-# Model artifacts
-models/*.pth
+# Model artifacts (keep pickle/h5 ignored, permit lightweight .pth in models/)
 models/*.pkl
 models/*.h5
 
-# Results (regenerable)
+# Results (images are ignored, allow key JSONs)
 results/*.png
 results/*.json
 !results/study_results.json
+!results/cluster_fl_results.json
+!results/generalization_results.json
 
 # Checkpoints and temporary files
 results/checkpoints/
-*.pth
-*.pt
 .DS_Store
 
 # LaTeX and paper assets (kept local for Overleaf, excluded from git)
