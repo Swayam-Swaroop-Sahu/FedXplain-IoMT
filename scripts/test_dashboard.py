@@ -36,7 +36,7 @@ def main():
     else:
         print("[OK] No exceptions during initial run.")
 
-    # Check that we have 5 tabs
+    # Check that we have 6 tabs
     tabs_attr = getattr(at, "tabs", None)
     if tabs_attr is None:
         print("[WARN] 'tabs' attribute not found on AppTest object; using fallback method.")
@@ -49,17 +49,17 @@ def main():
                 if hasattr(el, 'children'):
                     tab_count = len(el.children)
                 break
-        if tab_count != 5:
-            print(f"[FAIL] Expected 5 tabs, found {tab_count} via fallback.")
+        if tab_count != 6:
+            print(f"[FAIL] Expected 6 tabs, found {tab_count} via fallback.")
             sys.exit(1)
         else:
-            print(f"[OK] Found 5 tabs via fallback.")
+            print(f"[OK] Found 6 tabs via fallback.")
     else:
-        if len(tabs_attr) != 5:
-            print(f"[FAIL] Expected 5 tabs, found {len(tabs_attr)}.")
+        if len(tabs_attr) != 6:
+            print(f"[FAIL] Expected 6 tabs, found {len(tabs_attr)}.")
             sys.exit(1)
         else:
-            print("[OK] Found 5 tabs.")
+            print("[OK] Found 6 tabs.")
 
     # Now test the cluster_fl placeholder by setting the div_method selectbox to "cluster_fl"
     print("[INFO] Testing cluster_fl placeholder selection...")
@@ -141,7 +141,7 @@ def main():
 
     print("\n[SUCCESS] All tests passed:")
     print("  - 0 exceptions during initial run")
-    print("  - 5 tabs present")
+    print("  - 6 tabs present")
     print("  - 0 exceptions after setting cluster_fl")
     print("  - cluster_fl renders real results (no placeholder)")
 

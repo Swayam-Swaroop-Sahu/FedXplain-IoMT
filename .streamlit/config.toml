@@ -1,0 +1,17 @@
+[client]
+# Hides the deploy button and developer menu items; the header (expand-sidebar button) stays.
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#2A9D8F"
+# White page so the white Plotly charts (theme=None) sit flush inside bordered cards.
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F5F2"
+textColor = "#0F2A43"
+borderColor = "#E5E5DE"
+dataframeBorderColor = "#E5E5DE"
+baseRadius = "medium"
+showSidebarBorder = true
+headingFontSizes = ["2rem", "1.5rem", "1.1rem", "1rem", "0.875rem", "0.75rem"]
+headingFontWeights = [700, 600, 600, 600, 600, 600]

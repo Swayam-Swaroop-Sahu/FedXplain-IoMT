@@ -25,6 +25,7 @@ data/_extract_temp/
 # Model artifacts (keep pickle/h5 ignored, permit lightweight .pth in models/)
 models/*.pkl
 models/*.h5
+models/generalization/
 
 # Results (images are ignored, allow key JSONs)
 results/*.png
