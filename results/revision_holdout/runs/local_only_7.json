@@ -1,0 +1,658 @@
+{
+  "history": [
+    {
+      "round": 1,
+      "train": {
+        "wifi": {
+          "training_bce": 0.14159659925865103,
+          "steps": 221,
+          "seconds": 2.0068164999829605
+        },
+        "mqtt": {
+          "training_bce": 0.3066521695154345,
+          "steps": 117,
+          "seconds": 0.6528880000114441
+        },
+        "bluetooth": {
+          "training_bce": 0.5616691777339349,
+          "steps": 39,
+          "seconds": 0.24213440000312403
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.027363790199160576,
+        "mqtt": 0.10620532929897308,
+        "bluetooth": 0.36806342005729675
+      },
+      "validation_accuracy": {
+        "wifi": 0.9898115687992989,
+        "mqtt": 0.9607125185551707,
+        "bluetooth": 0.9807692307692307
+      },
+      "groups": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {}
+    },
+    {
+      "round": 2,
+      "train": {
+        "wifi": {
+          "training_bce": 0.025267378416552938,
+          "steps": 221,
+          "seconds": 1.3478011999977753
+        },
+        "mqtt": {
+          "training_bce": 0.0895990769768882,
+          "steps": 117,
+          "seconds": 0.6854704999714158
+        },
+        "bluetooth": {
+          "training_bce": 0.20496559754396096,
+          "steps": 39,
+          "seconds": 0.22182039998006076
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.023647576570510864,
+        "mqtt": 0.07341893017292023,
+        "bluetooth": 0.11166998744010925
+      },
+      "validation_accuracy": {
+        "wifi": 0.9902497808939527,
+        "mqtt": 0.9714002968827313,
+        "bluetooth": 0.9795482295482295
+      },
+      "groups": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {}
+    },
+    {
+      "round": 3,
+      "train": {
+        "wifi": {
+          "training_bce": 0.021184539450838216,
+          "steps": 221,
+          "seconds": 1.4405039999983273
+        },
+        "mqtt": {
+          "training_bce": 0.07458950862543196,
+          "steps": 117,
+          "seconds": 0.8333696000045165
+        },
+        "bluetooth": {
+          "training_bce": 0.09462460135229123,
+          "steps": 39,
+          "seconds": 0.3331960000214167
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.021813269704580307,
+        "mqtt": 0.06558167189359665,
+        "bluetooth": 0.08563154190778732
+      },
+      "validation_accuracy": {
+        "wifi": 0.9906879929886064,
+        "mqtt": 0.9738743196437407,
+        "bluetooth": 0.9813797313797313
+      },
+      "groups": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {}
+    },
+    {
+      "round": 4,
+      "train": {
+        "wifi": {
+          "training_bce": 0.019515273820743705,
+          "steps": 221,
+          "seconds": 1.1914470000192523
+        },
+        "mqtt": {
+          "training_bce": 0.06807236023183562,
+          "steps": 117,
+          "seconds": 0.5944937999593094
+        },
+        "bluetooth": {
+          "training_bce": 0.07916756050708966,
+          "steps": 39,
+          "seconds": 0.19143080001231283
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.01943928189575672,
+        "mqtt": 0.062489479780197144,
+        "bluetooth": 0.07532145828008652
+      },
+      "validation_accuracy": {
+        "wifi": 0.9907427695004382,
+        "mqtt": 0.9746660069272637,
+        "bluetooth": 0.9819902319902319
+      },
+      "groups": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {}
+    },
+    {
+      "round": 5,
+      "train": {
+        "wifi": {
+          "training_bce": 0.018358250098024827,
+          "steps": 221,
+          "seconds": 1.1528502000146545
+        },
+        "mqtt": {
+          "training_bce": 0.06390808178828312,
+          "steps": 117,
+          "seconds": 0.5725017000222579
+        },
+        "bluetooth": {
+          "training_bce": 0.07146204258195865,
+          "steps": 39,
+          "seconds": 0.20286170003237203
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.019206194207072258,
+        "mqtt": 0.05873974412679672,
+        "bluetooth": 0.0681675598025322
+      },
+      "validation_accuracy": {
+        "wifi": 0.9910714285714286,
+        "mqtt": 0.9757545769421079,
+        "bluetooth": 0.9819902319902319
+      },
+      "groups": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {}
+    },
+    {
+      "round": 6,
+      "train": {
+        "wifi": {
+          "training_bce": 0.017516118017071647,
+          "steps": 221,
+          "seconds": 1.145959799992852
+        },
+        "mqtt": {
+          "training_bce": 0.06091437525410428,
+          "steps": 117,
+          "seconds": 0.5841026999987662
+        },
+        "bluetooth": {
+          "training_bce": 0.06464323659355824,
+          "steps": 39,
+          "seconds": 0.1925778000149876
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.018461352214217186,
+        "mqtt": 0.05771806836128235,
+        "bluetooth": 0.06221575662493706
+      },
+      "validation_accuracy": {
+        "wifi": 0.9913453111305872,
+        "mqtt": 0.9766452251360712,
+        "bluetooth": 0.9826007326007326
+      },
+      "groups": [
+        [
+          "wifi"
+        ],
+        [
+          "mqtt"
+        ],
+        [
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {}
+    }
+  ],
+  "selected_round": 6,
+  "seconds": 14.011494499980472,
+  "optimizer_steps": 2262,
+  "seed": 7,
+  "method": "local_only",
+  "mu": 0,
+  "config": {
+    "seeds": [
+      42,
+      7,
+      123,
+      2024,
+      31337
+    ],
+    "clients": [
+      "wifi",
+      "mqtt",
+      "bluetooth"
+    ],
+    "rounds": 6,
+    "local_epochs": 1,
+    "pooled_epochs": 6,
+    "batch_size": 256,
+    "lr": 0.001,
+    "widths": [
+      64,
+      32
+    ],
+    "dropout": 0.2,
+    "validation_fraction": 0.2,
+    "test_fraction": 0.2,
+    "mu_values": [
+      0,
+      0.001,
+      0.01,
+      0.05,
+      0.1
+    ],
+    "fixed_groups": [
+      [
+        "wifi"
+      ],
+      [
+        "mqtt",
+        "bluetooth"
+      ]
+    ],
+    "adaptive": {
+      "min_round": 3,
+      "mean_norm_fraction": 0.4,
+      "max_norm_fraction": 0.2
+    },
+    "shap_background": 100,
+    "shap_samples": 200,
+    "shap_bootstrap": 200,
+    "reliability_bins": 10,
+    "operational_fpr": 0.05
+  },
+  "client_metrics": {
+    "wifi": {
+      "tn": 620,
+      "fp": 92,
+      "fn": 199,
+      "tp": 19270,
+      "benign_support": 712,
+      "attack_support": 19469,
+      "benign_recall": 0.8707865168539326,
+      "attack_recall": 0.9897786224253942,
+      "fpr": 0.12921348314606743,
+      "benign_precision": 0.757020757020757,
+      "attack_precision": 0.9952484247495094,
+      "benign_f1": 0.8099281515349445,
+      "attack_f1": 0.9925059874842265,
+      "macro_f1": 0.9012170695095855,
+      "balanced_accuracy": 0.9302825696396634,
+      "roc_auc": 0.9955227728783471,
+      "pr_auc": 0.9996972996639936,
+      "brier": 0.009149644117095724,
+      "log_loss": 0.028153557914123033,
+      "ece": 0.008584217669155967,
+      "reliability": [
+        {
+          "bin": 0,
+          "n": 462,
+          "score": 0.019932963825374024,
+          "attack_fraction": 0.006493506493506494
+        },
+        {
+          "bin": 1,
+          "n": 71,
+          "score": 0.1474793709224242,
+          "attack_fraction": 0.11267605633802817
+        },
+        {
+          "bin": 2,
+          "n": 74,
+          "score": 0.25375911404878393,
+          "attack_fraction": 0.4594594594594595
+        },
+        {
+          "bin": 3,
+          "n": 92,
+          "score": 0.3581677683975348,
+          "attack_fraction": 0.6413043478260869
+        },
+        {
+          "bin": 4,
+          "n": 120,
+          "score": 0.4575477041711012,
+          "attack_fraction": 0.7916666666666666
+        },
+        {
+          "bin": 5,
+          "n": 166,
+          "score": 0.5494544671498005,
+          "attack_fraction": 0.7831325301204819
+        },
+        {
+          "bin": 6,
+          "n": 153,
+          "score": 0.6486061149655926,
+          "attack_fraction": 0.8235294117647058
+        },
+        {
+          "bin": 7,
+          "n": 126,
+          "score": 0.7544880248007213,
+          "attack_fraction": 0.8650793650793651
+        },
+        {
+          "bin": 8,
+          "n": 68,
+          "score": 0.8546852277199821,
+          "attack_fraction": 0.8823529411764706
+        },
+        {
+          "bin": 9,
+          "n": 18849,
+          "score": 0.9996910377453664,
+          "attack_fraction": 0.999787787150512
+        }
+      ],
+      "per_source_label": {
+        "ARP_Spoofing": {
+          "support": 320,
+          "recall": 0.821875
+        },
+        "Benign": {
+          "support": 712,
+          "recall": 0.8707865168539326
+        },
+        "Recon-OS_Scan": {
+          "support": 323,
+          "recall": 0.913312693498452
+        },
+        "Recon-Ping_Sweep": {
+          "support": 175,
+          "recall": 0.7085714285714285
+        },
+        "Recon-Port_Scan": {
+          "support": 495,
+          "recall": 0.9797979797979798
+        },
+        "Recon-VulScan": {
+          "support": 331,
+          "recall": 0.8549848942598187
+        },
+        "TCP_IP-DDoS-ICMP": {
+          "support": 3960,
+          "recall": 1.0
+        },
+        "TCP_IP-DDoS-SYN": {
+          "support": 2207,
+          "recall": 0.9995468962392388
+        },
+        "TCP_IP-DDoS-TCP": {
+          "support": 2262,
+          "recall": 1.0
+        },
+        "TCP_IP-DDoS-UDP": {
+          "support": 4103,
+          "recall": 0.999756275895686
+        },
+        "TCP_IP-DoS-ICMP": {
+          "support": 1202,
+          "recall": 0.9991680532445923
+        },
+        "TCP_IP-DoS-SYN": {
+          "support": 1294,
+          "recall": 0.999227202472952
+        },
+        "TCP_IP-DoS-TCP": {
+          "support": 1145,
+          "recall": 0.9991266375545852
+        },
+        "TCP_IP-DoS-UDP": {
+          "support": 1652,
+          "recall": 1.0
+        }
+      }
+    },
+    "mqtt": {
+      "tn": 3680,
+      "fp": 41,
+      "fn": 183,
+      "tp": 6098,
+      "benign_support": 3721,
+      "attack_support": 6281,
+      "benign_recall": 0.9889814565976888,
+      "attack_recall": 0.9708645120203789,
+      "fpr": 0.011018543402311207,
+      "benign_precision": 0.9526274915868496,
+      "attack_precision": 0.9933213878481837,
+      "benign_f1": 0.9704641350210971,
+      "attack_f1": 0.9819645732689211,
+      "macro_f1": 0.976214354145009,
+      "balanced_accuracy": 0.9799229843090338,
+      "roc_auc": 0.9980150268695757,
+      "pr_auc": 0.9988941870350896,
+      "brier": 0.015563613001438355,
+      "log_loss": 0.052660676530371334,
+      "ece": 0.004839555140627655,
+      "reliability": [
+        {
+          "bin": 0,
+          "n": 3412,
+          "score": 0.014053495263185072,
+          "attack_fraction": 0.0123094958968347
+        },
+        {
+          "bin": 1,
+          "n": 195,
+          "score": 0.13845499162452865,
+          "attack_fraction": 0.13846153846153847
+        },
+        {
+          "bin": 2,
+          "n": 64,
+          "score": 0.24189730611941995,
+          "attack_fraction": 0.34375
+        },
+        {
+          "bin": 3,
+          "n": 97,
+          "score": 0.3728695095567984,
+          "attack_fraction": 0.4536082474226804
+        },
+        {
+          "bin": 4,
+          "n": 95,
+          "score": 0.4583303617906741,
+          "attack_fraction": 0.5052631578947369
+        },
+        {
+          "bin": 5,
+          "n": 52,
+          "score": 0.5428933822853226,
+          "attack_fraction": 0.6730769230769231
+        },
+        {
+          "bin": 6,
+          "n": 31,
+          "score": 0.6460366193567765,
+          "attack_fraction": 0.6129032258064516
+        },
+        {
+          "bin": 7,
+          "n": 32,
+          "score": 0.7534867436179327,
+          "attack_fraction": 0.78125
+        },
+        {
+          "bin": 8,
+          "n": 38,
+          "score": 0.8605581073112837,
+          "attack_fraction": 0.9210526315789473
+        },
+        {
+          "bin": 9,
+          "n": 5986,
+          "score": 0.9975508374563149,
+          "attack_fraction": 0.9996658870698296
+        }
+      ],
+      "per_source_label": {
+        "Benign": {
+          "support": 3721,
+          "recall": 0.9889814565976888
+        },
+        "MQTT-DDoS-Connect_Flood": {
+          "support": 3437,
+          "recall": 1.0
+        },
+        "MQTT-DDoS-Publish_Flood": {
+          "support": 795,
+          "recall": 1.0
+        },
+        "MQTT-DoS-Connect_Flood": {
+          "support": 543,
+          "recall": 1.0
+        },
+        "MQTT-DoS-Publish_Flood": {
+          "support": 1099,
+          "recall": 1.0
+        },
+        "MQTT-Malformed_Data": {
+          "support": 407,
+          "recall": 0.5503685503685504
+        }
+      }
+    },
+    "bluetooth": {
+      "tn": 1939,
+      "fp": 5,
+      "fn": 51,
+      "tp": 1253,
+      "benign_support": 1944,
+      "attack_support": 1304,
+      "benign_recall": 0.9974279835390947,
+      "attack_recall": 0.9608895705521472,
+      "fpr": 0.00257201646090535,
+      "benign_precision": 0.9743718592964824,
+      "attack_precision": 0.9960254372019078,
+      "benign_f1": 0.9857651245551602,
+      "attack_f1": 0.9781420765027322,
+      "macro_f1": 0.9819536005289462,
+      "balanced_accuracy": 0.9791587770456209,
+      "roc_auc": 0.9946867347067586,
+      "pr_auc": 0.9957503436971209,
+      "brier": 0.012664165854600166,
+      "log_loss": 0.05529590482538524,
+      "ece": 0.010327763977150697,
+      "reliability": [
+        {
+          "bin": 0,
+          "n": 1946,
+          "score": 0.02062653971679728,
+          "attack_fraction": 0.012332990750256937
+        },
+        {
+          "bin": 1,
+          "n": 13,
+          "score": 0.14452221910241786,
+          "attack_fraction": 0.46153846153846156
+        },
+        {
+          "bin": 2,
+          "n": 12,
+          "score": 0.24703490901374991,
+          "attack_fraction": 0.4166666666666667
+        },
+        {
+          "bin": 3,
+          "n": 8,
+          "score": 0.3227095285212469,
+          "attack_fraction": 1.0
+        },
+        {
+          "bin": 4,
+          "n": 11,
+          "score": 0.45831039459912826,
+          "attack_fraction": 0.7272727272727273
+        },
+        {
+          "bin": 5,
+          "n": 1,
+          "score": 0.5644203852311194,
+          "attack_fraction": 0.0
+        },
+        {
+          "bin": 6,
+          "n": 2,
+          "score": 0.6269111956913311,
+          "attack_fraction": 0.5
+        },
+        {
+          "bin": 7,
+          "n": 2,
+          "score": 0.7294821911432161,
+          "attack_fraction": 0.5
+        },
+        {
+          "bin": 9,
+          "n": 1253,
+          "score": 0.9971313469471232,
+          "attack_fraction": 0.9984038308060654
+        }
+      ],
+      "per_source_label": {
+        "BT-DoS": {
+          "support": 1304,
+          "recall": 0.9608895705521472
+        },
+        "Benign": {
+          "support": 1944,
+          "recall": 0.9974279835390947
+        }
+      }
+    }
+  },
+  "client_mean_macro_f1": 0.9531283413945136,
+  "pooled_macro_f1": 0.9728155193332578
+}

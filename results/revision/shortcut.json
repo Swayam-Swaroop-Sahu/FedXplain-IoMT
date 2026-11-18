@@ -1,0 +1,167 @@
+{
+  "features": [
+    "fin_flag_number",
+    "syn_flag_number",
+    "rst_flag_number",
+    "psh_flag_number",
+    "ack_flag_number",
+    "ece_flag_number",
+    "cwr_flag_number",
+    "ack_count",
+    "syn_count",
+    "fin_count",
+    "rst_count",
+    "HTTP",
+    "HTTPS",
+    "DNS",
+    "Telnet",
+    "SMTP",
+    "SSH",
+    "IRC",
+    "TCP",
+    "UDP",
+    "DHCP",
+    "ARP",
+    "ICMP",
+    "IGMP",
+    "IPv"
+  ],
+  "depth": 3,
+  "runs": [
+    {
+      "seed": 42,
+      "accuracy": 0.9401889403694567,
+      "balanced_accuracy": 0.9620870440561647,
+      "client_order": [
+        "wifi",
+        "mqtt",
+        "bluetooth"
+      ],
+      "confusion": [
+        [
+          18153,
+          1703,
+          0
+        ],
+        [
+          285,
+          9904,
+          0
+        ],
+        [
+          0,
+          0,
+          3193
+        ]
+      ]
+    },
+    {
+      "seed": 7,
+      "accuracy": 0.9437348568693728,
+      "balanced_accuracy": 0.964056423143794,
+      "client_order": [
+        "wifi",
+        "mqtt",
+        "bluetooth"
+      ],
+      "confusion": [
+        [
+          18590,
+          1591,
+          0
+        ],
+        [
+          290,
+          9712,
+          0
+        ],
+        [
+          0,
+          0,
+          3248
+        ]
+      ]
+    },
+    {
+      "seed": 123,
+      "accuracy": 0.9411393546060934,
+      "balanced_accuracy": 0.9633185892672101,
+      "client_order": [
+        "wifi",
+        "mqtt",
+        "bluetooth"
+      ],
+      "confusion": [
+        [
+          18560,
+          1706,
+          0
+        ],
+        [
+          253,
+          9529,
+          0
+        ],
+        [
+          0,
+          0,
+          3234
+        ]
+      ]
+    },
+    {
+      "seed": 2024,
+      "accuracy": 0.9436902514309689,
+      "balanced_accuracy": 0.9644483996388087,
+      "client_order": [
+        "wifi",
+        "mqtt",
+        "bluetooth"
+      ],
+      "confusion": [
+        [
+          18544,
+          1616,
+          0
+        ],
+        [
+          263,
+          9663,
+          0
+        ],
+        [
+          0,
+          0,
+          3283
+        ]
+      ]
+    },
+    {
+      "seed": 31337,
+      "accuracy": 0.9428976074248177,
+      "balanced_accuracy": 0.9637451742433417,
+      "client_order": [
+        "wifi",
+        "mqtt",
+        "bluetooth"
+      ],
+      "confusion": [
+        [
+          18263,
+          1626,
+          0
+        ],
+        [
+          269,
+          9690,
+          0
+        ],
+        [
+          0,
+          0,
+          3338
+        ]
+      ]
+    }
+  ]
+}

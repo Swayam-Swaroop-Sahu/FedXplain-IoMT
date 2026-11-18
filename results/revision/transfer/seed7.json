@@ -1,0 +1,3184 @@
+{
+  "wifi": {
+    "mqtt": {
+      "local_only": {
+        "benign_fpr": 0.19322762698199408,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.8067723730180059
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9886792452830189,
+            "support": 795,
+            "margin": 0.7954516183010247
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.8067723730180059
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9563239308462238,
+            "support": 1099,
+            "margin": 0.7630963038642298
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9361179361179361,
+            "support": 407,
+            "margin": 0.742890309135942
+          }
+        }
+      },
+      "centralized": {
+        "benign_fpr": 0.17172803009943563,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.8282719699005644
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.8282719699005644
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.8282719699005644
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.8282719699005644
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9582309582309583,
+            "support": 407,
+            "margin": 0.7865029281315227
+          }
+        }
+      },
+      "fedavg": {
+        "benign_fpr": 0.08438591776404192,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.9156140822359581
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9886792452830189,
+            "support": 795,
+            "margin": 0.904293327518977
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.9156140822359581
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9372156505914467,
+            "support": 1099,
+            "margin": 0.8528297328274048
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.7297297297297297,
+            "support": 407,
+            "margin": 0.6453438119656878
+          }
+        }
+      },
+      "fedprox_0": {
+        "benign_fpr": 0.08438591776404192,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.9156140822359581
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9886792452830189,
+            "support": 795,
+            "margin": 0.904293327518977
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.9156140822359581
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9372156505914467,
+            "support": 1099,
+            "margin": 0.8528297328274048
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.7297297297297297,
+            "support": 407,
+            "margin": 0.6453438119656878
+          }
+        }
+      },
+      "fedprox_0.001": {
+        "benign_fpr": 0.08142972319269014,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.9185702768073098
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9962264150943396,
+            "support": 795,
+            "margin": 0.9147966919016495
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.9185702768073098
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9845313921747043,
+            "support": 1099,
+            "margin": 0.9031016689820142
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.7813267813267813,
+            "support": 407,
+            "margin": 0.6998970581340912
+          }
+        }
+      },
+      "fedprox_0.01": {
+        "benign_fpr": 0.07363611932276269,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.9263638806772373
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9949685534591195,
+            "support": 795,
+            "margin": 0.9213324341363568
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.9263638806772373
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9909008189262967,
+            "support": 1099,
+            "margin": 0.917264699603534
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.7248157248157249,
+            "support": 407,
+            "margin": 0.6511796054929622
+          }
+        }
+      },
+      "fedprox_0.05": {
+        "benign_fpr": 0.06449879064767536,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.9355012093523246
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9987421383647799,
+            "support": 795,
+            "margin": 0.9342433477171045
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.9355012093523246
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9927206551410374,
+            "support": 1099,
+            "margin": 0.928221864493362
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.6683046683046683,
+            "support": 407,
+            "margin": 0.6038058776569929
+          }
+        }
+      },
+      "fedprox_0.1": {
+        "benign_fpr": 0.055630206933619995,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.94436979306638
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9974842767295597,
+            "support": 795,
+            "margin": 0.9418540697959398
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.94436979306638
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9708826205641492,
+            "support": 1099,
+            "margin": 0.9152524136305292
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.47665847665847666,
+            "support": 407,
+            "margin": 0.4210282697248567
+          }
+        }
+      },
+      "fedper": {
+        "benign_fpr": 0.14780972856758937,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.8521902714324107
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9974842767295597,
+            "support": 795,
+            "margin": 0.8496745481619704
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.8521902714324107
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9927206551410374,
+            "support": 1099,
+            "margin": 0.844910926573448
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.8796068796068796,
+            "support": 407,
+            "margin": 0.7317971510392902
+          }
+        }
+      },
+      "fixed_cluster": {
+        "benign_fpr": 0.20263370061811342,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.7973662993818866
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9886792452830189,
+            "support": 795,
+            "margin": 0.7860455446649055
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.7973662993818866
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9526842584167425,
+            "support": 1099,
+            "margin": 0.7500505577986292
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.941031941031941,
+            "support": 407,
+            "margin": 0.7383982404138276
+          }
+        }
+      },
+      "adaptive_cluster": {
+        "benign_fpr": 0.19699005643644182,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.8030099435635581
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9962264150943396,
+            "support": 795,
+            "margin": 0.7992363586578978
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.8030099435635581
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.9836214740673339,
+            "support": 1099,
+            "margin": 0.7866314176308921
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9312039312039312,
+            "support": 407,
+            "margin": 0.7342138747674893
+          }
+        }
+      },
+      "centralized_matched": {
+        "benign_fpr": 0.17790916420317118,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.8220908357968288
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.8220908357968288
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.8220908357968288
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.8220908357968288
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9582309582309583,
+            "support": 407,
+            "margin": 0.7803217940277871
+          }
+        }
+      },
+      "equal_weight": {
+        "benign_fpr": 0.026874496103198066,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.973125503896802
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9861635220125786,
+            "support": 795,
+            "margin": 0.9592890259093806
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.973125503896802
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.8798908098271155,
+            "support": 1099,
+            "margin": 0.8530163137239175
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.4004914004914005,
+            "support": 407,
+            "margin": 0.3736169043882024
+          }
+        }
+      },
+      "class_balanced": {
+        "benign_fpr": 0.0067186240257995165,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 0.9988361943555426,
+            "support": 3437,
+            "margin": 0.9921175703297431
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.9031446540880503,
+            "support": 795,
+            "margin": 0.8964260300622509
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 0.998158379373849,
+            "support": 543,
+            "margin": 0.9914397553480495
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.445859872611465,
+            "support": 1099,
+            "margin": 0.43914124858566544
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.14742014742014742,
+            "support": 407,
+            "margin": 0.1407015233943479
+          }
+        }
+      }
+    },
+    "bluetooth": {
+      "local_only": {
+        "benign_fpr": 1.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 1.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "centralized": {
+        "benign_fpr": 0.9593621399176955,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.9976993865030674,
+            "support": 1304,
+            "margin": 0.038337246585371965
+          }
+        }
+      },
+      "fedavg": {
+        "benign_fpr": 0.030864197530864196,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0007668711656441718,
+            "support": 1304,
+            "margin": -0.030097326365220025
+          }
+        }
+      },
+      "fedprox_0": {
+        "benign_fpr": 0.030864197530864196,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0007668711656441718,
+            "support": 1304,
+            "margin": -0.030097326365220025
+          }
+        }
+      },
+      "fedprox_0.001": {
+        "benign_fpr": 0.02880658436213992,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.02880658436213992
+          }
+        }
+      },
+      "fedprox_0.01": {
+        "benign_fpr": 0.026748971193415638,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.026748971193415638
+          }
+        }
+      },
+      "fedprox_0.05": {
+        "benign_fpr": 0.00102880658436214,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.00102880658436214
+          }
+        }
+      },
+      "fedprox_0.1": {
+        "benign_fpr": 0.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedper": {
+        "benign_fpr": 0.12191358024691358,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.18098159509202455,
+            "support": 1304,
+            "margin": 0.05906801484511097
+          }
+        }
+      },
+      "fixed_cluster": {
+        "benign_fpr": 1.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 1.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "adaptive_cluster": {
+        "benign_fpr": 1.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 1.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "centralized_matched": {
+        "benign_fpr": 0.9578189300411523,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.9976993865030674,
+            "support": 1304,
+            "margin": 0.03988045646191518
+          }
+        }
+      },
+      "equal_weight": {
+        "benign_fpr": 0.061213991769547324,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.20552147239263804,
+            "support": 1304,
+            "margin": 0.14430748062309073
+          }
+        }
+      },
+      "class_balanced": {
+        "benign_fpr": 0.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      }
+    }
+  },
+  "mqtt": {
+    "wifi": {
+      "local_only": {
+        "benign_fpr": 0.011235955056179775,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.084375,
+            "support": 320,
+            "margin": 0.07313904494382023
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.8452012383900929,
+            "support": 323,
+            "margin": 0.8339652833339131
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.0,
+            "support": 175,
+            "margin": -0.011235955056179775
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9252525252525252,
+            "support": 495,
+            "margin": 0.9140165701963454
+          },
+          "Recon-VulScan": {
+            "recall": 0.6042296072507553,
+            "support": 331,
+            "margin": 0.5929936521945754
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.0,
+            "support": 3960,
+            "margin": -0.011235955056179775
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9990937924784775,
+            "support": 2207,
+            "margin": 0.9878578374222977
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9991158267020336,
+            "support": 2262,
+            "margin": 0.9878798716458538
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.0,
+            "support": 4103,
+            "margin": -0.011235955056179775
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.0016638935108153079,
+            "support": 1202,
+            "margin": -0.009572061545364467
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9984544049459042,
+            "support": 1294,
+            "margin": 0.9872184498897244
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9991266375545852,
+            "support": 1145,
+            "margin": 0.9878906824984054
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.0,
+            "support": 1652,
+            "margin": -0.011235955056179775
+          }
+        }
+      },
+      "centralized": {
+        "benign_fpr": 0.03932584269662921,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.18125,
+            "support": 320,
+            "margin": 0.14192415730337077
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.8637770897832817,
+            "support": 323,
+            "margin": 0.8244512470866525
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.017142857142857144,
+            "support": 175,
+            "margin": -0.02218298555377207
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9393939393939394,
+            "support": 495,
+            "margin": 0.9000680966973102
+          },
+          "Recon-VulScan": {
+            "recall": 0.6253776435045317,
+            "support": 331,
+            "margin": 0.5860518008079025
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.0,
+            "support": 3960,
+            "margin": -0.03932584269662921
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9990937924784775,
+            "support": 2207,
+            "margin": 0.9597679497818483
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9991158267020336,
+            "support": 2262,
+            "margin": 0.9597899840054044
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.05093833780160858,
+            "support": 4103,
+            "margin": 0.011612495104979366
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.0008319467554076539,
+            "support": 1202,
+            "margin": -0.03849389594122156
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9976816074188563,
+            "support": 1294,
+            "margin": 0.958355764722227
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.9606741573033708
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.035108958837772396,
+            "support": 1652,
+            "margin": -0.004216883858856817
+          }
+        }
+      },
+      "fedavg": {
+        "benign_fpr": 0.5758426966292135,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.98125,
+            "support": 320,
+            "margin": 0.40540730337078645
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9969040247678018,
+            "support": 323,
+            "margin": 0.4210613281385883
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.4241573033707865
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.4241573033707865
+          },
+          "Recon-VulScan": {
+            "recall": 0.9969788519637462,
+            "support": 331,
+            "margin": 0.42113615533453275
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.4241573033707865
+          }
+        }
+      },
+      "fedprox_0": {
+        "benign_fpr": 0.5758426966292135,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.98125,
+            "support": 320,
+            "margin": 0.40540730337078645
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9969040247678018,
+            "support": 323,
+            "margin": 0.4210613281385883
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.4241573033707865
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.4241573033707865
+          },
+          "Recon-VulScan": {
+            "recall": 0.9969788519637462,
+            "support": 331,
+            "margin": 0.42113615533453275
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.4241573033707865
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.4241573033707865
+          }
+        }
+      },
+      "fedprox_0.001": {
+        "benign_fpr": 0.46207865168539325,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.984375,
+            "support": 320,
+            "margin": 0.5222963483146068
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9969040247678018,
+            "support": 323,
+            "margin": 0.5348253730824086
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.5379213483146068
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.5379213483146068
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.5379213483146068
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.5379213483146068
+          }
+        }
+      },
+      "fedprox_0.01": {
+        "benign_fpr": 0.3890449438202247,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.978125,
+            "support": 320,
+            "margin": 0.5890800561797753
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9876160990712074,
+            "support": 323,
+            "margin": 0.5985711552509827
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.9942857142857143,
+            "support": 175,
+            "margin": 0.6052407704654896
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.6109550561797753
+          },
+          "Recon-VulScan": {
+            "recall": 0.9969788519637462,
+            "support": 331,
+            "margin": 0.6079339081435216
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.6109550561797753
+          }
+        }
+      },
+      "fedprox_0.05": {
+        "benign_fpr": 0.3441011235955056,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.95,
+            "support": 320,
+            "margin": 0.6058988764044944
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9845201238390093,
+            "support": 323,
+            "margin": 0.6404190002435037
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.9885714285714285,
+            "support": 175,
+            "margin": 0.644470304975923
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.6558988764044944
+          },
+          "Recon-VulScan": {
+            "recall": 0.9637462235649547,
+            "support": 331,
+            "margin": 0.619645099969449
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.6558988764044944
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.6558988764044944
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.6558988764044944
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.6558988764044944
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.6558988764044944
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.999227202472952,
+            "support": 1294,
+            "margin": 0.6551260788774464
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.6558988764044944
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.6558988764044944
+          }
+        }
+      },
+      "fedprox_0.1": {
+        "benign_fpr": 0.36235955056179775,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.90625,
+            "support": 320,
+            "margin": 0.5438904494382022
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.978328173374613,
+            "support": 323,
+            "margin": 0.6159686228128152
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.96,
+            "support": 175,
+            "margin": 0.5976404494382022
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.997979797979798,
+            "support": 495,
+            "margin": 0.6356202474180002
+          },
+          "Recon-VulScan": {
+            "recall": 0.9607250755287009,
+            "support": 331,
+            "margin": 0.5983655249669031
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.6376404494382022
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.6376404494382022
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.6376404494382022
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.6376404494382022
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.6376404494382022
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.999227202472952,
+            "support": 1294,
+            "margin": 0.6368676519111542
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.6376404494382022
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.6376404494382022
+          }
+        }
+      },
+      "fedper": {
+        "benign_fpr": 0.30196629213483145,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.3875,
+            "support": 320,
+            "margin": 0.08553370786516856
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9814241486068112,
+            "support": 323,
+            "margin": 0.6794578564719798
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.9771428571428571,
+            "support": 175,
+            "margin": 0.6751765650080257
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9616161616161616,
+            "support": 495,
+            "margin": 0.6596498694813302
+          },
+          "Recon-VulScan": {
+            "recall": 0.7522658610271903,
+            "support": 331,
+            "margin": 0.45029956889235884
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.6980337078651686
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9995468962392388,
+            "support": 2207,
+            "margin": 0.6975806041044073
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9995579133510168,
+            "support": 2262,
+            "margin": 0.6975916212161855
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.999756275895686,
+            "support": 4103,
+            "margin": 0.6977899837608545
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9991680532445923,
+            "support": 1202,
+            "margin": 0.697201761109761
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9976816074188563,
+            "support": 1294,
+            "margin": 0.6957153152840247
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9991266375545852,
+            "support": 1145,
+            "margin": 0.6971603454197537
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.9969733656174334,
+            "support": 1652,
+            "margin": 0.6950070734826019
+          }
+        }
+      },
+      "fixed_cluster": {
+        "benign_fpr": 0.0028089887640449437,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.028125,
+            "support": 320,
+            "margin": 0.025316011235955057
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.8421052631578947,
+            "support": 323,
+            "margin": 0.8392962743938498
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.005714285714285714,
+            "support": 175,
+            "margin": 0.0029052969502407705
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9272727272727272,
+            "support": 495,
+            "margin": 0.9244637385086824
+          },
+          "Recon-VulScan": {
+            "recall": 0.6012084592145015,
+            "support": 331,
+            "margin": 0.5983994704504566
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.0,
+            "support": 3960,
+            "margin": -0.0028089887640449437
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9990937924784775,
+            "support": 2207,
+            "margin": 0.9962848037144326
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9991158267020336,
+            "support": 2262,
+            "margin": 0.9963068379379887
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.00024372410431391665,
+            "support": 4103,
+            "margin": -0.002565264659731027
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.0,
+            "support": 1202,
+            "margin": -0.0028089887640449437
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9969088098918083,
+            "support": 1294,
+            "margin": 0.9940998211277634
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9991266375545852,
+            "support": 1145,
+            "margin": 0.9963176487905403
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.0,
+            "support": 1652,
+            "margin": -0.0028089887640449437
+          }
+        }
+      },
+      "adaptive_cluster": {
+        "benign_fpr": 0.028089887640449437,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.1125,
+            "support": 320,
+            "margin": 0.08441011235955057
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.8575851393188855,
+            "support": 323,
+            "margin": 0.8294952516784361
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.005714285714285714,
+            "support": 175,
+            "margin": -0.022375601926163724
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9333333333333333,
+            "support": 495,
+            "margin": 0.905243445692884
+          },
+          "Recon-VulScan": {
+            "recall": 0.6072507552870091,
+            "support": 331,
+            "margin": 0.5791608676465597
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.0,
+            "support": 3960,
+            "margin": -0.028089887640449437
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9995468962392388,
+            "support": 2207,
+            "margin": 0.9714570085987894
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9991158267020336,
+            "support": 2262,
+            "margin": 0.9710259390615842
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.00024372410431391665,
+            "support": 4103,
+            "margin": -0.02784616353613552
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.0008319467554076539,
+            "support": 1202,
+            "margin": -0.027257940885041784
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9976816074188563,
+            "support": 1294,
+            "margin": 0.9695917197784069
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9991266375545852,
+            "support": 1145,
+            "margin": 0.9710367499141358
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.0,
+            "support": 1652,
+            "margin": -0.028089887640449437
+          }
+        }
+      },
+      "centralized_matched": {
+        "benign_fpr": 0.037921348314606744,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.171875,
+            "support": 320,
+            "margin": 0.13395365168539325
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.8637770897832817,
+            "support": 323,
+            "margin": 0.825855741468675
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.017142857142857144,
+            "support": 175,
+            "margin": -0.0207784911717496
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9393939393939394,
+            "support": 495,
+            "margin": 0.9014725910793328
+          },
+          "Recon-VulScan": {
+            "recall": 0.6314199395770392,
+            "support": 331,
+            "margin": 0.5934985912624325
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.0,
+            "support": 3960,
+            "margin": -0.037921348314606744
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9990937924784775,
+            "support": 2207,
+            "margin": 0.9611724441638708
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9991158267020336,
+            "support": 2262,
+            "margin": 0.9611944783874269
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.05020716548866683,
+            "support": 4103,
+            "margin": 0.012285817174060083
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.0008319467554076539,
+            "support": 1202,
+            "margin": -0.03708940155919909
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9976816074188563,
+            "support": 1294,
+            "margin": 0.9597602591042496
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.9620786516853933
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.035108958837772396,
+            "support": 1652,
+            "margin": -0.0028123894768343483
+          }
+        }
+      },
+      "equal_weight": {
+        "benign_fpr": 0.16573033707865167,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.290625,
+            "support": 320,
+            "margin": 0.12489466292134835
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9473684210526315,
+            "support": 323,
+            "margin": 0.7816380839739798
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.9257142857142857,
+            "support": 175,
+            "margin": 0.759983948635634
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9575757575757575,
+            "support": 495,
+            "margin": 0.7918454204971058
+          },
+          "Recon-VulScan": {
+            "recall": 0.7129909365558912,
+            "support": 331,
+            "margin": 0.5472605994772395
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.8342696629213483
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.8342696629213483
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9995579133510168,
+            "support": 2262,
+            "margin": 0.8338275762723651
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.9644162807701682,
+            "support": 4103,
+            "margin": 0.7986859436915165
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9983361064891847,
+            "support": 1202,
+            "margin": 0.832605769410533
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9976816074188563,
+            "support": 1294,
+            "margin": 0.8319512703402046
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9991266375545852,
+            "support": 1145,
+            "margin": 0.8333963004759335
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.9673123486682809,
+            "support": 1652,
+            "margin": 0.8015820115896292
+          }
+        }
+      },
+      "class_balanced": {
+        "benign_fpr": 0.3890449438202247,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.5625,
+            "support": 320,
+            "margin": 0.1734550561797753
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9814241486068112,
+            "support": 323,
+            "margin": 0.5923792047865865
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.8914285714285715,
+            "support": 175,
+            "margin": 0.5023836276083468
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9818181818181818,
+            "support": 495,
+            "margin": 0.5927732379979571
+          },
+          "Recon-VulScan": {
+            "recall": 0.9033232628398792,
+            "support": 331,
+            "margin": 0.5142783190196545
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.6109550561797753
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9991680532445923,
+            "support": 1202,
+            "margin": 0.6101231094243676
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9976816074188563,
+            "support": 1294,
+            "margin": 0.6086366635986316
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9991266375545852,
+            "support": 1145,
+            "margin": 0.6100816937343605
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.6109550561797753
+          }
+        }
+      }
+    },
+    "bluetooth": {
+      "local_only": {
+        "benign_fpr": 0.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "centralized": {
+        "benign_fpr": 0.9454732510288066,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.9946319018404908,
+            "support": 1304,
+            "margin": 0.049158650811684135
+          }
+        }
+      },
+      "fedavg": {
+        "benign_fpr": 0.029320987654320986,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0007668711656441718,
+            "support": 1304,
+            "margin": -0.028554116488676815
+          }
+        }
+      },
+      "fedprox_0": {
+        "benign_fpr": 0.029320987654320986,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0007668711656441718,
+            "support": 1304,
+            "margin": -0.028554116488676815
+          }
+        }
+      },
+      "fedprox_0.001": {
+        "benign_fpr": 0.029320987654320986,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0007668711656441718,
+            "support": 1304,
+            "margin": -0.028554116488676815
+          }
+        }
+      },
+      "fedprox_0.01": {
+        "benign_fpr": 0.02880658436213992,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0007668711656441718,
+            "support": 1304,
+            "margin": -0.028039713196495748
+          }
+        }
+      },
+      "fedprox_0.05": {
+        "benign_fpr": 0.02880658436213992,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.02880658436213992
+          }
+        }
+      },
+      "fedprox_0.1": {
+        "benign_fpr": 0.026748971193415638,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.026748971193415638
+          }
+        }
+      },
+      "fedper": {
+        "benign_fpr": 0.02880658436213992,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.02880658436213992
+          }
+        }
+      },
+      "fixed_cluster": {
+        "benign_fpr": 0.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "adaptive_cluster": {
+        "benign_fpr": 0.0,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": 0.0
+          }
+        }
+      },
+      "centralized_matched": {
+        "benign_fpr": 0.9444444444444444,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.9938650306748467,
+            "support": 1304,
+            "margin": 0.04942058623040224
+          }
+        }
+      },
+      "equal_weight": {
+        "benign_fpr": 0.00102880658436214,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.00102880658436214
+          }
+        }
+      },
+      "class_balanced": {
+        "benign_fpr": 0.023148148148148147,
+        "benign_support": 1944,
+        "attack": {
+          "BT-DoS": {
+            "recall": 0.0,
+            "support": 1304,
+            "margin": -0.023148148148148147
+          }
+        }
+      }
+    }
+  },
+  "bluetooth": {
+    "wifi": {
+      "local_only": {
+        "benign_fpr": 0.0014044943820224719,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.0,
+            "support": 320,
+            "margin": -0.0014044943820224719
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.07739938080495357,
+            "support": 323,
+            "margin": 0.07599488642293109
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.05714285714285714,
+            "support": 175,
+            "margin": 0.05573836276083467
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.01818181818181818,
+            "support": 495,
+            "margin": 0.01677732379979571
+          },
+          "Recon-VulScan": {
+            "recall": 0.0634441087613293,
+            "support": 331,
+            "margin": 0.06203961437930683
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.9441919191919191,
+            "support": 3960,
+            "margin": 0.9427874248098966
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.05120072496601722,
+            "support": 2207,
+            "margin": 0.04979623058399475
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.11007957559681697,
+            "support": 2262,
+            "margin": 0.1086750812147945
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.00073117231294175,
+            "support": 4103,
+            "margin": -0.0006733220690807219
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.8352745424292846,
+            "support": 1202,
+            "margin": 0.8338700480472621
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.014683153013910355,
+            "support": 1294,
+            "margin": 0.013278658631887883
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.06637554585152838,
+            "support": 1145,
+            "margin": 0.06497105146950591
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.0,
+            "support": 1652,
+            "margin": -0.0014044943820224719
+          }
+        }
+      },
+      "centralized": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.9875,
+            "support": 320,
+            "margin": -0.012499999999999956
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.7142857142857143,
+            "support": 175,
+            "margin": -0.2857142857142857
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedavg": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 1.0,
+            "support": 320,
+            "margin": 0.0
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.0
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 1.0,
+            "support": 320,
+            "margin": 0.0
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.0
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.001": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 1.0,
+            "support": 320,
+            "margin": 0.0
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.0
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.01": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 1.0,
+            "support": 320,
+            "margin": 0.0
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.0
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.05": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 1.0,
+            "support": 320,
+            "margin": 0.0
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.0
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.1": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 1.0,
+            "support": 320,
+            "margin": 0.0
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 1.0,
+            "support": 175,
+            "margin": 0.0
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedper": {
+        "benign_fpr": 0.973314606741573,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.94375,
+            "support": 320,
+            "margin": -0.02956460674157302
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9690402476780186,
+            "support": 323,
+            "margin": -0.004274359063554445
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.5257142857142857,
+            "support": 175,
+            "margin": -0.4476003210272873
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9676767676767677,
+            "support": 495,
+            "margin": -0.005637839064805306
+          },
+          "Recon-VulScan": {
+            "recall": 0.9335347432024169,
+            "support": 331,
+            "margin": -0.03977986353915608
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.9906565656565657,
+            "support": 3960,
+            "margin": 0.017341958914992683
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9945627548708654,
+            "support": 2207,
+            "margin": 0.021248148129292432
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9920424403183024,
+            "support": 2262,
+            "margin": 0.018727833576729358
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.9992688276870583,
+            "support": 4103,
+            "margin": 0.025954220945485273
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9891846921797005,
+            "support": 1202,
+            "margin": 0.015870085438127512
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9899536321483772,
+            "support": 1294,
+            "margin": 0.016639025406804175
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9868995633187773,
+            "support": 1145,
+            "margin": 0.013584956577204266
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.026685393258427004
+          }
+        }
+      },
+      "fixed_cluster": {
+        "benign_fpr": 0.9676966292134831,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.940625,
+            "support": 320,
+            "margin": -0.02707162921348305
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9628482972136223,
+            "support": 323,
+            "margin": -0.004848331999860789
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.4228571428571429,
+            "support": 175,
+            "margin": -0.5448394863563402
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9676767676767677,
+            "support": 495,
+            "margin": -1.986153671540425e-05
+          },
+          "Recon-VulScan": {
+            "recall": 0.9244712990936556,
+            "support": 331,
+            "margin": -0.04322533011982754
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.9873737373737373,
+            "support": 3960,
+            "margin": 0.019677108160254253
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9941096511101042,
+            "support": 2207,
+            "margin": 0.02641302189662109
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9893899204244032,
+            "support": 2262,
+            "margin": 0.021693291210920118
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.9987813794784304,
+            "support": 4103,
+            "margin": 0.03108475026494728
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9850249584026622,
+            "support": 1202,
+            "margin": 0.017328329189179148
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9845440494590417,
+            "support": 1294,
+            "margin": 0.01684742024555863
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9842794759825327,
+            "support": 1145,
+            "margin": 0.01658284676904964
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.9969733656174334,
+            "support": 1652,
+            "margin": 0.029276736403950343
+          }
+        }
+      },
+      "adaptive_cluster": {
+        "benign_fpr": 0.9578651685393258,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.91875,
+            "support": 320,
+            "margin": -0.03911516853932584
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9535603715170279,
+            "support": 323,
+            "margin": -0.004304797022297913
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.4114285714285714,
+            "support": 175,
+            "margin": -0.5464365971107543
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9676767676767677,
+            "support": 495,
+            "margin": 0.009811599137441895
+          },
+          "Recon-VulScan": {
+            "recall": 0.9033232628398792,
+            "support": 331,
+            "margin": -0.05454190569944661
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.9858585858585859,
+            "support": 3960,
+            "margin": 0.027993417319260083
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9927503398278206,
+            "support": 2207,
+            "margin": 0.034885171288494776
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9849690539345711,
+            "support": 2262,
+            "margin": 0.02710388539524533
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.9968315866439191,
+            "support": 4103,
+            "margin": 0.03896641810459334
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9758735440931781,
+            "support": 1202,
+            "margin": 0.018008375553852263
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9783616692426584,
+            "support": 1294,
+            "margin": 0.020496500703332643
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9799126637554585,
+            "support": 1145,
+            "margin": 0.022047495216132695
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.9927360774818402,
+            "support": 1652,
+            "margin": 0.034870908942514434
+          }
+        }
+      },
+      "centralized_matched": {
+        "benign_fpr": 0.9985955056179775,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.9875,
+            "support": 320,
+            "margin": -0.011095505617977452
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.001404494382022503
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.7142857142857143,
+            "support": 175,
+            "margin": -0.2843097913322632
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.001404494382022503
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.001404494382022503
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.001404494382022503
+          }
+        }
+      },
+      "equal_weight": {
+        "benign_fpr": 0.9676966292134831,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.940625,
+            "support": 320,
+            "margin": -0.02707162921348305
+          },
+          "Recon-OS_Scan": {
+            "recall": 0.9690402476780186,
+            "support": 323,
+            "margin": 0.0013436184645354565
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.4857142857142857,
+            "support": 175,
+            "margin": -0.4819823434991974
+          },
+          "Recon-Port_Scan": {
+            "recall": 0.9676767676767677,
+            "support": 495,
+            "margin": -1.986153671540425e-05
+          },
+          "Recon-VulScan": {
+            "recall": 0.9274924471299094,
+            "support": 331,
+            "margin": -0.04020418208357368
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 0.9888888888888889,
+            "support": 3960,
+            "margin": 0.021192259675405833
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 0.9945627548708654,
+            "support": 2207,
+            "margin": 0.026866125657382334
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 0.9902740937223696,
+            "support": 2262,
+            "margin": 0.022577464508886536
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 0.9987813794784304,
+            "support": 4103,
+            "margin": 0.03108475026494728
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 0.9875207986688852,
+            "support": 1202,
+            "margin": 0.019824169455402108
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 0.9868624420401855,
+            "support": 1294,
+            "margin": 0.019165812826702378
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 0.9868995633187773,
+            "support": 1145,
+            "margin": 0.019202934105294167
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 0.9969733656174334,
+            "support": 1652,
+            "margin": 0.029276736403950343
+          }
+        }
+      },
+      "class_balanced": {
+        "benign_fpr": 1.0,
+        "benign_support": 712,
+        "attack": {
+          "ARP_Spoofing": {
+            "recall": 0.9875,
+            "support": 320,
+            "margin": -0.012499999999999956
+          },
+          "Recon-OS_Scan": {
+            "recall": 1.0,
+            "support": 323,
+            "margin": 0.0
+          },
+          "Recon-Ping_Sweep": {
+            "recall": 0.7142857142857143,
+            "support": 175,
+            "margin": -0.2857142857142857
+          },
+          "Recon-Port_Scan": {
+            "recall": 1.0,
+            "support": 495,
+            "margin": 0.0
+          },
+          "Recon-VulScan": {
+            "recall": 1.0,
+            "support": 331,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-ICMP": {
+            "recall": 1.0,
+            "support": 3960,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-SYN": {
+            "recall": 1.0,
+            "support": 2207,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-TCP": {
+            "recall": 1.0,
+            "support": 2262,
+            "margin": 0.0
+          },
+          "TCP_IP-DDoS-UDP": {
+            "recall": 1.0,
+            "support": 4103,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-ICMP": {
+            "recall": 1.0,
+            "support": 1202,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-SYN": {
+            "recall": 1.0,
+            "support": 1294,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-TCP": {
+            "recall": 1.0,
+            "support": 1145,
+            "margin": 0.0
+          },
+          "TCP_IP-DoS-UDP": {
+            "recall": 1.0,
+            "support": 1652,
+            "margin": 0.0
+          }
+        }
+      }
+    },
+    "mqtt": {
+      "local_only": {
+        "benign_fpr": 0.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 0.02618562700029095,
+            "support": 3437,
+            "margin": 0.02618562700029095
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 0.001841620626151013,
+            "support": 543,
+            "margin": 0.001841620626151013
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "centralized": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedavg": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.001": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.01": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.05": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedprox_0.1": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "fedper": {
+        "benign_fpr": 0.971781779091642,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 0.9973814372999709,
+            "support": 3437,
+            "margin": 0.02559965820832888
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.2289308176100629,
+            "support": 795,
+            "margin": -0.742850961481579
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 0.994475138121547,
+            "support": 543,
+            "margin": 0.02269335902990499
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.8334849863512284,
+            "support": 1099,
+            "margin": -0.13829679274041362
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9434889434889435,
+            "support": 407,
+            "margin": -0.028292835602698463
+          }
+        }
+      },
+      "fixed_cluster": {
+        "benign_fpr": 0.9701693093254502,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 0.9973814372999709,
+            "support": 3437,
+            "margin": 0.02721212797452066
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.2088050314465409,
+            "support": 795,
+            "margin": -0.7613642778789094
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 0.994475138121547,
+            "support": 543,
+            "margin": 0.024305828796096773
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.7998180163785259,
+            "support": 1099,
+            "margin": -0.1703512929469243
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9385749385749386,
+            "support": 407,
+            "margin": -0.031594370750511636
+          }
+        }
+      },
+      "adaptive_cluster": {
+        "benign_fpr": 0.9586132760010749,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 0.9962176316555136,
+            "support": 3437,
+            "margin": 0.03760435565443865
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.16477987421383647,
+            "support": 795,
+            "margin": -0.7938334017872385
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 0.990791896869245,
+            "support": 543,
+            "margin": 0.03217862086817003
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.6114649681528662,
+            "support": 1099,
+            "margin": -0.3471483078482087
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.914004914004914,
+            "support": 407,
+            "margin": -0.04460836199616092
+          }
+        }
+      },
+      "centralized_matched": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      },
+      "equal_weight": {
+        "benign_fpr": 0.9701693093254502,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 0.9973814372999709,
+            "support": 3437,
+            "margin": 0.02721212797452066
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 0.2088050314465409,
+            "support": 795,
+            "margin": -0.7613642778789094
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 0.994475138121547,
+            "support": 543,
+            "margin": 0.024305828796096773
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 0.7979981801637852,
+            "support": 1099,
+            "margin": -0.172171129161665
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 0.9385749385749386,
+            "support": 407,
+            "margin": -0.031594370750511636
+          }
+        }
+      },
+      "class_balanced": {
+        "benign_fpr": 1.0,
+        "benign_support": 3721,
+        "attack": {
+          "MQTT-DDoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 3437,
+            "margin": 0.0
+          },
+          "MQTT-DDoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 795,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Connect_Flood": {
+            "recall": 1.0,
+            "support": 543,
+            "margin": 0.0
+          },
+          "MQTT-DoS-Publish_Flood": {
+            "recall": 1.0,
+            "support": 1099,
+            "margin": 0.0
+          },
+          "MQTT-Malformed_Data": {
+            "recall": 1.0,
+            "support": 407,
+            "margin": 0.0
+          }
+        }
+      }
+    }
+  }
+}

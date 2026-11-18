@@ -1,0 +1,321 @@
+{
+  "seed": 7,
+  "setting": "interaction_long_short",
+  "method": "fedavg",
+  "config": {
+    "seeds": [
+      42,
+      7,
+      123,
+      2024,
+      31337
+    ],
+    "clients": [
+      "wifi",
+      "mqtt",
+      "bluetooth"
+    ],
+    "rounds": 6,
+    "local_epochs": 1,
+    "pooled_epochs": 6,
+    "batch_size": 256,
+    "lr": 0.001,
+    "widths": [
+      64,
+      32
+    ],
+    "dropout": 0.2,
+    "validation_fraction": 0.2,
+    "test_fraction": 0.2,
+    "mu_values": [
+      0,
+      0.001,
+      0.01,
+      0.05,
+      0.1
+    ],
+    "fixed_groups": [
+      [
+        "wifi"
+      ],
+      [
+        "mqtt",
+        "bluetooth"
+      ]
+    ],
+    "adaptive": {
+      "min_round": 3,
+      "mean_norm_fraction": 0.4,
+      "max_norm_fraction": 0.2
+    },
+    "shap_background": 100,
+    "shap_samples": 200,
+    "shap_bootstrap": 200,
+    "reliability_bins": 10,
+    "operational_fpr": 0.05
+  },
+  "mean_f1": 0.6394557898904819,
+  "bluetooth_specificity": 0.00051440329218107,
+  "bluetooth_shap_vs_full_fedavg": {
+    "jaccard": 1.0,
+    "spearman": 0.9999999999999999,
+    "cosine": 0.9999999999999999
+  },
+  "history": [
+    {
+      "round": 1,
+      "train": {
+        "wifi": {
+          "training_bce": 0.1352782671663405,
+          "steps": 236,
+          "seconds": 0.6285544999991544
+        },
+        "mqtt": {
+          "training_bce": 0.3066521695154345,
+          "steps": 117,
+          "seconds": 0.3106880999985151
+        },
+        "bluetooth": {
+          "training_bce": 0.5616691777339349,
+          "steps": 39,
+          "seconds": 0.09290119999786839
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.06923280656337738,
+        "mqtt": 0.8479242324829102,
+        "bluetooth": 1.3022527694702148
+      },
+      "validation_accuracy": {
+        "wifi": 0.985239852398524,
+        "mqtt": 0.6574962889658584,
+        "bluetooth": 0.4133089133089133
+      },
+      "groups": [
+        [
+          "wifi",
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {
+        "wifi-mqtt": 0.42812326550483704,
+        "wifi-bluetooth": 0.07473677396774292,
+        "mqtt-bluetooth": 0.14940814673900604
+      }
+    },
+    {
+      "round": 2,
+      "train": {
+        "wifi": {
+          "training_bce": 0.03138142932695731,
+          "steps": 236,
+          "seconds": 0.6922319000004791
+        },
+        "mqtt": {
+          "training_bce": 0.19925354675859466,
+          "steps": 117,
+          "seconds": 0.34914890001527965
+        },
+        "bluetooth": {
+          "training_bce": 0.6086289492937235,
+          "steps": 39,
+          "seconds": 0.11072359996614978
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.04689796268939972,
+        "mqtt": 0.7968677282333374,
+        "bluetooth": 1.5685206651687622
+      },
+      "validation_accuracy": {
+        "wifi": 0.9785772857728577,
+        "mqtt": 0.7355764473033152,
+        "bluetooth": 0.4133089133089133
+      },
+      "groups": [
+        [
+          "wifi",
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {
+        "wifi-mqtt": 0.02677740715444088,
+        "wifi-bluetooth": -0.18529576063156128,
+        "mqtt-bluetooth": 0.22807158529758453
+      }
+    },
+    {
+      "round": 3,
+      "train": {
+        "wifi": {
+          "training_bce": 0.02699052228126675,
+          "steps": 236,
+          "seconds": 0.6499903999501839
+        },
+        "mqtt": {
+          "training_bce": 0.16031461814020434,
+          "steps": 117,
+          "seconds": 0.2939530999865383
+        },
+        "bluetooth": {
+          "training_bce": 0.6008148609827726,
+          "steps": 39,
+          "seconds": 0.09362669999245554
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.04307717829942703,
+        "mqtt": 0.7990086674690247,
+        "bluetooth": 1.5402547121047974
+      },
+      "validation_accuracy": {
+        "wifi": 0.9790385403854038,
+        "mqtt": 0.7666501731815932,
+        "bluetooth": 0.4133089133089133
+      },
+      "groups": [
+        [
+          "wifi",
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {
+        "wifi-mqtt": -0.2826465666294098,
+        "wifi-bluetooth": -0.27083954215049744,
+        "mqtt-bluetooth": 0.3735679090023041
+      }
+    },
+    {
+      "round": 4,
+      "train": {
+        "wifi": {
+          "training_bce": 0.02500592583348438,
+          "steps": 236,
+          "seconds": 0.6040598000399768
+        },
+        "mqtt": {
+          "training_bce": 0.14428896870878008,
+          "steps": 117,
+          "seconds": 0.2899330999935046
+        },
+        "bluetooth": {
+          "training_bce": 0.551308192503758,
+          "steps": 39,
+          "seconds": 0.09218999999575317
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.038075707852840424,
+        "mqtt": 0.7769245505332947,
+        "bluetooth": 1.4009809494018555
+      },
+      "validation_accuracy": {
+        "wifi": 0.9820623206232062,
+        "mqtt": 0.7857496288965858,
+        "bluetooth": 0.4133089133089133
+      },
+      "groups": [
+        [
+          "wifi",
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {
+        "wifi-mqtt": -0.3809007704257965,
+        "wifi-bluetooth": -0.3223528265953064,
+        "mqtt-bluetooth": 0.4373805820941925
+      }
+    },
+    {
+      "round": 5,
+      "train": {
+        "wifi": {
+          "training_bce": 0.023908770250026294,
+          "steps": 236,
+          "seconds": 0.6152490000240505
+        },
+        "mqtt": {
+          "training_bce": 0.14015954723342872,
+          "steps": 117,
+          "seconds": 0.28145690000383183
+        },
+        "bluetooth": {
+          "training_bce": 0.49246492294164806,
+          "steps": 39,
+          "seconds": 0.09905820002313703
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.0343046560883522,
+        "mqtt": 0.8195639848709106,
+        "bluetooth": 1.2833389043807983
+      },
+      "validation_accuracy": {
+        "wifi": 0.984009840098401,
+        "mqtt": 0.7873330034636319,
+        "bluetooth": 0.4133089133089133
+      },
+      "groups": [
+        [
+          "wifi",
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {
+        "wifi-mqtt": -0.45995381474494934,
+        "wifi-bluetooth": -0.3589733839035034,
+        "mqtt-bluetooth": 0.5058336853981018
+      }
+    },
+    {
+      "round": 6,
+      "train": {
+        "wifi": {
+          "training_bce": 0.02253134250177181,
+          "steps": 236,
+          "seconds": 0.6321734999655746
+        },
+        "mqtt": {
+          "training_bce": 0.13676241979512394,
+          "steps": 117,
+          "seconds": 0.288932700001169
+        },
+        "bluetooth": {
+          "training_bce": 0.4416727580321141,
+          "steps": 39,
+          "seconds": 0.09699859999818727
+        }
+      },
+      "validation_bce": {
+        "wifi": 0.031160583719611168,
+        "mqtt": 0.8846839666366577,
+        "bluetooth": 1.284145712852478
+      },
+      "validation_accuracy": {
+        "wifi": 0.9857011070110702,
+        "mqtt": 0.7889163780306779,
+        "bluetooth": 0.4136141636141636
+      },
+      "groups": [
+        [
+          "wifi",
+          "mqtt",
+          "bluetooth"
+        ]
+      ],
+      "update_cosine": {
+        "wifi-mqtt": -0.48910632729530334,
+        "wifi-bluetooth": -0.42803117632865906,
+        "mqtt-bluetooth": 0.5162574052810669
+      }
+    }
+  ],
+  "selected_round": 5,
+  "seconds": 6.446495099982712,
+  "optimizer_steps": 2352
+}

@@ -8,7 +8,7 @@ import torch
 
 from src.revision_data import read_config
 from src.revision_metrics import metrics
-from src.revision_probes import explanation, load_model, similarity
+from src.revision_probes import load_model, similarity
 from src.revision_train import logits, train
 from src.run_revision import get_data, write_json
 
@@ -16,10 +16,11 @@ from src.run_revision import get_data, write_json
 def grid():
     return {"anchor":{}, "rounds_2":{"rounds":2},"rounds_6":{"rounds":6},"epochs_1":{"local_epochs":1},
         "epochs_3":{"local_epochs":3},"lr_low":{"lr":.0005},"lr_high":{"lr":.002},
-        "batch_32":{"batch_size":32},"batch_128":{"batch_size":128},"dropout_0":{"dropout":0},
+        "batch_128":{"batch_size":128},"batch_512":{"batch_size":512},"dropout_0":{"dropout":0},
         "dropout_04":{"dropout":.4},"width_half":{"widths":[32,16]},"width_double":{"widths":[128,64]},
         "interaction_low":{"rounds":2,"local_epochs":1},"interaction_high":{"rounds":6,"local_epochs":3},
-        "head_1":{},"head_2":{}}
+        "interaction_short_long":{"rounds":2,"local_epochs":3},
+        "interaction_long_short":{"rounds":6,"local_epochs":1},"head_1":{},"head_2":{}}
 
 
 def job(job_args):
@@ -37,7 +38,7 @@ def job(job_args):
         phi=np.asarray(exp.shap_values(torch.from_numpy(parts["test"]["x"][t[:n_explained]])))
         return np.abs(phi).reshape(len(t[:n_explained]),-1).mean(axis=0)
     out=Path(root)/"sensitivity"
-    anchor_cfg=dict(cfg,rounds=4,local_epochs=2)
+    anchor_cfg=dict(cfg,rounds=3,local_epochs=2)
     ref_model=load_model(Path(root),cfg,"fedavg","bluetooth",seed)
     ref=attributed(ref_model)
     for key,overrides in grid().items():
@@ -58,6 +59,11 @@ def job(job_args):
     for bg,n in [(20,100),(40,100),(100,100),(40,50),(40,200)]:
         attr[f"{bg}_{n}"]=similarity(attributed(ref_model,bg,n),attributed(per,bg,n))
     write_json(out/f"explanation_budget_{seed}.json",attr)
+    penalty={}
+    for mu in cfg["mu_values"]:
+        model=load_model(Path(root),cfg,f"fedprox_{mu}","bluetooth",seed)
+        penalty[str(mu)]=similarity(attributed(model),ref)
+    write_json(out/f"explanation_penalty_{seed}.json",penalty)
 
 
 def main():

@@ -75,3 +75,6 @@ results/revision/shap/*.npz
 splits/revision/*.csv
 splits/revision_holdout/*.csv
 results/revision_holdout/preds/
+
+results/*_initial_attempt/
+splits/*_initial_attempt/

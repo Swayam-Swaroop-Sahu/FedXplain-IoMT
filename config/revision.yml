@@ -1,9 +1,9 @@
 seeds: [42, 7, 123, 2024, 31337]
 clients: [wifi, mqtt, bluetooth]
-rounds: 10
-local_epochs: 3
-pooled_epochs: 10
-batch_size: 64
+rounds: 6
+local_epochs: 1
+pooled_epochs: 6
+batch_size: 256
 lr: 0.001
 widths: [64, 32]
 dropout: 0.2

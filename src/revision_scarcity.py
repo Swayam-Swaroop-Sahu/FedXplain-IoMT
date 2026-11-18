@@ -32,7 +32,7 @@ def job(args):
     train_raw=rows.loc[rows["client"].eq(target) & rows["split"].eq("train"),features].to_numpy()
     test_raw=rows.loc[rows["client"].eq(target) & rows["split"].eq("test"),features].to_numpy()
     out=[]
-    steps=200
+    steps=100
     for n in [50,100,250,500,1000,5000,len(data["y"])]:
         for rep in range(3):
             sample_seed=seed*1000+rep

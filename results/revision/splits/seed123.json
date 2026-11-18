@@ -1,0 +1,407 @@
+{
+  "counts": [
+    {
+      "client": "bluetooth",
+      "split": "test",
+      "label": "BT-DoS",
+      "rows": 1298
+    },
+    {
+      "client": "bluetooth",
+      "split": "test",
+      "label": "Benign",
+      "rows": 1936
+    },
+    {
+      "client": "bluetooth",
+      "split": "train",
+      "label": "BT-DoS",
+      "rows": 4086
+    },
+    {
+      "client": "bluetooth",
+      "split": "train",
+      "label": "Benign",
+      "rows": 5723
+    },
+    {
+      "client": "bluetooth",
+      "split": "validation",
+      "label": "BT-DoS",
+      "rows": 1351
+    },
+    {
+      "client": "bluetooth",
+      "split": "validation",
+      "label": "Benign",
+      "rows": 1952
+    },
+    {
+      "client": "mqtt",
+      "split": "test",
+      "label": "Benign",
+      "rows": 3557
+    },
+    {
+      "client": "mqtt",
+      "split": "test",
+      "label": "MQTT-DDoS-Connect_Flood",
+      "rows": 3395
+    },
+    {
+      "client": "mqtt",
+      "split": "test",
+      "label": "MQTT-DDoS-Publish_Flood",
+      "rows": 827
+    },
+    {
+      "client": "mqtt",
+      "split": "test",
+      "label": "MQTT-DoS-Connect_Flood",
+      "rows": 537
+    },
+    {
+      "client": "mqtt",
+      "split": "test",
+      "label": "MQTT-DoS-Publish_Flood",
+      "rows": 1061
+    },
+    {
+      "client": "mqtt",
+      "split": "test",
+      "label": "MQTT-Malformed_Data",
+      "rows": 405
+    },
+    {
+      "client": "mqtt",
+      "split": "train",
+      "label": "Benign",
+      "rows": 11161
+    },
+    {
+      "client": "mqtt",
+      "split": "train",
+      "label": "MQTT-DDoS-Connect_Flood",
+      "rows": 10391
+    },
+    {
+      "client": "mqtt",
+      "split": "train",
+      "label": "MQTT-DDoS-Publish_Flood",
+      "rows": 2540
+    },
+    {
+      "client": "mqtt",
+      "split": "train",
+      "label": "MQTT-DoS-Connect_Flood",
+      "rows": 1639
+    },
+    {
+      "client": "mqtt",
+      "split": "train",
+      "label": "MQTT-DoS-Publish_Flood",
+      "rows": 3238
+    },
+    {
+      "client": "mqtt",
+      "split": "train",
+      "label": "MQTT-Malformed_Data",
+      "rows": 1228
+    },
+    {
+      "client": "mqtt",
+      "split": "validation",
+      "label": "Benign",
+      "rows": 3671
+    },
+    {
+      "client": "mqtt",
+      "split": "validation",
+      "label": "MQTT-DDoS-Connect_Flood",
+      "rows": 3478
+    },
+    {
+      "client": "mqtt",
+      "split": "validation",
+      "label": "MQTT-DDoS-Publish_Flood",
+      "rows": 812
+    },
+    {
+      "client": "mqtt",
+      "split": "validation",
+      "label": "MQTT-DoS-Connect_Flood",
+      "rows": 531
+    },
+    {
+      "client": "mqtt",
+      "split": "validation",
+      "label": "MQTT-DoS-Publish_Flood",
+      "rows": 1112
+    },
+    {
+      "client": "mqtt",
+      "split": "validation",
+      "label": "MQTT-Malformed_Data",
+      "rows": 414
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "ARP_Spoofing",
+      "rows": 329
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "Benign",
+      "rows": 732
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "Recon-OS_Scan",
+      "rows": 322
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "Recon-Ping_Sweep",
+      "rows": 193
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "Recon-Port_Scan",
+      "rows": 480
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "Recon-VulScan",
+      "rows": 305
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DDoS-ICMP",
+      "rows": 3975
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DDoS-SYN",
+      "rows": 2128
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DDoS-TCP",
+      "rows": 2178
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DDoS-UDP",
+      "rows": 4118
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DoS-ICMP",
+      "rows": 1293
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DoS-SYN",
+      "rows": 1369
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DoS-TCP",
+      "rows": 1167
+    },
+    {
+      "client": "wifi",
+      "split": "test",
+      "label": "TCP_IP-DoS-UDP",
+      "rows": 1677
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "ARP_Spoofing",
+      "rows": 948
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "Benign",
+      "rows": 2128
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "Recon-OS_Scan",
+      "rows": 961
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "Recon-Ping_Sweep",
+      "rows": 556
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "Recon-Port_Scan",
+      "rows": 1485
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "Recon-VulScan",
+      "rows": 864
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DDoS-ICMP",
+      "rows": 11594
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DDoS-SYN",
+      "rows": 6419
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DDoS-TCP",
+      "rows": 6594
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DDoS-UDP",
+      "rows": 12241
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DoS-ICMP",
+      "rows": 3781
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DoS-SYN",
+      "rows": 3929
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DoS-TCP",
+      "rows": 3467
+    },
+    {
+      "client": "wifi",
+      "split": "train",
+      "label": "TCP_IP-DoS-UDP",
+      "rows": 4870
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "ARP_Spoofing",
+      "rows": 307
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "Benign",
+      "rows": 754
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "Recon-OS_Scan",
+      "rows": 328
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "Recon-Ping_Sweep",
+      "rows": 177
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "Recon-Port_Scan",
+      "rows": 467
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "Recon-VulScan",
+      "rows": 275
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DDoS-ICMP",
+      "rows": 3871
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DDoS-SYN",
+      "rows": 2174
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DDoS-TCP",
+      "rows": 2070
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DDoS-UDP",
+      "rows": 4139
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DoS-ICMP",
+      "rows": 1256
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DoS-SYN",
+      "rows": 1279
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DoS-TCP",
+      "rows": 1197
+    },
+    {
+      "client": "wifi",
+      "split": "validation",
+      "label": "TCP_IP-DoS-UDP",
+      "rows": 1596
+    }
+  ],
+  "exact_across_splits": 0,
+  "rounded_signatures_across_splits": 3301,
+  "training_excluded_labels": [],
+  "assignment": {
+    "file": "manifest_123.csv",
+    "sha256": "abcbca028a297a2eef22426b27fca8c6923cfafe8e8807cdd717d8c259201618"
+  }
+}

@@ -16,7 +16,7 @@ from sklearn.model_selection import GroupShuffleSplit
 from sklearn.preprocessing import StandardScaler
 import torch
 
-from src.run_revision import get_data, write_json
+from src.run_revision import baseline_grid, get_data, write_json
 from src.revision_metrics import metrics
 from src.revision_data import read_config
 from src.revision_train import as_tensor, fit, logits, make_model, optimizer
@@ -160,7 +160,7 @@ def explanation(seed,cfg,clients,root):
 
 def transfer(seed,cfg,rows,features,root):
     outcome={}
-    methods=("fedavg","fedper","local_only","fixed_cluster","adaptive_cluster","centralized")
+    methods=[f"fedprox_{mu}" if m=="fedprox" else m for m,mu in baseline_grid(cfg)]
     for client in cfg["clients"]:
         blocks=rows[rows["client"].eq(client)]
         local_train=blocks[blocks["split"].eq("train")]

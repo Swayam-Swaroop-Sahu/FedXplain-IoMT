@@ -22,7 +22,7 @@ def make_model(cfg):
 
 
 def as_tensor(part):
-    return torch.from_numpy(part["x"]),torch.from_numpy(part["y"]).float()
+    return torch.from_numpy(part["x"]),torch.tensor(part["y"],dtype=torch.float32)
 
 
 def logits(model, x):
