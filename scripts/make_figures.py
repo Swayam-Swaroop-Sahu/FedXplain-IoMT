@@ -21,11 +21,12 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from scipy.stats import spearmanr
 import numpy as np  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.config import MU_VALUES, PROTOCOLS, SEEDS, STUDY_RESULTS_PATH  # noqa: E402
+from src.config import MU_VALUES, N_LOCAL_EPOCHS, N_ROUNDS, PROTOCOLS, SEEDS, STUDY_RESULTS_PATH  # noqa: E402
 
 # --- palette (validated; see module docstring) ---
 BLUE = "#2A78D6"      # shared-model federated methods (FedAvg, FedProx)
@@ -164,7 +165,7 @@ def fig1_detection(study: dict, by_seed_method: dict) -> str:
 
 # ---------------------------------------------------------------------------
 # Figure 2: Spearman divergence heatmap (methods x client pairs, seed mean),
-# sequential blue ramp, with the seed-to-seed noise floor shown alongside
+# sequential blue ramp, with the seed-to-seed inter-seed spread shown alongside
 # ---------------------------------------------------------------------------
 def fig2_divergence_heatmap(study: dict, by_seed_method: dict) -> str:
     has_cluster_fl = any(r.get("aggregator") == "cluster_fl" for r in study.get("runs", []))
@@ -203,24 +204,24 @@ def fig2_divergence_heatmap(study: dict, by_seed_method: dict) -> str:
         for j in range(len(pair_keys)):
             val = matrix[i, j]
             color = "white" if val > 0.55 else NAVY
-            ax.text(j, i, f"{val:.2f}", ha="center", va="center", fontsize=9, color=color)
+            ax.text(j, i, f"{val:.4f}", ha="center", va="center", fontsize=9, color=color)
     ax.tick_params(length=0)
     for spine in ax.spines.values():
         spine.set_visible(False)
 
-    # Noise floor panel: seed-to-seed |diff| of the same statistic
+    # Inter-seed spread panel: seed-to-seed |diff| of the same statistic
     axn.imshow(noise, cmap="Greys", vmin=0.0, vmax=max(0.12, noise.max()), aspect="auto")
     axn.set_xticks(range(len(pair_keys)))
     axn.set_xticklabels([PAIR_TITLES[p] for p in pair_keys], fontsize=10, color=NAVY)
     axn.set_yticks(range(len(methods)))
     axn.set_yticklabels([])
-    axn.set_title("Noise floor: seed-to-seed\n|difference| of Spearman",
+    axn.set_title("Absolute inter-seed spread\n|difference| of Spearman",
                   fontsize=11, color=NAVY, pad=10)
     for i in range(len(methods)):
         for j in range(len(pair_keys)):
             shade = noise[i, j] / max(0.12, noise.max())
             color = "white" if shade > 0.55 else NAVY
-            axn.text(j, i, f"{noise[i, j]:.2f}", ha="center", va="center",
+            axn.text(j, i, f"{noise[i, j]:.4f}", ha="center", va="center",
                      fontsize=9, color=color)
     axn.tick_params(length=0)
     for spine in axn.spines.values():
@@ -231,7 +232,7 @@ def fig2_divergence_heatmap(study: dict, by_seed_method: dict) -> str:
     cbar.outline.set_edgecolor(GRID)
 
     fig.suptitle(
-        "Cross-client explanation divergence - any between-method gap smaller than its noise-floor cell is within seed noise",
+        "Within-method explanation similarity across protocol pairs",
         fontsize=12, color=NAVY,
     )
     fig.tight_layout(rect=(0, 0, 1, 0.93))
@@ -282,7 +283,7 @@ def fig3_mu_sweep(study: dict, by_seed_method: dict) -> str:
                 ha=ha, fontsize=9, color=NAVY)
 
     ax.annotate(
-        "benign traffic flagged as attack\n(recall collapses as $\\mu$ rises)",
+        "benign traffic flagged as attack\n(mean recall decreases as $\\mu$ rises)",
         xy=(3, means[3]), xytext=(1.6, 0.62),
         fontsize=10, color=NAVY, ha="left",
         arrowprops=dict(arrowstyle="->", color=NAVY, lw=1.2),
@@ -295,7 +296,7 @@ def fig3_mu_sweep(study: dict, by_seed_method: dict) -> str:
     ax.set_ylim(-0.05, 1.1)
     ax.set_xlim(-0.4, len(xticks) - 0.2)
     ax.set_title(
-        "No safe $\\mu$: Bluetooth benign recall under the FedProx sweep\n"
+        "Bluetooth benign recall across the tested penalties\n"
         "(mean across seeds 42 & 7; error bars show min-max range)",
         fontsize=12, color=NAVY, pad=12,
     )
@@ -321,7 +322,9 @@ def fig4_tradeoff(study: dict, by_seed_method: dict) -> str:
         return float(np.mean([r["client_metrics"][p]["f1_macro"] for p in PROTOCOLS]))
 
     def mean_spearman(r: dict) -> float:
-        return float(np.mean([r["divergence_full"][p]["spearman"] for p in r["divergence_full"]]))
+        vectors = r["shap_full_vectors_per_client"]
+        pairs = (("wifi", "mqtt"), ("wifi", "bluetooth"), ("mqtt", "bluetooth"))
+        return float(np.mean([spearmanr(vectors[a]["values"], vectors[b]["values"]).statistic for a, b in pairs]))
 
     xs = _collect_metrics(by_seed_method, methods, mean_spearman)
     ys = _collect_metrics(by_seed_method, methods, avg_macro_f1)
@@ -359,8 +362,6 @@ def fig4_tradeoff(study: dict, by_seed_method: dict) -> str:
     ax.set_ylim(0.66, 1.0)
     ax.axhline(0.85, color=GRID, linewidth=1, linestyle=":")
     ax.axvline(0.45, color=GRID, linewidth=1, linestyle=":")
-    ax.text(0.455, 0.985, "high quality / high agreement", fontsize=9, color=NAVY, alpha=0.75)
-    ax.text(0.255, 0.672, "low quality / high agreement", fontsize=9, color=NAVY, alpha=0.75)
 
     ax.set_xlabel("Cross-client explanation consistency (mean Spearman across pairs)",
                   fontsize=11, color=NAVY)
@@ -381,10 +382,36 @@ def fig4_tradeoff(study: dict, by_seed_method: dict) -> str:
     return path
 
 
+def architecture() -> str:
+    fig, ax = plt.subplots(figsize=(10, 4.8))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+
+    def box(x, y, label, color):
+        ax.text(x, y, label, ha="center", va="center", fontsize=11, color=NAVY,
+                bbox=dict(boxstyle="round,pad=0.65", facecolor=color, edgecolor=NAVY))
+
+    for x, proto in zip((0.17, 0.50, 0.83), PROTOCOLS):
+        box(x, 0.78, f"{PROTOCOL_TITLES[proto]} client\nLocal records and scaler\nE = {N_LOCAL_EPOCHS} epochs per round", "#e7f3ef")
+        ax.annotate("", xy=(0.5, 0.45), xytext=(x, 0.65),
+                    arrowprops=dict(arrowstyle="<->", color=BLUE, lw=1.6))
+    box(0.5, 0.35, f"Server  |  T = {N_ROUNDS} rounds\nExchange model parameters", "#e7eff9")
+    ax.text(0.5, 0.14, "FedAvg / FedProx: shared model     •     FedPer: shared trunk, local heads"
+            "     •     Cluster-FL: one model per group", ha="center", fontsize=10)
+    ax.text(0.5, 0.025, "Offline controls: pooled training on the combined partitions and local training on each partition",
+            ha="center", fontsize=10, color=NAVY)
+    path = os.path.join(FIGURES_DIR, "system_architecture.png")
+    fig.savefig(path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    return path
+
+
 def main() -> None:
     data = _load_runs()
     os.makedirs(FIGURES_DIR, exist_ok=True)
     paths = [
+        architecture(),
         fig1_detection(data["study"], data["by_seed_method"]),
         fig2_divergence_heatmap(data["study"], data["by_seed_method"]),
         fig3_mu_sweep(data["study"], data["by_seed_method"]),

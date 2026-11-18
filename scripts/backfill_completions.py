@@ -3,7 +3,7 @@
 Completion-pass tool: re-trains ONLY what is missing (the centralized
 baseline for seeds not yet run) and computes every remaining derived key -
 per-seed local-vs-FedAvg comparisons, local-only divergence scopes, the
-all-method noise floor, and the consolidated divergence summary - from
+all-method inter-seed spread, and the consolidated divergence summary - from
 already-stored SHAP vectors. No federated training and no SHAP recomputation.
 Idempotent: re-running detects what is already present and skips it.
 
@@ -20,9 +20,10 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.centralized import main as run_centralized
+from src.study_schema import normalize_study
 from src.config import DATA_DIR, SEEDS, STUDY_RESULTS_PATH
 from src.run_local_only import compute_local_vs_global
-from src.run_study_experiments import build_divergence_summary, compute_noise_floor
+from src.run_study_experiments import build_divergence_summary, compute_inter_seed_spread
 
 LOCAL_ONLY_SCOPE = "across local-only models (one isolated model per client)"
 
@@ -31,7 +32,7 @@ def _load_study() -> dict:
     if not os.path.exists(STUDY_RESULTS_PATH):
         raise FileNotFoundError(f"{STUDY_RESULTS_PATH} not found - run the suite first.")
     with open(STUDY_RESULTS_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return normalize_study(json.load(f))
 
 
 def _backfill_centralized(study: dict, actions: list[str]) -> None:
@@ -84,11 +85,11 @@ def _backfill_local_scopes(study: dict, actions: list[str]) -> None:
             actions.append(f"local_only seed {run['seed']}: added divergence_scope")
 
 
-def _recompute_noise_floor(study: dict, actions: list[str]) -> None:
-    """Recompute the noise floor across ALL methods; report any drift for
+def _recompute_inter_seed_spread(study: dict, actions: list[str]) -> None:
+    """Recompute the inter-seed spread across ALL methods; report any drift for
     pre-existing labels (values must not change, only new keys are added)."""
-    old = study.get("preliminary_noise_floor", {})
-    new = compute_noise_floor(study.get("runs", []), study.get("local_only", []))
+    old = study.get("absolute_inter_seed_spread", {})
+    new = compute_inter_seed_spread(study.get("runs", []), study.get("local_only", []))
 
     drift = []
     for label, entry in old.items():
@@ -102,17 +103,17 @@ def _recompute_noise_floor(study: dict, actions: list[str]) -> None:
             if new[label]["pairwise_divergence_spread"].get(pair, {}).get("abs_diff") != d.get("abs_diff"):
                 drift.append(f"{label}/{pair}: jaccard abs_diff changed")
     if drift:
-        raise RuntimeError("Noise-floor recompute drifted from stored values: " + "; ".join(drift))
+        raise RuntimeError("Inter-seed spread recompute drifted from stored values: " + "; ".join(drift))
 
     added = sorted(set(new) - set(old))
-    actions.append(f"preliminary_noise_floor: recomputed for ALL methods "
+    actions.append(f"absolute_inter_seed_spread: recomputed for ALL methods "
                    f"(new labels: {added or 'none'}; every method now carries full_metric_spread)")
-    study["preliminary_noise_floor"] = new
+    study["absolute_inter_seed_spread"] = new
 
 
 def _recompute_divergence_summary(study: dict, actions: list[str]) -> None:
     """Build the consolidated divergence summary (all methods, all seeds,
-    all three metrics, plus the seed-to-seed noise-floor reference)."""
+    all three metrics, plus the seed-to-seed inter-seed spread reference)."""
     study["divergence_summary"] = build_divergence_summary(
         study.get("runs", []), study.get("local_only", [])
     )
@@ -128,7 +129,7 @@ def main() -> None:
     _backfill_centralized(study, actions)
     _backfill_local_vs_global(study, actions)
     _backfill_local_scopes(study, actions)
-    _recompute_noise_floor(study, actions)
+    _recompute_inter_seed_spread(study, actions)
     _recompute_divergence_summary(study, actions)
 
     with open(STUDY_RESULTS_PATH, "w", encoding="utf-8") as f:

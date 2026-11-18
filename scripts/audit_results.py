@@ -5,7 +5,7 @@ for BOTH seeds (42, 7) the file must contain centralized, FedAvg, FedProx x
 every mu, local-only, and FedPer runs, each with complete client_metrics,
 top-10/top-5 SHAP rankings, full 45-dim SHAP vectors, Jaccard, and
 Spearman/cosine divergence - plus the comparison keys for local-only and
-FedPer, the all-method noise floor, the consolidated divergence summary,
+FedPer, the all-method inter-seed spread, the consolidated divergence summary,
 and the documented (empty) cluster_fl slot.
 
 Usage (repo root):
@@ -20,6 +20,7 @@ import sys
 # Allow running as `python scripts/audit_results.py` from repo root
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.study_schema import normalize_study
 from src.config import MU_VALUES, PROTOCOLS, SEEDS, STUDY_RESULTS_PATH  # noqa: E402
 from src.run_study_experiments import CLUSTER_FL_RUN_SCHEMA, PAIR_LABELS  # noqa: E402
 
@@ -84,7 +85,7 @@ def main() -> int:
         print(f"FAIL: {STUDY_RESULTS_PATH} not found.")
         return 1
     with open(STUDY_RESULTS_PATH, "r", encoding="utf-8") as f:
-        study = json.load(f)
+        study = normalize_study(json.load(f))
 
     problems: list[str] = []
     rows: list[tuple[str, bool | None, bool | None, bool | None, bool | None, bool | None]] = []
@@ -174,12 +175,12 @@ def main() -> int:
     nf_labels = {"fedavg"} | {f"fedprox_mu{m}" for m in MU_VALUES} | {"fedper", "local_only"}
     if any(r.get("aggregator") == "cluster_fl" for r in runs):
         nf_labels.add("cluster_fl")
-    nf = study.get("preliminary_noise_floor", {})
+    nf = study.get("absolute_inter_seed_spread", {})
     for label in sorted(nf_labels):
         if label not in nf:
-            problems.append(f"preliminary_noise_floor missing {label}")
+            problems.append(f"absolute_inter_seed_spread missing {label}")
         else:
-            rows.append((f"noise_floor:{label}", True, True, True, True, True))
+            rows.append((f"inter_seed_spread:{label}", True, True, True, True, True))
     ds_labels = nf_labels | {"cluster_fl"}
     ds = study.get("divergence_summary", {})
     for label in sorted(ds_labels):

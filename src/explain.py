@@ -145,7 +145,7 @@ def explain_client(
     mean_shap = np.squeeze(mean_shap)
 
     # Rank descending, keep top 10
-    ranked_indices = np.argsort(mean_shap)[::-1]
+    ranked_indices = np.argsort(-mean_shap, kind="stable")
     top10_idx = ranked_indices[:10]
     top10_feats = [feature_names[i] for i in top10_idx]
     top10_vals = [float(mean_shap[i]) for i in top10_idx]

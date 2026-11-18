@@ -145,19 +145,11 @@ def _metric_or_zero(value: float | None) -> float:
     return value if value is not None else 0.0
 
 
-def compute_noise_floor(
+def compute_inter_seed_spread(
     runs_data: list[dict],
     local_only_runs: list[dict] | None = None,
 ) -> dict:
-    """Seed-to-seed explanation stability for every method (the study's noise floor).
-
-    For each method: per-client seed-to-seed top-5 Jaccard, the seed-to-seed
-    spread of the pairwise Jaccard, and (full_metric_spread) the seed-to-seed
-    spread of Spearman/cosine per pair. Every divergence claim should be read
-    against these values: a difference smaller than the spread is within seed
-    noise. Covers ALL methods - FedAvg, every FedProx mu, FedPer, and the
-    local-only control.
-    """
+    """Describe seed-to-seed variability for each method and client pair."""
     method_runs: dict[str, list[dict]] = {
         "fedavg": [r for r in runs_data if r["aggregator"] == "fedavg"],
     }
@@ -172,7 +164,7 @@ def compute_noise_floor(
     if local_only_runs:
         method_runs["local_only"] = local_only_runs
 
-    noise_floor: dict[str, dict] = {}
+    inter_seed_spread: dict[str, dict] = {}
     for label, runs in method_runs.items():
         if len(runs) < 2:
             continue
@@ -212,13 +204,13 @@ def compute_noise_floor(
                 ),
             }
 
-        noise_floor[label] = {
+        inter_seed_spread[label] = {
             "per_client_top5_stability": per_client_top5_stability,
             "pairwise_divergence_spread": pairwise_spread,
             "full_metric_spread": full_metric_spread,
-            "status": "preliminary (n=2 seeds), not the full noise floor",
+            "status": "descriptive absolute inter-seed spread (two seeds)",
         }
-    return noise_floor
+    return inter_seed_spread
 
 
 def _pair_metrics(run: dict) -> dict[str, dict[str, float | None]]:
@@ -238,7 +230,7 @@ def build_divergence_summary(
     local_only_runs: list[dict] | None = None,
 ) -> dict:
     """Consolidated divergence block: per method x seed x pair, all three
-    metrics side by side, plus the seed-to-seed noise-floor reference.
+    metrics side by side, plus the seed-to-seed spread.
 
     Every entry carries its divergence_scope so readers know whether the
     pairwise numbers describe one shared model evaluated per protocol
@@ -278,7 +270,7 @@ def build_divergence_summary(
                     "spearman_abs_diff": round(abs(_metric_or_zero(m42["spearman"]) - _metric_or_zero(m7["spearman"])), 4),
                     "cosine_abs_diff": round(abs(_metric_or_zero(m42["cosine"]) - _metric_or_zero(m7["cosine"])), 4),
                 }
-            entry["noise_floor_seed_to_seed"] = noise_ref
+            entry["absolute_inter_seed_spread"] = noise_ref
         summary[label] = entry
 
     if local_only_runs:
@@ -298,7 +290,7 @@ def build_divergence_summary(
                     "spearman_abs_diff": round(abs(_metric_or_zero(m42["spearman"]) - _metric_or_zero(m7["spearman"])), 4),
                     "cosine_abs_diff": round(abs(_metric_or_zero(m42["cosine"]) - _metric_or_zero(m7["cosine"])), 4),
                 }
-            entry["noise_floor_seed_to_seed"] = noise_ref
+            entry["absolute_inter_seed_spread"] = noise_ref
         summary["local_only"] = entry
 
     # Cluster-FL slot: populated when runs are present; placeholder otherwise.
@@ -326,7 +318,7 @@ def build_divergence_summary(
                     "spearman_abs_diff": round(abs(_metric_or_zero(m42["spearman"]) - _metric_or_zero(m7["spearman"])), 4),
                     "cosine_abs_diff": round(abs(_metric_or_zero(m42["cosine"]) - _metric_or_zero(m7["cosine"])), 4),
                 }
-            entry["noise_floor_seed_to_seed"] = noise_ref
+            entry["absolute_inter_seed_spread"] = noise_ref
         summary["cluster_fl"] = entry
     else:
         # Empty slot placeholder: replaced by real cluster_fl entries at merge time.
@@ -446,7 +438,7 @@ def run_all_study_experiments() -> dict:
             run_idx += 1
 
     # ------------------------------------------------------------------
-    # 3. Noise floor + divergence summary are computed after all methods
+    # 3. Inter-seed spread + divergence summary are computed after all methods
     #    have run (they need FedPer and local-only results too).
     # ------------------------------------------------------------------
 
@@ -496,9 +488,9 @@ def run_all_study_experiments() -> dict:
     runs_data.extend(cluster_fl_runs)
 
     # ------------------------------------------------------------------
-    # 4d. Noise floor (all methods) + consolidated divergence summary
+    # 4d. Inter-seed spread (all methods) + consolidated divergence summary
     # ------------------------------------------------------------------
-    noise_floor = compute_noise_floor(runs_data, local_payload["local_only"])
+    inter_seed_spread = compute_inter_seed_spread(runs_data, local_payload["local_only"])
     divergence_summary = build_divergence_summary(runs_data, local_payload["local_only"])
 
     final_payload = {
@@ -518,7 +510,7 @@ def run_all_study_experiments() -> dict:
         "runs": runs_data,
         "local_only": local_payload["local_only"],
         "local_vs_global": local_payload["local_vs_global"],
-        "preliminary_noise_floor": noise_floor,
+        "absolute_inter_seed_spread": inter_seed_spread,
         "divergence_summary": divergence_summary,
     }
 
@@ -638,8 +630,8 @@ def run_all_study_experiments() -> dict:
             print("-" * 78)
     print("=" * 78)
 
-    print("\nPreliminary 2-seed noise floor summary:")
-    for agg_key, nf in noise_floor.items():
+    print("\nPreliminary two-seed spread summary:")
+    for agg_key, nf in inter_seed_spread.items():
         print(f"  [{agg_key}] Seed-to-seed top-5 Jaccards: " +
               ", ".join([f"{proto}={d['seed_to_seed_jaccard']}" for proto, d in nf["per_client_top5_stability"].items()]))
     print()

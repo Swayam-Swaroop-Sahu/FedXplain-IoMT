@@ -3,7 +3,7 @@
 ## Source
 
 **CICIoMT2024** — Canadian Institute for Cybersecurity, Internet of Medical Things 2024 dataset.
-- 40 IoMT devices across 3 protocols (Wi-Fi, MQTT, Bluetooth)
+- 25 physical and 15 simulated IoMT devices across three traffic domains (Wi-Fi, MQTT, Bluetooth)
 - 19 attack label values across 5 categories (DDoS, DoS, Recon, MQTT-specific, Spoofing) — see class tables below; the upstream CICIoMT2024 release documents 18 canonical attack profiles
 - Original dataset: ~8.8 million rows, ~2.2 GB of CSV data (plus ~30 GB of raw pcap files)
 
@@ -116,6 +116,6 @@ Source pcaps: `Bluetooth/attacks/pcap/{train,test}/Bluetooth_{Benign,DoS}_{train
 
 ## Notes
 
-- The `data/_extract_temp/` directory contains the full extraction workspace and is gitignored.
-- The original `CICIoMT2024.tar.xz.zip` archive (~10.3 GB) is also gitignored.
+- The historical extraction workspace was referenced at `data/_extract_temp/`. It is absent here.
+- Acquire the original benchmark from the official provider under its data terms. The original archive is absent here.
 - Bluetooth features are extracted from HCI H4 packets — see "Bluetooth Feature Extraction" above for methodology and caveats.

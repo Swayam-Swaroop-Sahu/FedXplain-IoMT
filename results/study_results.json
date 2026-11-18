@@ -31,6 +31,32 @@
       "fp": 202,
       "fn": 221,
       "tp": 26724
+    },
+    "client_metrics": {
+      "wifi": {
+        "tn": 600,
+        "fp": 123,
+        "fn": 40,
+        "tp": 19236,
+        "f1_macro": 0.9380959429831328,
+        "benign_recall": 0.8298755186721992
+      },
+      "mqtt": {
+        "tn": 3599,
+        "fp": 79,
+        "fn": 144,
+        "tp": 6178,
+        "f1_macro": 0.9761110910965618,
+        "benign_recall": 0.978520935290919
+      },
+      "bluetooth": {
+        "tn": 1923,
+        "fp": 0,
+        "fn": 37,
+        "tp": 1310,
+        "f1_macro": 0.9882729026121699,
+        "benign_recall": 1.0
+      }
     }
   },
   "poc_baseline_reference": {
@@ -9381,7 +9407,7 @@
           "cosine_abs_diff": 0.033
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "fedprox_mu0.001": {
       "per_client_top5_stability": {
@@ -9471,7 +9497,7 @@
           "cosine_abs_diff": 0.0272
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "fedprox_mu0.01": {
       "per_client_top5_stability": {
@@ -9561,7 +9587,7 @@
           "cosine_abs_diff": 0.0354
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "fedprox_mu0.05": {
       "per_client_top5_stability": {
@@ -9651,7 +9677,7 @@
           "cosine_abs_diff": 0.0024
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "fedprox_mu0.1": {
       "per_client_top5_stability": {
@@ -9741,7 +9767,7 @@
           "cosine_abs_diff": 0.0805
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "fedper": {
       "per_client_top5_stability": {
@@ -9831,7 +9857,7 @@
           "cosine_abs_diff": 0.0178
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "cluster_fl": {
       "per_client_top5_stability": {
@@ -9921,7 +9947,7 @@
           "cosine_abs_diff": 0.0149
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     },
     "local_only": {
       "per_client_top5_stability": {
@@ -10011,7 +10037,7 @@
           "cosine_abs_diff": 0.0172
         }
       },
-      "status": "preliminary (n=2 seeds), not the full noise floor"
+      "status": "descriptive absolute inter-seed spread (two seeds)"
     }
   },
   "centralized_by_seed": {
@@ -10029,6 +10055,32 @@
         "fp": 202,
         "fn": 221,
         "tp": 26724
+      },
+      "client_metrics": {
+        "wifi": {
+          "tn": 600,
+          "fp": 123,
+          "fn": 40,
+          "tp": 19236,
+          "f1_macro": 0.9380959429831328,
+          "benign_recall": 0.8298755186721992
+        },
+        "mqtt": {
+          "tn": 3599,
+          "fp": 79,
+          "fn": 144,
+          "tp": 6178,
+          "f1_macro": 0.9761110910965618,
+          "benign_recall": 0.978520935290919
+        },
+        "bluetooth": {
+          "tn": 1923,
+          "fp": 0,
+          "fn": 37,
+          "tp": 1310,
+          "f1_macro": 0.9882729026121699,
+          "benign_recall": 1.0
+        }
       }
     },
     "7": {
@@ -10045,6 +10097,32 @@
         "fp": 195,
         "fn": 236,
         "tp": 26709
+      },
+      "client_metrics": {
+        "wifi": {
+          "tn": 584,
+          "fp": 139,
+          "fn": 38,
+          "tp": 19238,
+          "f1_macro": 0.9319111411349692,
+          "benign_recall": 0.8077455048409405
+        },
+        "mqtt": {
+          "tn": 3623,
+          "fp": 55,
+          "fn": 161,
+          "tp": 6161,
+          "f1_macro": 0.9769128544480743,
+          "benign_recall": 0.9850462207721588
+        },
+        "bluetooth": {
+          "tn": 1922,
+          "fp": 1,
+          "fn": 37,
+          "tp": 1310,
+          "f1_macro": 0.987957383908832,
+          "benign_recall": 0.999479979199168
+        }
       }
     }
   },

@@ -78,3 +78,6 @@ results/revision_holdout/preds/
 
 results/*_initial_attempt/
 splits/*_initial_attempt/
+
+results/revision_replay/
+splits/revision_replay/

@@ -1,3 +1,6 @@
+from pathlib import Path
+from src.study_schema import normalize_study
+
 import json
 import os
 import sys
@@ -178,6 +181,9 @@ def method_label(key: str) -> str:
 
 def method_run(data: Dict, key: str, seed: int) -> Optional[Dict]:
     """Resolve a method key to a run dict for a given seed."""
+    if key == "centralized":
+        run = data.get("centralized_by_seed", {}).get(str(seed), {})
+        return run if run.get("client_metrics") else None
     if key == "local_only":
         return local_entry(data, seed)
     if key.startswith("fedprox_mu"):
@@ -228,13 +234,13 @@ def load_results() -> Dict:
         st.error(f"Results file not found: {RESULTS_PATH}")
         st.stop()
     with open(RESULTS_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return normalize_study(json.load(f))
 
 data = load_results()
 
 @st.cache_data
 def load_generalization() -> Optional[Dict]:
-    """Load the zero-day / data-scarcity results, or None if not generated yet."""
+    """Load the cross-protocol transfer / data-scarcity results, or None if not generated yet."""
     if not os.path.exists(GENERALIZATION_PATH):
         return None
     with open(GENERALIZATION_PATH, "r", encoding="utf-8") as f:
@@ -245,10 +251,9 @@ gen_data = load_generalization()
 seeds = seeds_of(data)
 mus = fedprox_mus(data.get("runs", []))
 run_meta = data.get("run_metadata", {})
-# Centralized is trained on pooled data; only pooled (all-protocol) metrics are stored.
-_cents = data.get("centralized_by_seed", {})
-cent_f1 = {s: _cents.get(str(s), {}).get("f1_macro") for s in seeds}
-cent_benign = {s: _cents.get(str(s), {}).get("benign_recall") for s in seeds}
+cent_runs = {s: method_run(data, "centralized", s) for s in seeds}
+cent_f1 = {s: avg_macro_f1(run) if run else None for s, run in cent_runs.items()}
+cent_benign = {s: client_metric(run, "bluetooth", "benign_recall") for s, run in cent_runs.items()}
 
 # ---- Sidebar ----
 def _kv_table(items, alt: str) -> None:
@@ -404,14 +409,30 @@ tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Explanation Divergence",
     "Methods Compared",
     "Methodology & Limitations",
-    "Zero-Day & Data Scarcity"
+    "Cross-protocol transfer & Data Scarcity"
 ])
 
 # ===== TAB 0: Executive Summary =====
 with tab0:
-    takeaway("One shared detector cannot serve three structurally different hospital protocols: on this benchmark "
-             "the shared model collapses on Bluetooth, no proximal strength rescues it, and only personalizing "
-             "the final layer — or not sharing at all — does.")
+    takeaway("Client-averaged performance can conceal errors on benign Bluetooth records.")
+    summary_file = Path("results/revision/paper_summary.json")
+    if summary_file.exists():
+        summary = json.loads(summary_file.read_text(encoding="utf8"))
+        with card("grouped-study", "Primary study", "Grouped evaluation with validation-selected checkpoints"):
+            labels = {"fedavg": "FedAvg", "fedper": "FedPer", "fixed_cluster": "Fixed groups",
+                      "adaptive_cluster": "Adaptive groups", "equal_weight": "Equal weights",
+                      "class_balanced": "Class-balanced loss", "local_only": "Local-only",
+                      "centralized": "Centralized"}
+            revised = pd.DataFrame([
+                {"Method": value, "Client-mean macro F1": summary[key]["f1"],
+                 "Bluetooth benign recall": summary[key]["bluetooth_specificity"]}
+                for key,value in labels.items()
+            ])
+            st.dataframe(revised.style.format(precision=4),hide_index=True,width="stretch",
+                         alt="Grouped test results for each method")
+            st.caption("Five matched seeds. The exact-feature groups do not identify capture or device membership.")
+        st.subheader("Historical row-split study")
+
 
     fig_col, text_col = st.columns([3, 2], gap="medium")
     # Figure 4 (the image carries its own title and error-bar note)
@@ -428,9 +449,9 @@ with tab0:
             st.markdown(
                 f"""
                 - **Bluetooth collapse**: Shared models drop BT benign recall to as low as {fmt(worst_bt_recall)} (μ={worst_mu}, seed {worst_seed}), while local‑only stays at {fmt(local_bt_min)}.
-                - **No safe μ**: Even μ={mu_min} worsens BT benign recall vs FedAvg ({smallest_mu_text}).
+                - **Tested penalties**: Even μ={mu_min} worsens BT benign recall vs FedAvg ({smallest_mu_text}).
                 - **FedPer’s trade‑off**: Recovers {fedper_gap_text} of the FedAvg→local‑only BT benign‑recall gap, with avg macro F1 {fmt(fedper_f1_mean)} ({fedper_vs_local_text} of local‑only {fmt(local_mean)}).
-                - **Explanation consistency**: FedPer’s cross‑client similarity stays at FedAvg level (see the Explanation Divergence tab).
+                - **Explanation consistency**: FedPer and FedAvg have Spearman ρ = 0.9888 within Bluetooth at both seeds. Cross-client comparisons are shown separately.
                 """
             )
         with card("not_proven", "What we didn’t prove yet"):
@@ -438,14 +459,14 @@ with tab0:
             st.markdown(
                 """
                 - **Statistical significance**: n=2 seeds provide directional trends only; no p‑values or confidence intervals.
-                - **Full noise floor**: Preliminary (n=2) only; more seeds needed for robust variance estimates.
+                - **Seed variability**: Preliminary (n=2) only; more seeds needed for robust variance estimates.
                 - **Other aggregators**: SCAFFOLD, FedNova, etc. remain for future work.
                 """
             )
 
 # ===== TAB 1: Detection =====
 with tab1:
-    takeaway(f"Sharing is what breaks Bluetooth: benign recall falls to {fmt(worst_bt_recall)} in the worst FedProx run "
+    takeaway(f"Bluetooth benign recall falls to {fmt(worst_bt_recall)} in the worst FedProx run "
              f"while local‑only keeps at least {fmt(local_bt_min)}, and personalizing the final layer (FedPer) "
              "recovers most of the gap.")
     # Build unified table
@@ -453,8 +474,8 @@ with tab1:
         rows = []
         methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "cluster_fl", "local_only", "centralized"]
         for method_key in methods:
-            row = {"Method": "Centralized (pooled)" if method_key == "centralized" else method_label(method_key)}
-            # Per‑client per‑seed columns (centralized has no per-client metrics → None)
+            row = {"Method": "Centralized (pooled training)" if method_key == "centralized" else method_label(method_key)}
+            # Per-client, per-seed macro F1
             for seed in seeds:
                 run = method_run(data_dict, method_key, seed)
                 for proto in PROTOS:
@@ -492,7 +513,7 @@ with tab1:
     bt_methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "cluster_fl", "local_only", "centralized"]
     for method_key in bt_methods:
         if method_key == "centralized":
-            row = {"Method": "Centralized (pooled, all protocols)"}
+            row = {"Method": "Centralized (pooled training)"}
             row.update({str(s): cent_benign.get(s) for s in seeds})
         else:
             row = {"Method": method_label(method_key)}
@@ -506,7 +527,7 @@ with tab1:
     fig_btm = go.Figure()
     for method_key, row in zip(bt_methods, bt_rows):
         color = method_color(method_key)
-        y_lab = "Centralized (pooled)" if method_key == "centralized" else row["Method"]
+        y_lab = "Centralized (pooled training)" if method_key == "centralized" else row["Method"]
         vals = [row[c] for c in seed_cols if row[c] is not None]
         if len(vals) > 1:
             fig_btm.add_trace(go.Scatter(
@@ -576,10 +597,16 @@ with tab1:
             f"- **Worst FedProx** (μ={worst_mu}, seed {worst_seed}): {fmt(worst_bt_recall)}\n"
             f"- **FedPer**: {bt_by_seed['fedper']}\n"
             f"- **Local‑only**: {bt_by_seed['local_only']}\n\n"
-            "The collapse is driven by sharing; the proximal term exacerbates it. "
+            "Mean Bluetooth benign recall decreases across the tested penalties. "
             "Personalizing the final layer (FedPer) recovers most of the gap."
         )
-        st.caption("< 0.5 means >50% false positives on benign traffic. Centralized stores only pooled benign recall, not a Bluetooth‑specific value.")
+        st.caption("< 0.5 means >50% false positives on benign traffic.")
+
+    reliability_path = os.path.join("figures", "calibration_reliability.png")
+    if os.path.exists(reliability_path):
+        with st.expander("Retrospective Bluetooth calibration probe"):
+            st.image(reliability_path, width="stretch")
+            st.caption("Each frozen FedAvg checkpoint used 1,635 Bluetooth rows to fit a slope and intercept and 1,635 disjoint rows for evaluation. Benign recall increased and attack recall decreased in both splits.")
 
     with card("unified", "Unified detection table (macro F1)", "Per‑client macro F1 by seed, then per‑seed averages"):
         st.dataframe(
@@ -590,7 +617,7 @@ with tab1:
             width="stretch",
             alt="Per-client and average macro F1 for every method and seed",
         )
-        st.caption("Centralized stores only pooled metrics: per‑client cells are empty and its Avg columns show pooled macro F1.")
+        st.caption("Avg columns weight the three client macro F1 scores equally, including for centralized training.")
 
     det_card = card("det_detail", "Detailed per‑seed metrics", "Binary F1 and benign recall per client; collapsed rows highlighted")
     # Seed selector
@@ -651,8 +678,7 @@ with tab1:
 
 # ===== TAB 2: Explanation Divergence =====
 with tab2:
-    takeaway("FedPer’s cross‑client explanation similarity stays at FedAvg level; read any between‑method gap "
-             "against the seed‑to‑seed noise floor before treating it as real.")
+    takeaway("Select a method to compare protocol pairs across both seeds. The absolute difference describes the two observed runs.")
     # Method and seed selectors, placed directly above the charts they drive
     div_methods = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "local_only", "cluster_fl"]
     with st.container(horizontal=True, vertical_alignment="top", gap="medium"):
@@ -790,7 +816,7 @@ with tab2:
         # Full‑metrics table
         seed42 = ds_entry.get("seed42", {})
         seed7 = ds_entry.get("seed7", {})
-        noise_floor = ds_entry.get("noise_floor_seed_to_seed", {})
+        inter_seed_spread = ds_entry.get("absolute_inter_seed_spread", {})
         # Build rows for each pair
         full_rows = []
         for pair in PAIRS:
@@ -801,9 +827,9 @@ with tab2:
             j7 = seed7.get(pair, {}).get("jaccard")
             s7 = seed7.get(pair, {}).get("spearman")
             c7 = seed7.get(pair, {}).get("cosine")
-            dj = noise_floor.get(pair, {}).get("jaccard_abs_diff")
-            ds = noise_floor.get(pair, {}).get("spearman_abs_diff")
-            dc = noise_floor.get(pair, {}).get("cosine_abs_diff")
+            dj = inter_seed_spread.get(pair, {}).get("jaccard_abs_diff")
+            ds = inter_seed_spread.get(pair, {}).get("spearman_abs_diff")
+            dc = inter_seed_spread.get(pair, {}).get("cosine_abs_diff")
             full_rows.append({
                 "Pair": label,
                 "J · 42": j42,
@@ -818,7 +844,7 @@ with tab2:
             })
         df_full = pd.DataFrame(full_rows)
         _unit = st.column_config.ProgressColumn(format="%.4f", min_value=0.0, max_value=1.0)
-        with card("div_full", "Full divergence metrics", "Top‑5 Jaccard (J), Spearman (ρ) and cosine per client pair and seed, with seed‑to‑seed noise floor"):
+        with card("div_full", "Full divergence metrics", "Top‑5 Jaccard (J), Spearman (ρ) and cosine per client pair and seed, with seed‑to‑seed inter-seed spread"):
             st.dataframe(
                 df_full,
                 hide_index=True,
@@ -828,9 +854,9 @@ with tab2:
                 } | {"Pair": st.column_config.TextColumn(pinned=True)},
                 height=(len(df_full) + 1) * 35 + 3,
                 width="stretch",
-                alt="Jaccard, Spearman and cosine similarity per client pair and seed, with noise floor",
+                alt="Jaccard, Spearman and cosine similarity per client pair and seed, with inter-seed spread",
             )
-            st.caption("|Δ| columns = seed‑to‑seed noise floor. A between‑method gap smaller than its noise‑floor cell is within seed noise.")
+            st.caption("|Δ| columns = seed‑to‑seed inter-seed spread. Each difference describes the two displayed runs.")
 
         # FedPer and local‑only comparison tables
         _sim_cfg = {"Jaccard": _unit, "Spearman ρ": st.column_config.NumberColumn(format="%.4f"), "Cosine": _unit}
@@ -873,8 +899,7 @@ with tab2:
 
 # ===== TAB 3: Methods Compared =====
 with tab3:
-    takeaway(f"Local‑only beats every shared model ({local_mean - best_shared_mean:+.4f} avg macro F1) and no μ rescues "
-             "Bluetooth; FedPer recovers most of the gap and Cluster‑FL resolves the collapse structurally.")
+    takeaway(f"Local-only has the highest client-averaged macro F1 among the decentralized methods in these runs ({fmt(local_mean)}).")
 
     # Centerpiece: BT benign recall vs μ
     fig_bt = go.Figure()
@@ -946,9 +971,9 @@ with tab3:
     colors = []  # FedAvg/FedProx → BLUE, FedPer → AMBER, Cluster-FL → NAVY, Local‑only → TEAL, Centralized → GREY
     for method_key in methods_for_f1:
         if method_key == "centralized":
-            # Only pooled macro F1 is stored for centralized
+            # Uniform mean of client macro F1 for the pooled-training model
             seed_vals = [v for v in cent_f1.values() if v is not None]
-            label = "Centralized (pooled)"
+            label = "Centralized (pooled training)"
         else:
             seed_vals = [avg_macro_f1(r) for seed in seeds if (r := method_run(data, method_key, seed))]
             label = method_label(method_key)
@@ -1016,7 +1041,7 @@ with tab3:
     with text_col, card("findings", "What the comparison shows", height="stretch"):
         st.markdown(
             f"""
-            - **Local‑only beats all sharing**: Local‑only achieves {fmt(local_mean)} avg macro F1 vs {fmt(best_shared_mean)} for the best shared model ({method_label(best_shared_label)}) — a {local_mean - best_shared_mean:+.4f} absolute gain. It matches the pooled centralized reference ({cent_f1_text}) within {cent_gap_text} points and beats it on Bluetooth benign recall ({fmt(local_bt_min)} vs pooled {cent_benign_text}).
+            - **Local‑only beats all sharing**: Local‑only achieves {fmt(local_mean)} avg macro F1 vs {fmt(best_shared_mean)} for the best shared model ({method_label(best_shared_label)}) — a {local_mean - best_shared_mean:+.4f} absolute gain. It matches the pooled centralized reference ({cent_f1_text}) within {cent_gap_text} points and beats it on Bluetooth benign recall ({fmt(local_bt_min)} vs {cent_benign_text}).
             - **FedPer’s trade‑off position**: FedPer recovers {fmt(fedper_bt_mean)} Bluetooth benign recall (seed mean) — {fedper_gap_text} of the FedAvg→local‑only gap. Its avg macro F1 ({fmt(fedper_f1_mean)}) is {fedper_vs_local_text} of local‑only, and cross‑client explanation similarity remains at FedAvg level (see the Explanation Divergence tab).
             - **Cluster‑FL resolves the collapse structurally**: Protocol‑aligned clusters ({'{Wi‑Fi}'}, {'{MQTT, Bluetooth}'}) avoid inter‑protocol gradient conflict entirely — {fmt(cluster_f1_mean)} avg macro F1 with {fmt(cluster_bt_mean)} Bluetooth benign recall, without a private per‑client head.
             """
@@ -1039,7 +1064,7 @@ with tab4:
         - **Models**: Shallow 3‑layer MLP (45→64→32→1) with ReLU and dropout.
         - **Explainability**: SHAP DeepExplainer with {run_meta.get('shap_bg_size', '—')} benign background samples per client.
         - **Divergence metrics**: Jaccard similarity of Top‑5 feature sets, Spearman and cosine similarity over full 45‑dim mean‑|SHAP| vectors.
-        - **Noise floor**: Seed‑to‑seed |difference| of each statistic (n={len(seeds)} seeds).
+        - **Inter-seed spread**: Seed‑to‑seed |difference| of each statistic (n={len(seeds)} seeds).
         """
     )
     methods_col.markdown("**Methods compared**")
@@ -1049,7 +1074,7 @@ with tab4:
         - **FedProx**: Shared model + proximal term (μ in {{{_mu_list}}}).
         - **FedPer**: Shared trunk (first 4 parameter arrays) + private per‑client output head (last 2 arrays).
         - **Local‑only**: No sharing (control).
-        - **Centralized**: Pooled data (upper reference).
+        - **Centralized**: Pooled training comparator.
         - **Cluster‑FL**: Protocol‑aligned clusters ({{Wi‑Fi}}, {{MQTT, Bluetooth}}) — one shared model per cluster, no inter‑cluster sharing.
         """
     )
@@ -1072,10 +1097,10 @@ with tab4:
         st.badge("Planned / open", icon=":material/schedule:", color="orange")
         st.markdown(
             """
-            - Full 10‑seed noise‑floor calibration & logarithmic μ sweep
+            - Full independent split replication & logarithmic μ sweep
             - Advanced aggregators (SCAFFOLD, FedNova, FedOpt)
             - Gradient‑based explainers (Integrated Gradients, etc.)
-            - Zero‑day and data‑scarcity generalization experiments (in progress; see the Zero‑Day & Data Scarcity tab)
+            - Cross-protocol transfer and data‑scarcity generalization experiments (see the transfer and data scarcity tab)
             """
         )
 
@@ -1117,8 +1142,8 @@ with tab4:
             """
         )
 
-    # Build stability table from preliminary_noise_floor for all aggregators
-    prelim = data.get("preliminary_noise_floor", {})
+    # Build stability table from preliminary_inter_seed_spread for all aggregators
+    prelim = data.get("absolute_inter_seed_spread", {})
     agg_keys = ["fedavg"] + [f"fedprox_mu{m}" for m in mus] + ["fedper", "local_only", "cluster_fl"]
     stab_rows = []
     for agg in agg_keys:
@@ -1172,7 +1197,7 @@ with tab4:
     else:
         arch_card.warning(f"Architecture diagram not found: {ARCH_IMG_PATH}")
 
-# ===== TAB 5: Zero-Day & Data Scarcity =====
+# ===== TAB 5: Cross-protocol transfer & Data Scarcity =====
 with tab5:
     if gen_data is None:
         st.info(
@@ -1180,9 +1205,7 @@ with tab5:
             "Run `python -m src.run_generalization_study` from the repo root."
         )
     else:
-        takeaway("FL is justified here only where its zero‑day recall exceeds local‑only with a positive detection "
-                 "margin, and where the head‑only curve (especially the trunk trained without the target client) "
-                 "stays above local‑only at small N.")
+        takeaway("Compare foreign attack recall with the source-matched benign flag rate. For adaptation, check whether the target contributed to trunk pretraining.")
         GEN_COLORS = {"local_only": TEAL, "fedavg": BLUE, "fedper": AMBER, "cluster_fl": NAVY,
                       "fedper_head": AMBER, "fedper_head_unseen": AMBER}
         # Both FedPer-head arms stay in the FedPer amber; the trunk-without-target arm is dashed.
@@ -1191,8 +1214,8 @@ with tab5:
                       "fedper_head_unseen": "FedPer head (trunk without target)"}
         _gen_seeds = gen_data.get("zero_day", {}).get("config", {}).get("seeds", seeds)
 
-        # ---- Experiment 1: Zero-Day ----
-        zd_card = card("zero_day", "Experiment 1 — Zero‑day (novel attack) detection", "Attack recall on attack types never seen in the target client's local training set")
+        # ---- Experiment 1: Cross-protocol transfer ----
+        zd_card = card("zero_day", "Experiment 1 — Cross-protocol attack transfer", "Attack recall on attack types never seen in the target client's local training set")
         zd = gen_data.get("zero_day", {})
         zd_targets = list(zd.get("targets", {}).keys())
         zd_target = zd_card.segmented_control(
@@ -1260,7 +1283,7 @@ with tab5:
                 for c in df_zd.columns if c != "Method"
             } | {"Method": st.column_config.TextColumn(pinned=True)},
             width="stretch",
-            alt=f"Zero-day recall, detection margin and in-distribution metrics per method for the {PROTO_LABEL.get(zd_target, zd_target)} client",
+            alt=f"Cross-protocol transfer recall, detection margin and in-distribution metrics per method for the {PROTO_LABEL.get(zd_target, zd_target)} client",
         )
         zd_card.expander("How to read this table", icon=":material/help:").markdown(
             "Foreign inputs are standardized with the target client's own scaler. "
@@ -1337,7 +1360,7 @@ with tab5:
                 f"(margin {fmt(zd_summary[m].get('mean_detection_margin'))})"
                 for m in zd_methods
             )
-            lines.append(f"- **Zero‑day ({PROTO_LABEL.get(zd_target, zd_target)})** — mean recall on unseen attacks: {parts}.")
+            lines.append(f"- **Cross-protocol transfer ({PROTO_LABEL.get(zd_target, zd_target)})** — mean recall on unseen attacks: {parts}.")
         if ds_summary:
             def _at(arm: str, idx: int) -> Optional[Dict]:
                 pts = ds_summary.get(arm, [])

@@ -26,6 +26,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
 
+from src.study_schema import normalize_study
 from src.config import EXPECTED_FEATURE_COUNT, PROTOCOLS, SEEDS, STUDY_RESULTS_PATH
 from src.run_study_experiments import PAIR_LABELS
 
@@ -208,7 +209,7 @@ def validate_results_file(results_path=STUDY_RESULTS_PATH) -> tuple[bool, list[s
         # Check raw JSON parse first
         try:
             raw_text = f.read()
-            study = json.loads(raw_text)
+            study = normalize_study(json.loads(raw_text))
         except Exception as e:
             return False, [f"JSON parse error: {e}"]
 
@@ -218,7 +219,7 @@ def validate_results_file(results_path=STUDY_RESULTS_PATH) -> tuple[bool, list[s
     # 2. Check top-level keys
     required_top_keys = [
         "run_metadata", "centralized", "centralized_by_seed", "poc_baseline_reference",
-        "runs", "local_only", "local_vs_global", "preliminary_noise_floor", "divergence_summary"
+        "runs", "local_only", "local_vs_global", "absolute_inter_seed_spread", "divergence_summary"
     ]
     for k in required_top_keys:
         if k not in study:
@@ -299,11 +300,11 @@ def validate_results_file(results_path=STUDY_RESULTS_PATH) -> tuple[bool, list[s
                     if not isinstance(tj, (int, float)) or not (0.0 <= tj <= 1.0):
                         errors.append(f"local_vs_global.{key}.{proto}.top5_jaccard {tj} out of [0, 1]")
 
-    # 7. Check preliminary_noise_floor and divergence_summary
-    nf = study.get("preliminary_noise_floor", {})
+    # 7. Check absolute_inter_seed_spread and divergence_summary
+    nf = study.get("absolute_inter_seed_spread", {})
     for agg_key in ("fedavg", "fedper", "local_only"):
         if agg_key not in nf:
-            errors.append(f"preliminary_noise_floor missing {agg_key}")
+            errors.append(f"absolute_inter_seed_spread missing {agg_key}")
 
     ds = study.get("divergence_summary", {})
     if "cluster_fl" not in ds:

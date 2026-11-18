@@ -3,6 +3,7 @@
 import os
 import sys
 
+import numpy as np
 import torch
 import torch.nn as nn
 from sklearn.metrics import (
@@ -139,7 +140,18 @@ def main(data_dir: str = DATA_DIR, seed: int = 42) -> dict:
     torch.save(model.state_dict(), save_path)
     print(f"\nCentralized baseline complete. Model saved to {save_path}")
 
+    client_metrics = {}
+    boundaries = np.cumsum([len(labels) for labels in y_tests])[:-1]
+    for proto, labels, predictions in zip(PROTOCOLS, y_tests, np.split(y_pred, boundaries)):
+        tn_k, fp_k, fn_k, tp_k = map(int, confusion_matrix(labels, predictions, labels=[0, 1]).ravel())
+        client_metrics[proto] = {
+            "tn": tn_k, "fp": fp_k, "fn": fn_k, "tp": tp_k,
+            "f1_macro": float(f1_score(labels, predictions, average="macro", zero_division=0)),
+            "benign_recall": tn_k / (tn_k + fp_k) if tn_k + fp_k else 0.0,
+        }
+
     return {
+        "client_metrics": client_metrics,
         "accuracy": acc,
         "f1_binary": f1_bin,
         "f1_macro": f1_mac,

@@ -275,11 +275,23 @@ def main():
     path=Path("revision_tables.tex")
     payload=json.dumps(results,indent=2,allow_nan=False)+"\n"
     report=ROOT/"paper_summary.json"
+    readme=Path("README.md")
+    current=readme.read_text(encoding="utf8")
+    begin,end="<!-- revision-summary:start -->","<!-- revision-summary:end -->"
+    before,rest=current.split(begin,1)
+    _,after=rest.split(end,1)
+    lines=["","| Method | Client-mean macro F1 | Bluetooth benign recall |","|---|---:|---:|"]
+    for key in ("fedavg","fedper","fixed_cluster","adaptive_cluster","equal_weight","class_balanced","local_only","centralized"):
+        r=results[key]
+        lines.append(f"| {NAMES[key]} | {fmt(r['f1'])} | {fmt(r['bluetooth_specificity'])} |")
+    rendered=before+begin+"\n".join(["",*lines,""])+end+after
     if args.check:
+        assert current==rendered, "README numerical table differs"
         assert numbers_path.read_text(encoding="utf8")==numbers, "Numerical macros differ"
         assert path.read_text(encoding="utf8")==tex, "Tables differ from generated results"
         assert report.read_text(encoding="utf8")==payload, "Paper summary differs from generated results"
     else:
+        readme.write_text(rendered,encoding="utf8")
         numbers_path.write_text(numbers,encoding="utf8")
         path.write_text(tex,encoding="utf8")
         claims="claim,value,source,script\n"+"".join(f"{key},{v},{source},scripts/make_all_tables_figures.py\n" for key,(v,source) in sources.items())
