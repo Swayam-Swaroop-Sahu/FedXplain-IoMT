@@ -31,6 +31,8 @@ models/generalization/
 results/*.png
 results/*.json
 !results/study_results.json
+!results/calibration_probe.json
+!results/benign_shap_probe.json
 !results/cluster_fl_results.json
 !results/generalization_results.json
 
@@ -41,6 +43,9 @@ results/checkpoints/
 # LaTeX and paper assets (kept local for Overleaf, excluded from git)
 *.tex
 *.pdf
+*.doc
+*.docx
+*.pptx
 *.cls
 *.aux
 *.log
@@ -57,3 +62,16 @@ a2.png
 a3.png
 scratch_pdf_render/
 docs/submission_qa_report.md
+
+!results/sensitivity_analysis.json
+!results/attack_label_inventory.json
+!results/feature_dictionary.json
+!results/exact_match_analysis.json
+
+# Bulk generated evaluation artifacts retained locally and in the release bundle
+results/revision/preds/
+results/revision/diagnostics/*.npz
+results/revision/shap/*.npz
+splits/revision/*.csv
+splits/revision_holdout/*.csv
+results/revision_holdout/preds/
