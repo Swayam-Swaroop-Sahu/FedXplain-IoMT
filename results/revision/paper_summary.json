@@ -139,6 +139,14 @@
     "f1": 0.9634452338779673,
     "bluetooth_specificity": 0.9944400442681819
   },
+  "equal_weight": {
+    "f1": 0.9097254245356594,
+    "bluetooth_specificity": 0.9591882243933347
+  },
+  "class_balanced": {
+    "f1": 0.7115540770540543,
+    "bluetooth_specificity": 0.24778529607380637
+  },
   "diagnostic": {
     "fedavg": {
       "benign_recall": 0.016078202443177033,
@@ -198,6 +206,11 @@
   "within_bluetooth_attack_spearman": 0.9842805755395682,
   "within_bluetooth_benign_spearman": 0.9835251798561149,
   "cross_wifi_bluetooth_attack_spearman": 0.24496380723400057,
+  "head_specificity": {
+    "head_1": 0.11586231456921113,
+    "head_2": 0.9921631954677932
+  },
+  "shortcut_accuracy": 0.9423302021401418,
   "seeds": [
     42,
     7,

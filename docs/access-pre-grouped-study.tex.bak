@@ -1,0 +1,404 @@
+\documentclass[nolineno]{ieeeaccess}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+% Suppress sample volume/year printed by the template on unpublished manuscripts.
+\makeatletter
+\newcommand{\draftfooters}{%
+  \def\@oddfoot{\hfil{\footerpagefont\thepage}}%
+  \def\@evenfoot{{\footerpagefont\thepage}\hfil}}
+\g@addto@macro\ps@headings{\draftfooters}
+\g@addto@macro\ps@titlepage{\draftfooters}
+\makeatother
+\begin{document}
+\pagestyle{headings}
+\def\xfigwd{\columnwidth}
+\graphicspath{{figures/}{./}}
+\history{Manuscript prepared for review.}\doi{pending assignment}
+
+\title{FedXplain-IoMT: Diagnosing Cross-Protocol Explanation Divergence in Federated Intrusion Detection for Medical IoT}
+
+\author{\uppercase{Swayam Swaroop Sahu}\authorrefmark{1}, 
+\uppercase{Prakhar Sharma}\authorrefmark{1}, 
+\uppercase{Geraldine Bessie Amali D}\authorrefmark{1}, 
+and \uppercase{Kathiravan Srinivasan}\authorrefmark{1}, \IEEEmembership{Senior Member, IEEE}}
+
+\address[1]{School of Computer Science and Engineering, Vellore Institute of Technology, Vellore 632014, India (e-mail: sahuswayamswaroop@gmail.com; prakhar.sharmaa2019@vitalum.ac.in; geraldine.amali@vit.ac.in; kathiravan.srinivasan@vit.ac.in)}
+
+\markboth
+{Sahu \headeretal: FedXplain-IoMT: Diagnosing Cross-Protocol Explanation Divergence}
+{Sahu \headeretal: FedXplain-IoMT: Diagnosing Cross-Protocol Explanation Divergence}
+
+\corresp{Corresponding author: Geraldine Bessie Amali D, Associate Professor Sr., School of Computer Science and Engineering, Vellore Institute of Technology, Vellore 632014, India (e-mail: geraldine.amali@vit.ac.in).}
+
+\begin{abstract}
+A detector can score well across a federation while raising frequent false alarms on one traffic domain. We study this discrepancy in an offline intrusion detection benchmark for the Internet of Medical Things. We partition 166,336 records from the Canadian Institute for Cybersecurity medical-device benchmark into three clients representing Wi-Fi, Message Queuing Telemetry Transport and Bluetooth. Across two random seeds, federated averaging achieved a client-averaged macro F1 of 0.7988, yet recognized only 39.52 percent of benign Bluetooth records. Increasing the proximal penalty reduced mean benign recall across the tested settings. Personalizing the classification head raised mean Bluetooth benign recall to 0.8489, and fixed protocol grouping raised it to 0.9927. On Bluetooth attack examples, the personalized and shared models nevertheless ranked mean absolute Shapley additive explanations almost identically. In a retrospective probe, fitting a slope and intercept to the frozen shared model's Bluetooth logits improved benign recall and probability scores on disjoint evaluation rows at a cost in attack recall. These observations support evaluating the local operating point alongside attribution similarity. They apply to record-level partitions of one benchmark and warrant evaluation on independent captures.
+\end{abstract}
+\begin{keywords}
+Explainable artificial intelligence, federated learning, Internet of Medical Things, intrusion detection, model personalization, probability calibration.
+\end{keywords}
+\titlepgskip=-15pt
+\maketitle
+\section{Introduction}\label{sec:introduction}
+\subsection{Clinical devices and network security}
+An infusion pump delivers a programmed therapy while its network interface may carry configuration updates, status reports or alarms. An electrocardiography monitor samples continuously, a pulse oximeter sends oxygen saturation readings, and a smart bed may report occupancy or movement. The availability, freshness and origin of these messages matter for different reasons. A delayed oxygen alarm can leave a clinician looking at a stale value. An integrity failure can present a plausible but incorrect vital sign. A change to a pump configuration could affect dosage if authorization and device-level safeguards also failed. These are potential consequences. A flow-level attack label cannot establish that any occurred. Threat modeling of portable electrocardiography systems illustrates why the sensing device, gateway and monitoring application warrant separate analysis~\cite{ecg,trustreview,clinicalrisk}.
+
+A network intrusion detection system (IDS) observes communication patterns. Traffic features can reveal unusual timing, excessive connection activity or changes in packet length without exposing the clinical payload. Encryption, shared gateways and intermittent connectivity limit what a detector can infer. Clinical triage therefore also requires device state and authentication logs. Resource-constrained anomaly detectors and specialized medical traffic models address different points in this monitoring pipeline~\cite{edgeids,specialized}.
+
+\subsection{Federated learning and data locality}
+\PARstart{A}{n} intrusion detector for the Internet of Medical Things (IoMT) can learn from extracted traffic features pooled across sites. The General Data Protection Regulation and the Health Insurance Portability and Accountability Act impose conditions on processing and disclosing identifiable health information~\cite{gdpr,hipaa2013security}. Federated learning (FL) allows sites to retain records while exchanging model parameters~\cite{nguyen2021federated,mcmahan2017communication}. Such updates may still disclose information.
+
+\subsection{Why global scores are insufficient}
+Macro F1 gives the benign and attack classes equal weight within a client. Averaging again over clients produces one number for several distinct confusion matrices. A missed attack and a false alarm on a routine observation have different operational consequences. The harmonic means conceal how often either error occurs on a particular domain. We therefore report benign recall (specificity) and attack recall (sensitivity) for each client with the corresponding class supports.
+
+\subsection{Protocol heterogeneity}
+Wi-Fi conveys link-layer frames that can carry Internet Protocol traffic. The derived records include transport flags and service indicators. Message Queuing Telemetry Transport (MQTT) describes an application conversation: a client establishes a session with a broker and publishes or subscribes to topics. Many connections and many publications within an established session can impose different costs on the broker. Bluetooth Low Energy exchanges short link-layer payloads and can sleep between connection events. Their timing can reflect a wearable's duty cycle. The host-side Bluetooth captures expose controller packets and connection handles. Native Bluetooth traffic lacks Internet headers. Wi-Fi generally supports higher throughput, while Bluetooth wearables can prioritize energy per report. Specific bandwidth and battery use were not measured.
+
+We simulate three clients drawn from heterogeneous traffic domains. Wi-Fi and Bluetooth Low Energy (BLE) provide link and physical layer technologies. Message Queuing Telemetry Transport (MQTT) provides application-layer messaging over the Transmission Control Protocol. Within Wi-Fi, 96.4\% of records carry an attack label. Wi-Fi also contributes 60.1\% of training records to sample-weighted aggregation. Bluetooth has a benign majority. Our question is how a joint model behaves on each domain when the domains contribute different sample counts and class distributions.
+
+FedXplain-IoMT evaluates established learning methods along three axes: class-specific detection, agreement of input attributions, and transfer to a client lacking particular local attack labels. We distinguish comparing traffic domains under one method from comparing models on the same domain. A separate output-level probe asks whether a fixed model can recover benign recall using only a local adjustment to its scores.
+
+\subsection{Related Work}\label{sec:related_work}
+Federated averaging (FedAvg) weights client updates by sample count~\cite{mcmahan2017communication}. Federated proximal optimization (FedProx) penalizes departure from broadcast weights~\cite{li2020federated}. Federated personalization layers (FedPer) retain selected parameters locally~\cite{arivazhagan2019federated}. Sattler and colleagues infer groups from update geometry~\cite{sattler2020clustered}. Our clustered baseline fixes groups before training.
+
+The KDD Cup, UNSW-NB15, Bot-IoT and CICIoT2023 benchmarks cover different network environments~\cite{tavallaee2009detailed,moustafa2015unsw,koroniotis2019towards,neto2023ciciot2023}. Previous work combined federated intrusion detection and Shapley additive explanations (SHAP) on CICIoT2023 distributed across four clients~\cite{fedxai}. Here client membership follows traffic domain, and comparisons use binary-stratified record splits within each domain. We quantify how an explanation changes across domains or across models evaluated on one domain.
+
+Graph-driven personalization learns relationships among clients, semi-decentralized training changes how participants exchange updates, and federated resampling changes the class distribution presented during training~\cite{graph,semidec,smote}. A distributed detector can also evaluate the cost of exchanging updates~\cite{hada}. Chandnani, Amali and colleagues study hyperparameter optimization for federated IoT intrusion detection~\cite{amali}. Here we hold architecture and training schedule fixed while comparing which parameters are shared.
+
+Explainable detectors also use feature information at different stages. One distillation method uses Shapley additive explanations (SHAP) during learning~\cite{distill}, expert fusion organizes features into groups~\cite{experts}, and causal federated models introduce assumptions about relations among variables~\cite{causalfl}. Our post-hoc comparison leaves training unchanged. Its unit of analysis is a pair of model, client and sample configurations.
+
+\subsection{Research gap}
+Results from separate benchmarks cannot by themselves identify the effect of a private head. Feature definitions, support for benign traffic, dependence between records and the unit of splitting vary across datasets. IoMT-TrafficData provides a complementary acquisition pipeline~\cite{iottraffic}. Sampling-aware detection and cross-domain transfer studies illustrate how the evaluation population changes the question~\cite{adaptive,transferstudy,drift}. We ask whether local specificity can change substantially when two models give similar aggregate attributions on the same records.
+
+\subsection{Contributions}
+\begin{itemize}
+\item We compare six training strategies on protocol-grounded clients and document split membership, label counts and exact feature overlap.
+\item We apply private heads and fixed protocol groups to the same medical traffic partition. Our contribution is the evaluation of these established strategies against a local-only control under a common measurement protocol.
+\item We separate cross-client and within-client explanations and test an output adjustment on frozen checkpoints. Transfer experiments include a source-matched benign control. Adaptation experiments distinguish target-inclusive from target-excluded pretraining.
+\end{itemize}
+\section{Dataset and Attack Taxonomy}
+\subsection{Benchmark and partitions}\label{sec:data}
+The Canadian Institute for Cybersecurity Internet of Medical Things 2024 (CICIoMT2024) testbed comprised 25 physical and 15 simulated devices~\cite{dadkhah2024towards}. The subset in Table~\ref{tab:data} draws from labeled Wi-Fi/MQTT feature files and Bluetooth host controller interface (HCI H4) captures. The subset documentation describes a stratified draw with seed 42, nominal caps of 100,000 Wi-Fi and 50,000 MQTT records, and all extracted Bluetooth windows. Filename-derived labels merge numbered variants. The resulting 19 attack labels comprise 13 Wi-Fi, five MQTT and one Bluetooth label, excluding benign. Wi-Fi and MQTT draw benign records from the same source pool.
+
+Bluetooth extraction groups HCI packets by connection handle and one-second window. Size, timing and count statistics describe these windows. Inapplicable Internet Protocol flags and indicators are zero-filled, and the LLC field represents the fraction of asynchronous connection-oriented data packets. Some columns therefore have different meanings across clients. Zero-filled fields can identify the domain. The subset lacks row-to-capture identifiers needed to establish independence or quantify device overlap after sampling.
+
+For each seed we repartition the derived rows 80/20, stratified by binary label within client. Original capture-level test separation is not enforced. Identifier, label and nonnumeric columns are excluded. Nonfinite values are replaced with zero. Each training feature matrix has $n_k$ rows and 45 ordered columns. Its means $\boldsymbol{\mu}_k$ and scales $\boldsymbol{\sigma}_k$ are applied to both splits, with unit scale for constant columns. We checked exact equality of all 45 pre-scaling features at model input precision. At seeds 42 and 7, respectively, 4,329 and 4,417 Wi-Fi test rows matched a training row out of 19,999. Bluetooth had four matches per seed and MQTT had none within client. Feature equality does not identify a shared packet, but this overlap limits interpretation of test performance on novel traffic.
+
+\begin{table}[t]
+\caption{Record counts in the study subset for each binary-stratified split.}\label{tab:data}
+\centering\resizebox{\columnwidth}{!}{\begin{tabular}{lrrrr}\hline
+Client & Train benign & Train attack & Test benign & Test attack\\\hline
+Wi-Fi & 2891 & 77103 & 723 & 19276\\
+MQTT & 14711 & 25286 & 3678 & 6322\\
+Bluetooth & 7688 & 5388 & 1923 & 1347\\
+\hline\end{tabular}}
+\end{table}
+
+\subsection{Attack labels and clinical interpretation}
+The Canadian Institute for Cybersecurity grouped testbed traffic into denial of service (DoS), distributed denial of service (DDoS), reconnaissance, spoofing and MQTT scenarios. For Wi-Fi, the flood labels distinguish Transmission Control Protocol (TCP), User Datagram Protocol (UDP), Internet Control Message Protocol (ICMP) and TCP synchronization (SYN) traffic. The reconnaissance labels distinguish operating-system identification, host discovery, port enumeration and vulnerability scanning. Address Resolution Protocol (ARP) spoofing concerns the binding between an address and a local link endpoint. The MQTT scenarios distinguish session establishment, publication traffic and malformed messages. The Bluetooth DoS label identifies the source scenario without specifying a common IP-layer mechanism. The released features describe traffic observed during these labeled capture scenarios. Table~\ref{tab:attacks} lists the retained labels. Clinical consequences are possible interpretations for monitoring services.
+\begin{table*}[t]\caption{Attack labels in the study subset. Counts include both splits. The cited benchmark documents the scenarios.}\label{tab:attacks}\centering\small
+\begin{tabular}{llrlc}\hline Label & Client & Records & Possible service impact & Source\\\hline
+ARP\_Spoofing & Wi-Fi & 1,584 & Misdirection of gateway-bound telemetry & \cite{dadkhah2024towards}\\
+Recon-OS\_Scan & Wi-Fi & 1,611 & Discovery of hosts or exposed monitoring services & \cite{dadkhah2024towards}\\
+Recon-Ping\_Sweep & Wi-Fi & 926 & Discovery of hosts or exposed monitoring services & \cite{dadkhah2024towards}\\
+Recon-Port\_Scan & Wi-Fi & 2,432 & Discovery of hosts or exposed monitoring services & \cite{dadkhah2024towards}\\
+Recon-VulScan & Wi-Fi & 1,444 & Discovery of hosts or exposed monitoring services & \cite{dadkhah2024towards}\\
+TCP\_IP-DDoS-ICMP & Wi-Fi & 19,440 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DDoS-SYN & Wi-Fi & 10,721 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DDoS-TCP & Wi-Fi & 10,842 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DDoS-UDP & Wi-Fi & 20,498 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DoS-ICMP & Wi-Fi & 6,330 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DoS-SYN & Wi-Fi & 6,577 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DoS-TCP & Wi-Fi & 5,831 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+TCP\_IP-DoS-UDP & Wi-Fi & 8,143 & Contention for capacity carrying monitor traffic & \cite{dadkhah2024towards}\\
+MQTT-DDoS-Connect\_Flood & MQTT & 17,264 & Reduced broker capacity for legitimate sessions & \cite{dadkhah2024towards}\\
+MQTT-DDoS-Publish\_Flood & MQTT & 4,179 & Delayed delivery of monitoring topic updates & \cite{dadkhah2024towards}\\
+MQTT-DoS-Connect\_Flood & MQTT & 2,707 & Reduced broker capacity for legitimate sessions & \cite{dadkhah2024towards}\\
+MQTT-DoS-Publish\_Flood & MQTT & 5,411 & Delayed delivery of monitoring topic updates & \cite{dadkhah2024towards}\\
+MQTT-Malformed\_Data & MQTT & 2,047 & Processing errors at an application endpoint & \cite{dadkhah2024towards}\\
+BT-DoS & Bluetooth & 6,735 & Gaps in wearable observations & \cite{dadkhah2024towards}\\
+\hline\end{tabular}\end{table*}
+\subsection{Partitioning and prevalence}
+Figure~\ref{fig:attack_distribution} uses the number of records within each protocol as its denominator. Attack prevalence is 96.4\% for Wi-Fi, 63.2\% for MQTT and 41.2\% for Bluetooth. Sample counts determine aggregation weights during training, while each protocol contributes equally to the client mean during evaluation.
+\begin{figure*}[t]\centering
+\includegraphics[width=0.9\textwidth]{fig_attack_distribution.png}
+\caption{Traffic composition of the complete study partitions.}\label{fig:attack_distribution}
+\end{figure*}
+
+\section{System Architecture and Methodology}\label{sec:methods}
+\begin{figure*}[t]\centering
+\includegraphics[width=\linewidth]{system_architecture.png}
+\caption{Simulated training for three protocol clients. Arrows denote parameter exchange. Records and fitted scalers stay in their partitions during federated training. The pooled comparator is trained separately.}\label{fig:architecture}
+\end{figure*}
+
+\subsection{Model and training}\label{sec:training}
+For $K=3$ clients let $\mathcal D_k=\{(\mathbf x_k^{(i)},y_k^{(i)})\}_{i=1}^{n_k}$, with $n=\sum_k n_k=133{,}067$, $\mathbf x\in\mathbb R^{45}$ and $y\in\{0,1\}$ (attack is one). The multilayer perceptron uses the following layers:
+\begin{align}
+\mathbf h_1 &= \operatorname{ReLU}(W_1\mathbf x+\mathbf b_1),\\
+\tilde{\mathbf h}_1 &= \operatorname{Dropout}(\mathbf h_1,0.2),\\
+\mathbf h_2 &= \operatorname{ReLU}(W_2\tilde{\mathbf h}_1+\mathbf b_2),\\
+z &= W_3\mathbf h_2+b_3,\quad \hat p=(1+\exp(-z))^{-1}.
+\end{align}
+The hidden widths are 64 and 32. ReLU takes the elementwise maximum with zero. Inverted dropout rescales surviving units during training and acts as the identity during evaluation and explanation. The class decision is $\mathbf1\{\hat p\geq0.5\}$. Writing $p_i=\hat p(\mathbf x_k^{(i)};\mathbf w)$ and $y_i=y_k^{(i)}$, the local loss is unweighted binary cross-entropy with natural logarithms:
+\begin{equation}
+\mathcal L_k(\mathbf w)=-n_k^{-1}\sum_i[y_i\log p_i+(1-y_i)\log(1-p_i)].
+\end{equation}
+With full participation, the server averages the locally trained vectors $\mathbf w_{k,t+1}$:
+\begin{equation}
+\mathbf w_{t+1}=\sum_{k=1}^K(n_k/n)\mathbf w_{k,t+1}.
+\end{equation}
+FedProx takes local optimization steps on
+\begin{equation}
+F_k(\mathbf w;\mathbf w_t)=\mathcal L_k(\mathbf w)+\tfrac{\mu}{2}\|\mathbf w-\mathbf w_t\|_2^2.
+\end{equation}
+The penalty includes all trainable weights and biases with the broadcast vector fixed. We test $\mu\in\{0.001,0.01,0.05,0.1\}$.
+
+\subsection{Private heads and protocol groups}
+\begin{figure*}[t]\centering
+\includegraphics[width=0.9\textwidth]{fig_iomt_mlp_architecture.png}
+\caption{Layer widths and the shared and private parameters during FedPer training.}\label{fig:iomt_mlp_architecture}
+\end{figure*}
+\begin{figure*}[t]\centering
+\includegraphics[width=0.9\textwidth]{fig_cluster_fl_topology.png}
+\caption{Client training counts and aggregation destinations. The two group servers denote independent logical aggregates.}\label{fig:cluster_fl_topology}
+\end{figure*}
+FedPer starts all clients with identical seeded heads. Each client updates both $\mathbf w_{\rm trunk}=(W_1,\mathbf b_1,W_2,\mathbf b_2)$ (5,024 parameters) and $\mathbf w_{{\rm head},k}=(W_{3,k},b_{3,k})$ (33 parameters). Only the trunk enters the server average. Each persistent local head is reunited with the aggregated trunk for inference. Fixed Cluster-FL averages all parameters within $\{\mathrm{Wi\!-\!Fi}\}$ and $\{\mathrm{MQTT},\mathrm{Bluetooth}\}$, replacing $n$ with 79,994 and 53,073, respectively. Wi-Fi receives its own update each round.
+
+\subsection{Experimental setup and sensitivity}
+Fixing network width and dropout keeps predictive capacity comparable across strategies. The minibatch size and Adam step size control the local update rule. Fixing the number of rounds controls aggregation opportunities, while the epoch budget controls local passes over the data. Sample counts still determine the number of optimizer steps per round. The two seeds vary both split membership and training randomness, so their differences cannot isolate initialization sensitivity.
+
+Only the seed and proximal strength vary in the main runs. The sensitivity report contains paired detection and explanation metrics and the four positive penalties. Rounds, epochs, step size, layer widths, batch size and dropout each have one observed setting. Their marginal effects remain unidentified. The explanation sample and background sizes bound the cost of DeepExplainer and permit matched comparisons across models. Neither size was tuned against test performance.
+
+The simulation uses Flower 1.39.0 client interfaces and PyTorch 2.14.1 on the CPU~\cite{beutel2020flower,paszke2019pytorch}. Training uses Adam at learning rate 0.001, shuffled batches of up to 64 and mean batch loss. Federated clients reset Adam state each round. The final checkpoint follows $T=10$ rounds of $E=3$ epochs. Local-only training uses 30 epochs and pooled centralized training uses ten. With the final partial batch retained, these imply $30\lceil n_k/64\rceil$ steps per client and $10\lceil n/64\rceil$ pooled steps. The main study fixes the budget and threshold without independent validation-based model selection. Raw records stay local during the simulated federated updates. Secure aggregation, differential privacy and defenses against malicious participants lie outside the experiment.
+
+\subsection{Attribution and detection metrics}\label{sec:metrics}
+For an analyst investigating an alarm, a score alone gives little indication of whether packet timing, size or protocol indicators influenced the decision. Shapley additive explanations allocate the difference between a prediction and a background reference among input features. DeepExplainer approximates these contributions for differentiable networks. The explanation depends on the chosen background and on whether the explained quantity is a probability or a logit. Taking absolute values removes direction: a large attribution can raise scores on some records and lower them on others.
+
+SHAP 0.53.0 DeepExplainer estimates input contributions to the sigmoid attack probability~\cite{lundberg2017unified}. For each seed and client the sampler resets its seed, draws 100 benign training rows as background and 200 attack test rows for explanation, without replacement. Models run with dropout disabled. Within-client comparisons use the same sampling procedure and feature order. Cross-client comparisons change the test distribution, background and scaler. For feature $j$ on client $k$,
+\begin{equation}
+\bar\phi_{k,j}=\frac{1}{N_{\rm expl}}\sum_{i=1}^{N_{\rm expl}}|\phi_{k,j}^{(i)}|,\quad N_{\rm expl}=200 .
+\end{equation}
+For two such vectors $A,B$, let $T_5$ select indices of the five largest components. Equal scores are ordered by original feature index. Reapplying this rule to all saved vectors reproduced every reported top-five list. Higher values of the following metrics indicate greater similarity:
+\begin{equation}
+J(A,B)=|T_5(A)\cap T_5(B)|/|T_5(A)\cup T_5(B)|.
+\end{equation}
+With $\mathbf r_A,\mathbf r_B$ the average fractional ranks across the 45 features and $\mathbf u_A=\mathbf r_A-\operatorname{mean}(\mathbf r_A)\mathbf 1$ (likewise for $B$),
+\begin{equation}
+\rho(A,B)=\frac{\mathbf u_A^\top\mathbf u_B}{\|\mathbf u_A\|_2\|\mathbf u_B\|_2}.
+\end{equation}
+For nonnegative mean absolute attribution vectors,
+\begin{equation}
+C(A,B)=\frac{\bar{\boldsymbol\phi}_A^\top\bar{\boldsymbol\phi}_B}{\|\bar{\boldsymbol\phi}_A\|_2\|\bar{\boldsymbol\phi}_B\|_2}.
+\end{equation}
+$J,C\in[0,1]$ and $\rho\in[-1,1]$ where defined. A constant rank vector makes $\rho$ undefined, and a zero vector makes $C$ undefined. For a specified metric, method and client or pair, the descriptive inter-seed spread is
+\begin{equation}
+\Delta_{\rm seed}=|M_{42}-M_7|,\qquad S=2.
+\end{equation}
+For true positives (TP), true negatives (TN), false positives (FP) and false negatives (FN), benign recall is $\mathrm{TN}/(\mathrm{TN}+\mathrm{FP})$, the false-positive rate is its complement, and attack recall is $\mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$. Within-client macro F1 averages the attack and benign F1 scores, $2q/(2q+\mathrm{FP}+\mathrm{FN})$ for $q=\mathrm{TP},\mathrm{TN}$, respectively. A zero denominator contributes zero. The client average weights each of the three macro F1 scores equally. We average before rounding to four decimals. Historical pairwise SHAP metrics are stored to four decimals.
+
+\section{Results}\label{sec:results}
+\subsection{Detection by traffic domain}\label{sec:detection}
+Tables~\ref{tab:detect42} and~\ref{tab:detect7} and Fig.~\ref{fig:detect} show how the average masks Bluetooth errors. At seeds 42 and 7 the Bluetooth FedAvg confusion counts (TN, FP, FN, TP) were (705,1218,5,1342) and (815,1108,13,1334). Attack recall was 0.9963 and 0.9903, while the false-positive rate was 0.6334 and 0.5762. Local-only had the strongest mean client macro F1 among the decentralized methods. Centralized pooled test macro F1 was 0.9794 and 0.9790. We replayed both centralized checkpoints by client and verified that summing their confusion matrices reproduced the published pooled counts.
+
+\begin{table*}[t]\centering
+\caption{Client macro F1 and benign recall, seed 42. BT denotes Bluetooth.}\label{tab:detect42}
+\begin{tabular}{lrrrrrrr}\hline Method & Wi-Fi F1 & MQTT F1 & BT F1 & Client mean F1 & Wi-Fi benign & MQTT benign & BT benign\\\hline
+Centralized & 0.9381 & 0.9761 & 0.9883 & 0.9675 & 0.8299 & 0.9785 & 1.0000\\
+Local-only & 0.9442 & 0.9819 & 0.9883 & 0.9715 & 0.8479 & 0.9845 & 0.9984\\
+FedAvg & 0.9375 & 0.8409 & 0.6112 & 0.7966 & 0.8893 & 0.6463 & 0.3666\\
+FedProx 0.001 & 0.9266 & 0.9534 & 0.4894 & 0.7898 & 0.9212 & 0.9054 & 0.2090\\
+FedProx 0.01 & 0.9242 & 0.9205 & 0.3312 & 0.7253 & 0.9502 & 0.8140 & 0.0364\\
+FedProx 0.05 & 0.9070 & 0.8775 & 0.3130 & 0.6991 & 0.9530 & 0.7145 & 0.0192\\
+FedProx 0.1 & 0.9021 & 0.8665 & 0.2999 & 0.6895 & 0.9336 & 0.6906 & 0.0073\\
+FedPer & 0.9414 & 0.9270 & 0.8854 & 0.9179 & 0.8562 & 0.8464 & 0.8258\\
+Cluster-FL & 0.9399 & 0.9766 & 0.9832 & 0.9666 & 0.8313 & 0.9935 & 0.9906\\
+\hline\end{tabular}\end{table*}
+
+\begin{table*}[t]\centering
+\caption{Client macro F1 and benign recall, seed 7. BT denotes Bluetooth.}\label{tab:detect7}
+\begin{tabular}{lrrrrrrr}\hline Method & Wi-Fi F1 & MQTT F1 & BT F1 & Client mean F1 & Wi-Fi benign & MQTT benign & BT benign\\\hline
+Centralized & 0.9319 & 0.9769 & 0.9880 & 0.9656 & 0.8077 & 0.9850 & 0.9995\\
+Local-only & 0.9370 & 0.9838 & 0.9899 & 0.9702 & 0.8396 & 0.9837 & 0.9990\\
+FedAvg & 0.9332 & 0.8218 & 0.6483 & 0.8011 & 0.8797 & 0.5984 & 0.4238\\
+FedProx 0.001 & 0.9217 & 0.9160 & 0.4008 & 0.7462 & 0.8852 & 0.8002 & 0.1092\\
+FedProx 0.01 & 0.9190 & 0.8849 & 0.3277 & 0.7105 & 0.9350 & 0.7295 & 0.0333\\
+FedProx 0.05 & 0.9116 & 0.8743 & 0.3266 & 0.7042 & 0.9170 & 0.7069 & 0.0322\\
+FedProx 0.1 & 0.9023 & 0.8759 & 0.3286 & 0.7023 & 0.9267 & 0.7115 & 0.0343\\
+FedPer & 0.9360 & 0.9419 & 0.9127 & 0.9302 & 0.8437 & 0.8657 & 0.8721\\
+Cluster-FL & 0.9380 & 0.9789 & 0.9823 & 0.9664 & 0.8174 & 0.9929 & 0.9948\\
+\hline\end{tabular}\end{table*}
+
+\begin{figure*}[t]\centering
+\includegraphics[width=\linewidth]{fig1_detection_macro_f1.png}
+\caption{Per-client macro F1 for decentralized methods. Bars show two-seed means and whiskers span their ranges.}\label{fig:detect}
+\end{figure*}
+
+\subsection{FedProx penalty sweep}\label{sec:prox}
+Mean Bluetooth benign recall decreased monotonically from 0.1591 to 0.0349, 0.0257 and 0.0208 across the four positive penalties (Fig.~\ref{fig:sweep}). At seed 7 recall rose from 0.0322 to 0.0343 over the final step. These observations are compatible with a cost of constraining local updates on this partition. Gradient conflicts and the effects of aggregation weights require separate measurements.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\linewidth]{fig3_bluetooth_mu_sweep.png}
+\caption{Bluetooth benign recall at four categorical penalty settings, with FedAvg at zero for reference. Points are seed means and whiskers give the observed range.}\label{fig:sweep}
+\end{figure}
+
+\subsection{Within-client and cross-client explanations}\label{sec:shap}
+On Bluetooth, FedPer and FedAvg produced highly correlated rankings of mean absolute SHAP values on attack samples ($\rho=0.9888$ for both seeds). Only three of their top five features overlapped ($J=3/7$). By comparison, applying FedAvg to Wi-Fi and Bluetooth produced $\rho=0.3176$ and $0.2514$, with disjoint top-five sets. Table~\ref{tab:within} compares models within client, while Table~\ref{tab:divergence_results} and Fig.~\ref{fig:heat} compare clients within method. Similar attack attribution ranks can coexist with different benign recall. The results are consistent with a contribution from the classification boundary. Input ranks alone cannot identify latent representation equivalence or probability miscalibration. A companion analysis used the same benign training backgrounds and 200 benign Bluetooth test rows per seed. FedAvg and FedPer had within-client rank correlations of 0.9989 and 0.9978, with top-five Jaccard similarities of 1.0000 and 0.6667 at seeds 42 and 7.
+
+\begin{table}[t]
+\caption{FedPer versus FedAvg on the same client. Both explain attack probabilities using the seed-specific attack sample and benign training background.}\label{tab:within}
+\centering\resizebox{\columnwidth}{!}{\begin{tabular}{llrrr}\hline
+Client & Seed & $J$ & $\rho$ & $C$\\\hline
+wifi & 42 & 0.6667 & 0.9546 & 0.9974\\
+mqtt & 42 & 0.6667 & 0.9109 & 0.9891\\
+bluetooth & 42 & 0.4286 & 0.9888 & 0.9500\\
+wifi & 7 & 1.0000 & 0.9900 & 0.9964\\
+mqtt & 7 & 0.4286 & 0.8856 & 0.9880\\
+bluetooth & 7 & 0.4286 & 0.9888 & 0.9485\\
+\hline\end{tabular}}
+\end{table}
+
+\begin{table*}[t]
+\caption{Within-method cross-client attribution similarity and absolute inter-seed spread}
+\label{tab:divergence_results}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Pair} & \multicolumn{3}{c|}{\textbf{Top-5 Jaccard Similarity}} & \multicolumn{3}{c|}{\textbf{Spearman Rank Correlation ($\rho$)}} & \multicolumn{3}{c|}{\textbf{Cosine Similarity}} \\
+\cline{3-11}
+& & \textbf{Seed 42} & \textbf{Seed 7} & \textbf{Spread} & \textbf{Seed 42} & \textbf{Seed 7} & \textbf{Spread} & \textbf{Seed 42} & \textbf{Seed 7} & \textbf{Spread} \\
+\hline
+\textbf{FedAvg} & Wi-Fi -- MQTT & 0.1111 & 0.2500 & 0.1389 & 0.7493 & 0.7520 & 0.0027 & 0.9902 & 0.9705 & 0.0197 \\
+& Wi-Fi -- Bluetooth & 0.0000 & 0.0000 & 0.0000 & 0.3176 & 0.2514 & 0.0662 & 0.0632 & 0.0989 & 0.0357 \\
+& MQTT -- Bluetooth & 0.0000 & 0.0000 & 0.0000 & 0.2641 & 0.2346 & 0.0295 & 0.0848 & 0.1178 & 0.0330 \\
+\hline
+\textbf{FedProx} & Wi-Fi -- MQTT & 0.4286 & 1.0000 & 0.5714 & 0.8299 & 0.8593 & 0.0294 & 0.9649 & 0.9712 & 0.0063 \\
+($\mu=0.1$) & Wi-Fi -- Bluetooth & 0.0000 & 0.4286 & 0.4286 & 0.4168 & 0.4506 & 0.0338 & 0.2080 & 0.3810 & 0.1730 \\
+& MQTT -- Bluetooth & 0.1111 & 0.4286 & 0.3175 & 0.3224 & 0.3413 & 0.0189 & 0.2593 & 0.3398 & 0.0805 \\
+\hline
+\textbf{FedPer} & Wi-Fi -- MQTT & 0.1111 & 0.2500 & 0.1389 & 0.7368 & 0.7894 & 0.0526 & 0.9772 & 0.9664 & 0.0108 \\
+& Wi-Fi -- Bluetooth & 0.0000 & 0.0000 & 0.0000 & 0.2740 & 0.2663 & 0.0077 & 0.0708 & 0.1085 & 0.0377 \\
+& MQTT -- Bluetooth & 0.0000 & 0.0000 & 0.0000 & 0.2467 & 0.1461 & 0.1006 & 0.1404 & 0.1226 & 0.0178 \\
+\hline
+\textbf{Cluster-FL} & Wi-Fi -- MQTT & 0.1111 & 0.1111 & 0.0000 & 0.6686 & 0.6336 & 0.0350 & 0.9513 & 0.9307 & 0.0206 \\
+& Wi-Fi -- Bluetooth & 0.0000 & 0.0000 & 0.0000 & 0.2260 & 0.1798 & 0.0462 & 0.0582 & 0.0732 & 0.0150 \\
+& MQTT -- Bluetooth & 0.1111 & 0.1111 & 0.0000 & 0.3038 & 0.2367 & 0.0671 & 0.2122 & 0.1973 & 0.0149 \\
+\hline
+\textbf{Local-Only} & Wi-Fi -- MQTT & 0.2500 & 0.2500 & 0.0000 & 0.4632 & 0.5825 & 0.1193 & 0.9149 & 0.9113 & 0.0036 \\
+& Wi-Fi -- Bluetooth & 0.0000 & 0.0000 & 0.0000 & 0.1407 & -0.0012 & 0.1419 & 0.0456 & 0.0568 & 0.0112 \\
+& MQTT -- Bluetooth & 0.2500 & 0.2500 & 0.0000 & 0.2661 & 0.1851 & 0.0810 & 0.2124 & 0.1952 & 0.0172 \\
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+\begin{figure*}[t]\centering
+\includegraphics[width=\linewidth]{fig2_spearman_divergence_heatmap.png}
+\caption{Within-method Spearman correlation by client pair for every penalty. Left: mean across seeds. Right: absolute inter-seed spread.}\label{fig:heat}
+\end{figure*}
+
+\subsection{Personalization and fixed groups}\label{sec:recovery}
+For seed $s$, let $R_l,R_a,R_p$ denote the Bluetooth benign recalls of local-only, FedAvg and FedPer. Write $\Delta_{\rm gap}=R_l-R_a$ and $\Delta_{\rm rec}=R_p-R_a$. For a positive gap, the recovered percentage is $100\Delta_{\rm rec}/\Delta_{\rm gap}$. Using the displayed recalls,
+\begin{align}
+\Delta_{\rm gap}^{(42)} &=0.9984-0.3666=0.6318,\\
+\Delta_{\rm rec}^{(42)} &=0.8258-0.3666=0.4592,\\
+\Delta_{\rm gap}^{(7)} &=0.9990-0.4238=0.5752,\\
+\Delta_{\rm rec}^{(7)} &=0.8721-0.4238=0.4483.
+\end{align}
+FedPer recovered 72.7\% and 77.9\% of the gap. Fixed grouping achieved mean Bluetooth benign recall of 0.9927. The MQTT and Bluetooth clients still shared a model in this configuration. Mean client macro F1 was 0.9241 for FedPer, 0.9665 for Cluster-FL and 0.9708 for local-only. Figure~\ref{fig:trade} compares these detection results with the average of all three cross-client rank correlations.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\linewidth]{fig4_tradeoff_scatter.png}
+\caption{Client-averaged macro F1 versus $\bar\rho=2\sum_s\sum_{k<l}\rho_{kl}^{(s)}/[SK(K-1)]$. Horizontal ranges use per-seed pair means and vertical ranges use per-seed client means.}\label{fig:trade}
+\end{figure}
+
+\subsection{Retrospective Bluetooth calibration probe}\label{sec:probe}
+We froze each FedAvg checkpoint and verified its Bluetooth confusion counts against the main experiment. Within its original 3,270 held-out records, a further binary-stratified split allocated 1,635 rows to fitting and 1,635 to evaluation. A regularized logistic regression ($C=1$) fitted $\sigma(az+b)$ to the scalar pre-sigmoid logit. The decision threshold remained 0.5. Positive temperature scaling $\sigma(z/T_{\rm cal})$ alone preserves the sign of $z$ and hence this decision. The fitted intercept permits a change of operating point.
+
+\begin{table}[t]
+\caption{Frozen FedAvg with and without a local slope and intercept on the same evaluation rows. Lower probability scores are better.}\label{tab:probe}
+\centering\resizebox{\columnwidth}{!}{\begin{tabular}{llrrrr}\hline
+Seed & Model & Benign recall & Attack recall & Brier & Log loss\\\hline
+42 & baseline & 0.3649 & 0.9985 & 0.2913 & 1.2236\\
+42 & platt & 0.9158 & 0.9673 & 0.0489 & 0.1783\\
+7 & baseline & 0.4204 & 0.9866 & 0.2364 & 1.1005\\
+7 & platt & 0.9792 & 0.9659 & 0.0249 & 0.1419\\
+\hline\end{tabular}}
+\end{table}
+
+Figure~\ref{fig:reliability} compares mean predicted probability with the observed attack fraction in ten equal-frequency bins per model. Both fits reduced Brier score and log loss and recovered benign recall at a cost in attack recall (Table~\ref{tab:probe}). These results show that a scalar adjustment sufficed to change performance on these rows. They leave open why the original federated model produced its scores and whether FedPer changed its hidden features.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\linewidth]{calibration_reliability.png}
+\caption{Reliability on the held-out half of each retrospective Bluetooth split. Points summarize evaluation rows grouped by predicted probability.}\label{fig:reliability}
+\end{figure}
+
+\subsection{Cross-protocol attack transfer}\label{sec:transfer}
+We apply a target client's model (and its private head for FedPer) to foreign test feature vectors. Each vector uses the target's train-fitted scaler and a decision threshold of 0.5. The Bluetooth training partition contains benign and Bluetooth denial-of-service examples. Its transfer test takes the five MQTT attack labels from MQTT and the 13 Wi-Fi attack labels from Wi-Fi. For the MQTT target, the foreign sources are Wi-Fi and Bluetooth. Client membership thus specifies training visibility for these disjoint attack inventories. This is an offline feature-domain transfer test. It makes no assumption that a Bluetooth link carries MQTT or Address Resolution Protocol attacks.
+
+For each foreign attack label we subtract the flag rate on benign test records from the same source client from the attack recall. We average these margins equally across tested attack labels and seeds. Table~\ref{tab:transfer} shows why a benign control matters. On the Bluetooth target FedPer flagged nearly all foreign benign records. The saved transfer runs use separately generated checkpoints and their in-domain scores can differ from those in the main study.
+
+\begin{table}[t]
+\caption{Mean foreign attack recall and source-matched detection margin. The dashboard provides the attack-wise results and source benign controls.}\label{tab:transfer}
+\centering\resizebox{\columnwidth}{!}{\begin{tabular}{llrr}\hline
+Target & Model & Attack recall & Margin\\\hline
+bluetooth & local-only & 0.228 & -0.567\\
+bluetooth & fedavg & 0.981 & -0.019\\
+bluetooth & fedper & 0.836 & -0.149\\
+bluetooth & cluster-fl & 0.449 & 0.328\\
+mqtt & local-only & 0.449 & 0.430\\
+mqtt & fedavg & 0.922 & 0.606\\
+mqtt & fedper & 0.690 & 0.523\\
+mqtt & cluster-fl & 0.454 & 0.435\\
+\hline\end{tabular}}
+\end{table}
+
+\subsection{Adaptation with limited local data}\label{sec:scarcity}
+For each target, train from scratch or fit a new 33-parameter head to a frozen trunk. One trunk saw the target's entire training partition during pretraining. A second trunk excluded the target completely. No trunk uses target test labels for fitting. For each of two split seeds and three stratified draws per seed, the adaptation set contains $N=50,100,250,500,1000,5000$ or all target training records (Table~\ref{tab:data}). The scaler is fitted anew on each draw. Each arm uses batches of up to 64 and at least ten epochs, rounded up to whole epochs sufficient for at least 5,000 optimizer steps. All arms are evaluated on the target test partition. The six runs share two test splits.
+
+At $N=50$ on Wi-Fi, mean macro F1 was 0.8136 from scratch, 0.8684 with target-inclusive pretraining and 0.8367 with target-excluded pretraining. The largest difference therefore includes prior access to the target. The serialized budget-wise results contain every draw, optimizer-step count and checkpoint provenance. These results concern adaptation under a specified pretraining regime.
+\section{Discussion}\label{sec:discussion}
+\subsection{Clinical implications}
+Frequent false alarms could impose a review burden or trigger unnecessary containment under a clinical deployment policy. The benchmark measures neither clinical outcomes nor operational costs. Local-only remains a strong comparator on familiar traffic. In the transfer study the relative utility of sharing depends on the target, attack domain and tolerated false-positive rate.
+
+\subsection{Limits of inference}\label{sec:limits}
+One benchmark subset, three simulated partitions and two seeds provide descriptive evidence. An absolute seed difference supplies neither an uncertainty threshold nor a significance test. The seeds change both initialization and row splits. Adjacent windows, duplicates or shared benign sources may span partitions. Capture- or device-grouped external tests and repeated independent splits are needed for uncertainty estimates at a meaningful unit. The retrospective calibration evaluation uses a subdivision of an already studied test partition. A prospectively reserved validation set and untouched independent test captures remain necessary.
+
+Mean absolute input attributions discard signs and within-record variation. The benign attribution check covers Bluetooth only. Variation from background sampling and individual false-positive explanations remain unquantified. Further comparisons could test a refitted head and full fine-tuning under equal local data access, measure gradient alignment and assess protocol shortcuts. SCAFFOLD uses first-order control variates to correct client drift~\cite{karimireddy2020scaffold}, and FedNova normalizes heterogeneous local updates~\cite{wang2020tackling}. Deterministic seeds and saved metrics aid inspection, but backend-dependent training and missing capture manifests limit reproducibility.
+
+\subsection{Comparison with prior work}
+Federated graph personalization and heterogeneity-aware aggregation address differences among clients by changing their interactions~\cite{graph,semidec}. Fixed groups provide a simpler control: groups are specified before training, and improvements can be compared with training locally on the same domain. Under transfer the evaluated inputs come from another domain. Source-matched benign controls show how a detector that raises many alarms can appear sensitive to foreign attacks. This distinction matters when comparing results from few-shot adaptation~\cite{drift} and multi-protocol transfer~\cite{transferstudy}.
+
+\section{Conclusion}\label{sec:conclusion}
+Client-averaged detection concealed frequent false alarms on Bluetooth. Private heads and fixed protocol groups improved benign recall under the tested configuration. High within-client agreement of attack attribution ranks coexisted with different benign operating points. A local logit adjustment recovered much of the lost specificity on held-out rows, with a measurable sensitivity cost. Independent captures and matched controls are needed to establish how these trade-offs carry over to other settings.
+
+\section*{Data and code availability}
+The study scripts, dashboard and result schemas are described in the project repository at \url{https://github.com/Swayam-Swaroop-Sahu/FedXplain-IoMT}. The supplement generated by \texttt{scripts/review\_supplement.py} records split membership, reconstructed SHAP draws, label visibility, exact feature matches, confusion counts, transfer results and all 378 adaptation runs. The dataset documentation lists source groups and retained labels. Reproduction from derived records and reproduction from the original captures have different provenance requirements.
+
+\bibliographystyle{IEEEtran}
+\bibliography{access}
+
+\begin{IEEEbiography}[]{Swayam Swaroop Sahu}
+is affiliated with the School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, India.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[]{Prakhar Sharma}
+is affiliated with the School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, India.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[]{Geraldine Bessie Amali D}
+is an Associate Professor Sr. at the School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, India.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[]{Kathiravan Srinivasan}
+is affiliated with the School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, India. He is a Senior Member of the IEEE.
+\end{IEEEbiography}
+
+\EOD
+\end{document}
+
