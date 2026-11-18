@@ -1,0 +1,492 @@
+{
+  "method": "Cluster-FL",
+  "seed": 42,
+  "clusters": {
+    "0": [
+      "wifi"
+    ],
+    "1": [
+      "mqtt",
+      "bluetooth"
+    ]
+  },
+  "client_cluster": {
+    "wifi": 0,
+    "mqtt": 1,
+    "bluetooth": 1
+  },
+  "config": {
+    "data_dir": "data/study",
+    "background_size": 100,
+    "attack_sample_size": 200
+  },
+  "client_top10": {
+    "wifi": [
+      {
+        "feature": "rst_count",
+        "mean_abs_shap": 0.5026819612830877
+      },
+      {
+        "feature": "ack_flag_number",
+        "mean_abs_shap": 0.07200053259497509
+      },
+      {
+        "feature": "psh_flag_number",
+        "mean_abs_shap": 0.046086506790015844
+      },
+      {
+        "feature": "Header_Length",
+        "mean_abs_shap": 0.028527349572614186
+      },
+      {
+        "feature": "Variance",
+        "mean_abs_shap": 0.026034165107412265
+      },
+      {
+        "feature": "syn_flag_number",
+        "mean_abs_shap": 0.026015635672429198
+      },
+      {
+        "feature": "HTTP",
+        "mean_abs_shap": 0.025994652034714818
+      },
+      {
+        "feature": "fin_count",
+        "mean_abs_shap": 0.023530634404160082
+      },
+      {
+        "feature": "Magnitue",
+        "mean_abs_shap": 0.01786858570878394
+      },
+      {
+        "feature": "Max",
+        "mean_abs_shap": 0.014373448152909987
+      }
+    ],
+    "mqtt": [
+      {
+        "feature": "rst_count",
+        "mean_abs_shap": 0.38129620141349735
+      },
+      {
+        "feature": "syn_flag_number",
+        "mean_abs_shap": 0.06948239810531959
+      },
+      {
+        "feature": "fin_flag_number",
+        "mean_abs_shap": 0.06055195681974169
+      },
+      {
+        "feature": "Weight",
+        "mean_abs_shap": 0.04643552247667685
+      },
+      {
+        "feature": "Number",
+        "mean_abs_shap": 0.04227787656360306
+      },
+      {
+        "feature": "HTTPS",
+        "mean_abs_shap": 0.03945559476793278
+      },
+      {
+        "feature": "IAT",
+        "mean_abs_shap": 0.03660196969402023
+      },
+      {
+        "feature": "Tot size",
+        "mean_abs_shap": 0.035704797563480495
+      },
+      {
+        "feature": "HTTP",
+        "mean_abs_shap": 0.03556784031447023
+      },
+      {
+        "feature": "psh_flag_number",
+        "mean_abs_shap": 0.034033679780259264
+      }
+    ],
+    "bluetooth": [
+      {
+        "feature": "Tot size",
+        "mean_abs_shap": 0.40617373936111106
+      },
+      {
+        "feature": "AVG",
+        "mean_abs_shap": 0.2853219187934883
+      },
+      {
+        "feature": "Magnitue",
+        "mean_abs_shap": 0.22655586466251407
+      },
+      {
+        "feature": "Std",
+        "mean_abs_shap": 0.19411675476352686
+      },
+      {
+        "feature": "Number",
+        "mean_abs_shap": 0.10692065617178742
+      },
+      {
+        "feature": "Max",
+        "mean_abs_shap": 0.10441832713600889
+      },
+      {
+        "feature": "Weight",
+        "mean_abs_shap": 0.09603745414337027
+      },
+      {
+        "feature": "Min",
+        "mean_abs_shap": 0.0896003706380725
+      },
+      {
+        "feature": "Radius",
+        "mean_abs_shap": 0.05247252244909759
+      },
+      {
+        "feature": "IAT",
+        "mean_abs_shap": 0.05123685308470158
+      }
+    ]
+  },
+  "client_top5": {
+    "wifi": [
+      "rst_count",
+      "ack_flag_number",
+      "psh_flag_number",
+      "Header_Length",
+      "Variance"
+    ],
+    "mqtt": [
+      "rst_count",
+      "syn_flag_number",
+      "fin_flag_number",
+      "Weight",
+      "Number"
+    ],
+    "bluetooth": [
+      "Tot size",
+      "AVG",
+      "Magnitue",
+      "Std",
+      "Number"
+    ]
+  },
+  "shap_full_vectors_per_client": {
+    "wifi": {
+      "feature_names": [
+        "Header_Length",
+        "Protocol Type",
+        "Duration",
+        "Rate",
+        "Srate",
+        "Drate",
+        "fin_flag_number",
+        "syn_flag_number",
+        "rst_flag_number",
+        "psh_flag_number",
+        "ack_flag_number",
+        "ece_flag_number",
+        "cwr_flag_number",
+        "ack_count",
+        "syn_count",
+        "fin_count",
+        "rst_count",
+        "HTTP",
+        "HTTPS",
+        "DNS",
+        "Telnet",
+        "SMTP",
+        "SSH",
+        "IRC",
+        "TCP",
+        "UDP",
+        "DHCP",
+        "ARP",
+        "ICMP",
+        "IGMP",
+        "IPv",
+        "LLC",
+        "Tot sum",
+        "Min",
+        "Max",
+        "AVG",
+        "Std",
+        "Tot size",
+        "IAT",
+        "Number",
+        "Magnitue",
+        "Radius",
+        "Covariance",
+        "Variance",
+        "Weight"
+      ],
+      "values": [
+        0.028527349572614186,
+        0.008299206778756342,
+        0.01117879419150995,
+        0.009922205707372171,
+        0.010430251004307252,
+        0.0,
+        0.0,
+        0.026015635672429198,
+        0.00681153971934691,
+        0.046086506790015844,
+        0.07200053259497509,
+        0.0,
+        0.0,
+        0.001851367487979587,
+        0.009460313894232969,
+        0.023530634404160082,
+        0.5026819612830877,
+        0.025994652034714818,
+        0.010221207886643243,
+        0.004119866463443031,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009850656261478434,
+        0.007636151412298204,
+        0.0,
+        0.0019482796988813788,
+        0.011699688735534437,
+        0.0,
+        0.002636453175764473,
+        0.003520546034706058,
+        0.00522920724870346,
+        0.002736490266829037,
+        0.014373448152909987,
+        0.013476097504026256,
+        0.0034215665380907014,
+        0.00943224733156967,
+        0.011084577499423176,
+        0.007295855432748795,
+        0.01786858570878394,
+        0.008796807078761048,
+        0.006535768893227214,
+        0.026034165107412265,
+        0.011364262955030426
+      ]
+    },
+    "mqtt": {
+      "feature_names": [
+        "Header_Length",
+        "Protocol Type",
+        "Duration",
+        "Rate",
+        "Srate",
+        "Drate",
+        "fin_flag_number",
+        "syn_flag_number",
+        "rst_flag_number",
+        "psh_flag_number",
+        "ack_flag_number",
+        "ece_flag_number",
+        "cwr_flag_number",
+        "ack_count",
+        "syn_count",
+        "fin_count",
+        "rst_count",
+        "HTTP",
+        "HTTPS",
+        "DNS",
+        "Telnet",
+        "SMTP",
+        "SSH",
+        "IRC",
+        "TCP",
+        "UDP",
+        "DHCP",
+        "ARP",
+        "ICMP",
+        "IGMP",
+        "IPv",
+        "LLC",
+        "Tot sum",
+        "Min",
+        "Max",
+        "AVG",
+        "Std",
+        "Tot size",
+        "IAT",
+        "Number",
+        "Magnitue",
+        "Radius",
+        "Covariance",
+        "Variance",
+        "Weight"
+      ],
+      "values": [
+        0.031083212730009108,
+        0.014567326109390705,
+        0.00717363150408346,
+        0.002582000758290235,
+        0.0018003592983170335,
+        0.0,
+        0.06055195681974169,
+        0.06948239810531959,
+        0.011872232356108726,
+        0.034033679780259264,
+        0.01875059387118199,
+        0.0,
+        0.0,
+        0.00541141068123693,
+        0.013728962179975497,
+        0.026638745764794292,
+        0.38129620141349735,
+        0.03556784031447023,
+        0.03945559476793278,
+        1.9404994091019035e-05,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.029485200681665446,
+        0.02085373171896208,
+        0.008645667584496551,
+        0.0018979846857382653,
+        0.0,
+        0.0,
+        0.0049678060444148285,
+        0.010578900054679253,
+        0.007296013326267712,
+        0.008597117773133505,
+        0.01610803640211998,
+        0.017044318540138194,
+        0.03125246181152761,
+        0.035704797563480495,
+        0.03660196969402023,
+        0.04227787656360306,
+        0.031175260581076145,
+        0.02008115548233036,
+        0.008813136516728264,
+        0.018083841092135344,
+        0.04643552247667685
+      ]
+    },
+    "bluetooth": {
+      "feature_names": [
+        "Header_Length",
+        "Protocol Type",
+        "Duration",
+        "Rate",
+        "Srate",
+        "Drate",
+        "fin_flag_number",
+        "syn_flag_number",
+        "rst_flag_number",
+        "psh_flag_number",
+        "ack_flag_number",
+        "ece_flag_number",
+        "cwr_flag_number",
+        "ack_count",
+        "syn_count",
+        "fin_count",
+        "rst_count",
+        "HTTP",
+        "HTTPS",
+        "DNS",
+        "Telnet",
+        "SMTP",
+        "SSH",
+        "IRC",
+        "TCP",
+        "UDP",
+        "DHCP",
+        "ARP",
+        "ICMP",
+        "IGMP",
+        "IPv",
+        "LLC",
+        "Tot sum",
+        "Min",
+        "Max",
+        "AVG",
+        "Std",
+        "Tot size",
+        "IAT",
+        "Number",
+        "Magnitue",
+        "Radius",
+        "Covariance",
+        "Variance",
+        "Weight"
+      ],
+      "values": [
+        0.0,
+        0.0,
+        0.01369526343565667,
+        0.010751877844231785,
+        0.010028846292116214,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.04740958186988792,
+        0.0896003706380725,
+        0.10441832713600889,
+        0.2853219187934883,
+        0.19411675476352686,
+        0.40617373936111106,
+        0.05123685308470158,
+        0.10692065617178742,
+        0.22655586466251407,
+        0.05247252244909759,
+        0.00552932090125978,
+        0.01230305692224647,
+        0.09603745414337027
+      ]
+    }
+  },
+  "jaccard_pairwise": {
+    "wifi-mqtt": 0.1111,
+    "wifi-bluetooth": 0.0,
+    "mqtt-bluetooth": 0.1111
+  },
+  "shared_features": {
+    "wifi-mqtt": [
+      "rst_count"
+    ],
+    "wifi-bluetooth": [],
+    "mqtt-bluetooth": [
+      "Number"
+    ]
+  },
+  "divergence_full": {
+    "wifi-mqtt": {
+      "spearman": 0.6271,
+      "cosine": 0.9528
+    },
+    "wifi-bluetooth": {
+      "spearman": 0.2495,
+      "cosine": 0.0564
+    },
+    "mqtt-bluetooth": {
+      "spearman": 0.2949,
+      "cosine": 0.1855
+    }
+  }
+}

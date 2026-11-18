@@ -1,0 +1,32 @@
+{
+  "wifi": {
+    "42": {
+      "test": 19999,
+      "identical_to_training": 4329
+    },
+    "7": {
+      "test": 19999,
+      "identical_to_training": 4417
+    }
+  },
+  "mqtt": {
+    "42": {
+      "test": 10000,
+      "identical_to_training": 0
+    },
+    "7": {
+      "test": 10000,
+      "identical_to_training": 0
+    }
+  },
+  "bluetooth": {
+    "42": {
+      "test": 3270,
+      "identical_to_training": 4
+    },
+    "7": {
+      "test": 3270,
+      "identical_to_training": 4
+    }
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "wifi": {
+    "42": {
+      "ARP_Spoofing": {
+        "train": 1295,
+        "test": 289
+      },
+      "Benign": {
+        "train": 2891,
+        "test": 723
+      },
+      "Recon-OS_Scan": {
+        "train": 1265,
+        "test": 346
+      },
+      "Recon-Ping_Sweep": {
+        "train": 752,
+        "test": 174
+      },
+      "Recon-Port_Scan": {
+        "train": 1963,
+        "test": 469
+      },
+      "Recon-VulScan": {
+        "train": 1172,
+        "test": 272
+      },
+      "TCP_IP-DDoS-ICMP": {
+        "train": 15648,
+        "test": 3792
+      },
+      "TCP_IP-DDoS-SYN": {
+        "train": 8572,
+        "test": 2149
+      },
+      "TCP_IP-DDoS-TCP": {
+        "train": 8640,
+        "test": 2202
+      },
+      "TCP_IP-DDoS-UDP": {
+        "train": 16322,
+        "test": 4176
+      },
+      "TCP_IP-DoS-ICMP": {
+        "train": 5062,
+        "test": 1268
+      },
+      "TCP_IP-DoS-SYN": {
+        "train": 5253,
+        "test": 1324
+      },
+      "TCP_IP-DoS-TCP": {
+        "train": 4611,
+        "test": 1220
+      },
+      "TCP_IP-DoS-UDP": {
+        "train": 6548,
+        "test": 1595
+      }
+    },
+    "7": {
+      "ARP_Spoofing": {
+        "train": 1268,
+        "test": 316
+      },
+      "Benign": {
+        "train": 2891,
+        "test": 723
+      },
+      "Recon-OS_Scan": {
+        "train": 1282,
+        "test": 329
+      },
+      "Recon-Ping_Sweep": {
+        "train": 745,
+        "test": 181
+      },
+      "Recon-Port_Scan": {
+        "train": 1933,
+        "test": 499
+      },
+      "Recon-VulScan": {
+        "train": 1171,
+        "test": 273
+      },
+      "TCP_IP-DDoS-ICMP": {
+        "train": 15601,
+        "test": 3839
+      },
+      "TCP_IP-DDoS-SYN": {
+        "train": 8645,
+        "test": 2076
+      },
+      "TCP_IP-DDoS-TCP": {
+        "train": 8650,
+        "test": 2192
+      },
+      "TCP_IP-DDoS-UDP": {
+        "train": 16362,
+        "test": 4136
+      },
+      "TCP_IP-DoS-ICMP": {
+        "train": 5110,
+        "test": 1220
+      },
+      "TCP_IP-DoS-SYN": {
+        "train": 5256,
+        "test": 1321
+      },
+      "TCP_IP-DoS-TCP": {
+        "train": 4593,
+        "test": 1238
+      },
+      "TCP_IP-DoS-UDP": {
+        "train": 6487,
+        "test": 1656
+      }
+    }
+  },
+  "mqtt": {
+    "42": {
+      "Benign": {
+        "train": 14711,
+        "test": 3678
+      },
+      "MQTT-DDoS-Connect_Flood": {
+        "train": 13803,
+        "test": 3461
+      },
+      "MQTT-DDoS-Publish_Flood": {
+        "train": 3344,
+        "test": 835
+      },
+      "MQTT-DoS-Connect_Flood": {
+        "train": 2183,
+        "test": 524
+      },
+      "MQTT-DoS-Publish_Flood": {
+        "train": 4343,
+        "test": 1068
+      },
+      "MQTT-Malformed_Data": {
+        "train": 1613,
+        "test": 434
+      }
+    },
+    "7": {
+      "Benign": {
+        "train": 14711,
+        "test": 3678
+      },
+      "MQTT-DDoS-Connect_Flood": {
+        "train": 13841,
+        "test": 3423
+      },
+      "MQTT-DDoS-Publish_Flood": {
+        "train": 3385,
+        "test": 794
+      },
+      "MQTT-DoS-Connect_Flood": {
+        "train": 2151,
+        "test": 556
+      },
+      "MQTT-DoS-Publish_Flood": {
+        "train": 4302,
+        "test": 1109
+      },
+      "MQTT-Malformed_Data": {
+        "train": 1607,
+        "test": 440
+      }
+    }
+  },
+  "bluetooth": {
+    "42": {
+      "BT-DoS": {
+        "train": 5388,
+        "test": 1347
+      },
+      "Benign": {
+        "train": 7688,
+        "test": 1923
+      }
+    },
+    "7": {
+      "BT-DoS": {
+        "train": 5388,
+        "test": 1347
+      },
+      "Benign": {
+        "train": 7688,
+        "test": 1923
+      }
+    }
+  }
+}

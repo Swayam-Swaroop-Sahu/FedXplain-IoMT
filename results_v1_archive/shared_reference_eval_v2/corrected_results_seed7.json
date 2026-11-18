@@ -1,0 +1,3537 @@
+[
+  {
+    "method": "FedAvg",
+    "seed": 7,
+    "mu": null,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.9899994999749987,
+        "binary_f1": 0.9948087006177646,
+        "macro_f1": 0.9294695677001866,
+        "attack_precision": 0.9954805194805195,
+        "attack_recall": 0.9941377879228056,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedavg_seed7.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.8608,
+        "binary_f1": 0.9007840342124019,
+        "macro_f1": 0.8338091025333366,
+        "attack_precision": 0.8197976128697457,
+        "attack_recall": 0.9995254666244859,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedavg_seed7.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.6458715596330276,
+        "binary_f1": 0.6976501305483028,
+        "macro_f1": 0.6351719287427862,
+        "attack_precision": 0.5380587998389046,
+        "attack_recall": 0.991833704528582,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedavg_seed7.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "Tot size",
+          "psh_flag_number",
+          "Header_Length"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.4560405839979649
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.26310986775904893
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.04196701000095345
+          },
+          {
+            "feature": "psh_flag_number",
+            "mean_abs_shap": 0.035480940508423375
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.034566102522076106
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.03226252093852963
+          },
+          {
+            "feature": "LLC",
+            "mean_abs_shap": 0.027470173458568753
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.025259041022654857
+          },
+          {
+            "feature": "HTTP",
+            "mean_abs_shap": 0.024273240435868502
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.02307948363674768
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "syn_flag_number",
+          "rst_flag_number",
+          "LLC"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.28465077210916206
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.2105740040168166
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.06254949802379585
+          },
+          {
+            "feature": "rst_flag_number",
+            "mean_abs_shap": 0.03360140086035244
+          },
+          {
+            "feature": "LLC",
+            "mean_abs_shap": 0.031221258798614145
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.029192356842104347
+          },
+          {
+            "feature": "syn_count",
+            "mean_abs_shap": 0.027048557465022896
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.02613271836144122
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.025038815271109342
+          },
+          {
+            "feature": "fin_count",
+            "mean_abs_shap": 0.02333593577321153
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "AVG",
+          "Weight",
+          "Magnitue",
+          "Std",
+          "Max"
+        ],
+        "top10": [
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.02909425551071763
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.01684547869488597
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.014177920985966921
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.013263132288120687
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.010475783220026642
+          },
+          {
+            "feature": "Duration",
+            "mean_abs_shap": 0.009397798446007072
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.006690636962885037
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.005387961126688019
+          },
+          {
+            "feature": "Radius",
+            "mean_abs_shap": 0.0049011784954927865
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.004094249714398757
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.034566102522076106,
+          0.01924562114465516,
+          0.015449473456246778,
+          0.01003068862897237,
+          0.008195668088940239,
+          0.0,
+          0.0013327705302526738,
+          0.02307948363674768,
+          0.006899302508682013,
+          0.035480940508423375,
+          0.025259041022654857,
+          0.0,
+          0.0,
+          0.00040413615150100665,
+          0.007842005774436984,
+          0.013940518544986845,
+          0.4560405839979649,
+          0.024273240435868502,
+          0.022508144612656905,
+          0.002013659283056768,
+          6.637956947088242e-05,
+          0.0001389697752892971,
+          6.933458615094424e-05,
+          7.603167090564966e-05,
+          0.03226252093852963,
+          0.009176374701492023,
+          0.0,
+          0.0007909441719330967,
+          0.011808046046753588,
+          0.0,
+          0.019785153265111148,
+          0.027470173458568753,
+          0.007223447713331552,
+          0.0041737414135786825,
+          0.017168121510767378,
+          0.007623172368912492,
+          0.010975748056662269,
+          0.04196701000095345,
+          0.018887697944883257,
+          0.021589068550965748,
+          0.022337355468766872,
+          0.011013277055899379,
+          0.0023154073577006783,
+          0.26310986775904893,
+          0.015859936978667975
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.015952512655053395,
+          0.01567277280264534,
+          0.008555227911565454,
+          0.002397002228730116,
+          0.0019384347241651768,
+          0.0,
+          0.010999553762018478,
+          0.06254949802379585,
+          0.03360140086035244,
+          0.012172806175130972,
+          0.029192356842104347,
+          0.0,
+          0.0,
+          0.017384288837142776,
+          0.027048557465022896,
+          0.02333593577321153,
+          0.28465077210916206,
+          0.014455254250206053,
+          0.013711964297108352,
+          0.0019432976000825874,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.025038815271109342,
+          0.002547726827688166,
+          0.0,
+          0.0013070910921669566,
+          0.0,
+          0.0,
+          0.0205667516682297,
+          0.031221258798614145,
+          0.0043417704956959825,
+          0.004291600342830861,
+          0.02613271836144122,
+          0.016143358417903073,
+          0.02071893362677656,
+          0.014875463364514872,
+          0.008487260330002754,
+          0.011588587631704285,
+          0.006011528803342116,
+          0.021838082596077585,
+          0.013400949736487746,
+          0.2105740040168166,
+          0.010976974538061767
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.005387961126688019,
+          3.3509618819903622e-06,
+          0.009397798446007072,
+          0.001822877672248069,
+          0.001358453889338307,
+          0.0,
+          6.29813676465711e-10,
+          5.511851341589046e-10,
+          0.0,
+          7.695793174791798e-08,
+          6.15097414104844e-08,
+          0.0,
+          0.0,
+          6.145560304848941e-10,
+          2.9965409720822072e-09,
+          0.0,
+          0.0009266059026390305,
+          2.763203557903288e-09,
+          3.770460327080842e-08,
+          5.798666961185758e-10,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          5.415243919406525e-07,
+          1.295802504387853e-08,
+          0.0,
+          5.438469578250473e-11,
+          0.0,
+          0.0,
+          1.5481578917317862e-08,
+          4.410198228345353e-08,
+          0.003343264150585128,
+          0.0033950509533315198,
+          0.010475783220026642,
+          0.02909425551071763,
+          0.013263132288120687,
+          0.0034648976954804313,
+          0.006690636962885037,
+          0.004094249714398757,
+          0.014177920985966921,
+          0.0049011784954927865,
+          0.002352647577645257,
+          0.0018959757848642767,
+          0.01684547869488597
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.7039020788711214,
+        "cosine": 0.9723426528923926
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.0,
+        "spearman": 0.5570192222930046,
+        "cosine": 0.12343499475147156
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.0,
+        "spearman": 0.4126550871477512,
+        "cosine": 0.15198883327345833
+      }
+    }
+  },
+  {
+    "method": "FedProx",
+    "seed": 7,
+    "mu": 0.001,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.9883494174708736,
+        "binary_f1": 0.9939441195581546,
+        "macro_f1": 0.9204782974678495,
+        "attack_precision": 0.9959372884004375,
+        "attack_recall": 0.9919589126374767,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.001_seed7.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.9194,
+        "binary_f1": 0.9399851079672376,
+        "macro_f1": 0.9086531323702245,
+        "attack_precision": 0.8880135059088351,
+        "attack_recall": 0.9984182220816198,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.001_seed7.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.47217125382263,
+        "binary_f1": 0.6068337129840546,
+        "macro_f1": 0.40202150765481803,
+        "attack_precision": 0.4377259283601709,
+        "attack_recall": 0.9888641425389755,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.001_seed7.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "Tot size",
+          "Number",
+          "Magnitue"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.5450809095799923
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.3326212910935283
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.08383263299125247
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.0496945927827619
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.049585220176668374
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.04819780341815203
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.03612739716656506
+          },
+          {
+            "feature": "HTTP",
+            "mean_abs_shap": 0.02507338433759287
+          },
+          {
+            "feature": "LLC",
+            "mean_abs_shap": 0.02506172633264214
+          },
+          {
+            "feature": "psh_flag_number",
+            "mean_abs_shap": 0.02427642373368144
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "Header_Length",
+          "TCP",
+          "rst_flag_number"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.3336467341845855
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.26345675371587274
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.04168469399213791
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.036776013979688285
+          },
+          {
+            "feature": "rst_flag_number",
+            "mean_abs_shap": 0.033558464451925826
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.0335231747245416
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.030312871315995835
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.029132146904303227
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.02751276969211176
+          },
+          {
+            "feature": "LLC",
+            "mean_abs_shap": 0.026961450297385454
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "Tot size",
+          "Magnitue",
+          "Std",
+          "AVG",
+          "IAT"
+        ],
+        "top10": [
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.01660611018538475
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.011217533723684028
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.010719182756729425
+          },
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.010173579463735222
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.008421142608276568
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.007964051807066426
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.005335064327809959
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.004233298992476193
+          },
+          {
+            "feature": "Tot sum",
+            "mean_abs_shap": 0.0040168016788447855
+          },
+          {
+            "feature": "Radius",
+            "mean_abs_shap": 0.003754126910935156
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.04819780341815203,
+          0.015689150365205934,
+          0.008379099669400602,
+          0.008319457520661046,
+          0.005841556074642718,
+          0.0,
+          0.0012920882716809957,
+          0.0092032698377227,
+          0.004480628103483469,
+          0.02427642373368144,
+          0.016415285939874593,
+          0.0,
+          0.0,
+          0.0005239612489685896,
+          0.005524714857674553,
+          0.010162992244586349,
+          0.5450809095799923,
+          0.02507338433759287,
+          0.00905715737308128,
+          0.003263714209315367,
+          4.04237350448966e-05,
+          2.7275525499135257e-05,
+          5.076215602457523e-06,
+          8.731839247047901e-05,
+          0.021906098927138372,
+          0.01845953006646596,
+          0.0,
+          0.00030346035107868373,
+          0.006399420406669378,
+          0.0,
+          0.021893634614534675,
+          0.02506172633264214,
+          0.0049894230386803426,
+          0.0026978248442537734,
+          0.017443804287177046,
+          0.017767081050551498,
+          0.012150084918830543,
+          0.08383263299125247,
+          0.03612739716656506,
+          0.0496945927827619,
+          0.049585220176668374,
+          0.008537729878444224,
+          0.003834757972508669,
+          0.3326212910935283,
+          0.023075260194018482
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.04168469399213791,
+          0.010319961267523468,
+          0.0034451030636773795,
+          0.0020177580549160723,
+          0.0008829732101137822,
+          0.0,
+          0.02429759230136824,
+          0.030312871315995835,
+          0.033558464451925826,
+          0.015646154195419513,
+          0.02342810071178974,
+          0.0,
+          0.0,
+          0.004306041402326172,
+          0.015290109616762493,
+          0.01725445605596178,
+          0.3336467341845855,
+          0.01458074847701937,
+          0.012898999350145459,
+          0.0066775258781854065,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.036776013979688285,
+          0.008135172805050389,
+          0.0,
+          0.002402986875094939,
+          0.0,
+          0.0,
+          0.02192521879449487,
+          0.026961450297385454,
+          0.007481616994336946,
+          0.005157328183390746,
+          0.02503138373111142,
+          0.01271671255111869,
+          0.02364017745901947,
+          0.0335231747245416,
+          0.023694607537181583,
+          0.02751276969211176,
+          0.029132146904303227,
+          0.017519210939353796,
+          0.008481953664522734,
+          0.26345675371587274,
+          0.020074064452783206
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.004233298992476193,
+          1.3524697796096773e-06,
+          0.002572956095682457,
+          0.000657710850082367,
+          0.00014154219550619018,
+          0.0,
+          2.7503881928035714e-10,
+          2.605931130150556e-10,
+          0.0,
+          1.768042566206718e-09,
+          8.252476725034708e-08,
+          0.0,
+          0.0,
+          2.397173651515704e-11,
+          5.940857150353584e-09,
+          0.0,
+          0.00037792510835515713,
+          1.0253643538231382e-09,
+          1.0162026579454975e-08,
+          8.345368869176404e-10,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          2.814176030496718e-07,
+          8.046418470478156e-09,
+          0.0,
+          7.865447108673565e-11,
+          0.0,
+          0.0,
+          7.461254559991414e-09,
+          5.792263770509898e-08,
+          0.0040168016788447855,
+          0.002358182000461966,
+          0.005335064327809959,
+          0.010173579463735222,
+          0.010719182756729425,
+          0.01660611018538475,
+          0.008421142608276568,
+          0.0008531885150296148,
+          0.011217533723684028,
+          0.003754126910935156,
+          0.0020787269930588083,
+          0.0012837888015201316,
+          0.007964051807066426
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.8165131553308235,
+        "cosine": 0.9814444660488806
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.6841952956265688,
+        "cosine": 0.1996978457576525
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.0,
+        "spearman": 0.5711371089497558,
+        "cosine": 0.19868463084942709
+      }
+    }
+  },
+  {
+    "method": "FedProx",
+    "seed": 7,
+    "mu": 0.01,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.9873493674683734,
+        "binary_f1": 0.9934147166766444,
+        "macro_f1": 0.9165933621381955,
+        "attack_precision": 0.9968656950321266,
+        "attack_recall": 0.9899875492840838,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.01_seed7.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.9017,
+        "binary_f1": 0.927832024080464,
+        "macro_f1": 0.8868663177307791,
+        "attack_precision": 0.8657350321961913,
+        "attack_recall": 0.9995254666244859,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.01_seed7.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.43302752293577984,
+        "binary_f1": 0.5916299559471365,
+        "macro_f1": 0.33231497797356824,
+        "attack_precision": 0.42060757907923585,
+        "attack_recall": 0.9970304380103935,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.01_seed7.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "Number",
+          "IAT",
+          "ack_flag_number"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.4848432387411594
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.28157614668831227
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.05163011977914721
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.05007790972362272
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.04677661728870589
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.03967788309790194
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.03836411060299724
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.034773879013955594
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.03070761421462521
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.030082260693307036
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "Header_Length",
+          "Max",
+          "LLC"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.2941446164017543
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.2397295980900526
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.03643702688976191
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.035068132546730336
+          },
+          {
+            "feature": "LLC",
+            "mean_abs_shap": 0.031783416400430725
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.031186734703951516
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.03006380267906934
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.028994961573043838
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.026844624735531397
+          },
+          {
+            "feature": "fin_flag_number",
+            "mean_abs_shap": 0.026442026747463387
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "IAT",
+          "Tot size",
+          "Std",
+          "Magnitue",
+          "AVG"
+        ],
+        "top10": [
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.008951132083311678
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.007779767456231639
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.007441812760662287
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.006128120166249573
+          },
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.00540657369652763
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.004085471791913733
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.0037724979902850463
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.002357133203477133
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.001695976119713123
+          },
+          {
+            "feature": "Radius",
+            "mean_abs_shap": 0.0016871905297739431
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.03967788309790194,
+          0.01125147613871377,
+          0.001829973316862379,
+          0.004907378127718492,
+          0.005892284945149271,
+          0.0,
+          0.003424452245890279,
+          0.008509826617532497,
+          0.003610653926152736,
+          0.014811556208587717,
+          0.04677661728870589,
+          0.0,
+          0.0,
+          0.0008935382258209757,
+          0.0054819568955645085,
+          0.009205156026873738,
+          0.4848432387411594,
+          0.028930534087121488,
+          0.01790837706532329,
+          0.0020043959435497526,
+          0.00010930222459137439,
+          0.00015091824345290662,
+          2.20468663610518e-05,
+          0.0001741902157664299,
+          0.024373607002198695,
+          0.01687952001055237,
+          0.0,
+          0.001078751072554951,
+          0.0049703527404926715,
+          0.0,
+          0.010959930667304434,
+          0.024737895462894812,
+          0.008485485435885494,
+          0.002957145494947326,
+          0.030082260693307036,
+          0.011560162011883222,
+          0.01609772481024265,
+          0.034773879013955594,
+          0.05007790972362272,
+          0.05163011977914721,
+          0.03836411060299724,
+          0.007704372541047633,
+          0.0024219167780074715,
+          0.28157614668831227,
+          0.03070761421462521
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.03643702688976191,
+          0.004764605069067329,
+          0.0028506471883429185,
+          0.001227691100598136,
+          0.0008427738630329174,
+          0.0,
+          0.026442026747463387,
+          0.022570493922921743,
+          0.017303534014790786,
+          0.01785508990218659,
+          0.031186734703951516,
+          0.0,
+          0.0,
+          0.009050301479771292,
+          0.0042219601010219775,
+          0.015259996632303229,
+          0.2941446164017543,
+          0.01552419863641262,
+          0.015341666495951358,
+          0.0058493692061165345,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.02299917667871341,
+          0.007804718065890484,
+          0.0,
+          0.0010343715293674905,
+          0.0,
+          0.0,
+          0.010002028064336628,
+          0.031783416400430725,
+          0.006044182047626237,
+          0.00508045991682593,
+          0.035068132546730336,
+          0.010287733981604106,
+          0.026844624735531397,
+          0.024181451870608727,
+          0.03006380267906934,
+          0.028994961573043838,
+          0.02288175211288035,
+          0.015327788340946426,
+          0.007528182450496388,
+          0.2397295980900526,
+          0.021193368148087758
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.002357133203477133,
+          1.0177242313069712e-06,
+          0.00013146517578348948,
+          0.00027343260918314625,
+          8.624280922504113e-05,
+          0.0,
+          1.1448231890471075e-10,
+          4.800124618533491e-12,
+          0.0,
+          5.586146996860997e-08,
+          9.335666310672508e-08,
+          0.0,
+          0.0,
+          1.0726496123183299e-10,
+          3.8143375128557585e-09,
+          0.0,
+          7.254220239474307e-05,
+          3.3295201891554717e-10,
+          6.2474690254443745e-09,
+          1.81534311710467e-10,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0237494072029563e-07,
+          2.8829684960152145e-09,
+          0.0,
+          4.750750413925315e-13,
+          0.0,
+          0.0,
+          1.2269950478913105e-09,
+          3.4521252265662384e-08,
+          0.0012363901048956904,
+          0.0016121729907172266,
+          0.004085471791913733,
+          0.00540657369652763,
+          0.007441812760662287,
+          0.007779767456231639,
+          0.008951132083311678,
+          0.001695976119713123,
+          0.006128120166249573,
+          0.0016871905297739431,
+          0.0008056245837360621,
+          0.0007291890299529768,
+          0.0037724979902850463
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.879413633000192,
+        "cosine": 0.9805816350677539
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.1111111111111111,
+        "spearman": 0.7102161457958119,
+        "cosine": 0.18020514041882194
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.0,
+        "spearman": 0.6420193634266017,
+        "cosine": 0.2089057489476471
+      }
+    }
+  },
+  {
+    "method": "FedProx",
+    "seed": 7,
+    "mu": 0.05,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.9862993149657483,
+        "binary_f1": 0.9928649549502631,
+        "macro_f1": 0.9105928784776378,
+        "attack_precision": 0.9967583394332322,
+        "attack_recall": 0.9890018676073874,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.05_seed7.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.8929,
+        "binary_f1": 0.9218419324235568,
+        "macro_f1": 0.8758804707377432,
+        "attack_precision": 0.855710608318656,
+        "attack_recall": 0.9990509332489719,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.05_seed7.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.42935779816513764,
+        "binary_f1": 0.5904302019315188,
+        "macro_f1": 0.32495300419156586,
+        "attack_precision": 0.4191336865066999,
+        "attack_recall": 0.9985152190051967,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.05_seed7.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "ack_flag_number",
+          "IAT",
+          "Number",
+          "Weight"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.39488073967397214
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.08232408604817465
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.05927113965735771
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.05721462136600167
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.03824278745101765
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.03553290111580282
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.03452396745560691
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.03422076585062314
+          },
+          {
+            "feature": "HTTP",
+            "mean_abs_shap": 0.027088838187046348
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.025458747054217384
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "Max",
+          "Header_Length",
+          "ack_flag_number",
+          "Number"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.24553880018182098
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.037743960540974515
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.03432028460199945
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.03346209650728269
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.03340103654656559
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.03288787547673564
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.031239467298728413
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.02476670581579583
+          },
+          {
+            "feature": "ack_count",
+            "mean_abs_shap": 0.022037645050806985
+          },
+          {
+            "feature": "fin_flag_number",
+            "mean_abs_shap": 0.021097827262074133
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "IAT",
+          "Weight",
+          "Std",
+          "Tot size",
+          "Max"
+        ],
+        "top10": [
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.00873638309451053
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.007507535078912042
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.006986436364240944
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.0061980761075392365
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.0047880403883755205
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.004122598585272499
+          },
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.0037385661207372323
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.0036138268874492496
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.002840969234457589
+          },
+          {
+            "feature": "Tot sum",
+            "mean_abs_shap": 0.0018262102386324842
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.03452396745560691,
+          0.009048658469691873,
+          0.006011908390103144,
+          0.004932612793672888,
+          0.004825506201632024,
+          0.0,
+          0.0036262110725328966,
+          0.009516290958181343,
+          0.004253093251027167,
+          0.02511444692965597,
+          0.08232408604817465,
+          0.0,
+          0.0,
+          0.0009230896635017416,
+          0.004800530279790109,
+          0.008813414711039514,
+          0.39488073967397214,
+          0.027088838187046348,
+          0.020932335471734405,
+          0.0011669887037805892,
+          0.00013061770237982273,
+          0.0004891705513000488,
+          4.6251434832811354e-05,
+          0.00011320493184030056,
+          0.03422076585062314,
+          0.016306569724692962,
+          0.0,
+          0.0007753143982290566,
+          0.001571009556646459,
+          0.0,
+          0.005019140466902172,
+          0.0034609249326513236,
+          0.008820957149146125,
+          0.0038602517943945713,
+          0.03553290111580282,
+          0.0064966767842997795,
+          0.020902673685923218,
+          0.015133496760827257,
+          0.05927113965735771,
+          0.05721462136600167,
+          0.02288757685339078,
+          0.00526396804722026,
+          0.0019549699872368365,
+          0.025458747054217384,
+          0.03824278745101765
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.03432028460199945,
+          0.004569806978684028,
+          0.0032568760817798647,
+          0.0013381035899283234,
+          0.001022808123620571,
+          0.0,
+          0.021097827262074133,
+          0.02476670581579583,
+          0.020409273334080352,
+          0.014141032346688008,
+          0.03346209650728269,
+          0.0,
+          0.0,
+          0.022037645050806985,
+          0.004670033911716018,
+          0.01379045052526635,
+          0.24553880018182098,
+          0.015473521659150719,
+          0.018629292263649403,
+          0.0033472919440828263,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.015287072828505189,
+          0.007958707684883848,
+          0.0,
+          0.0014895646620789193,
+          0.0,
+          0.0,
+          0.002394145445068716,
+          0.008462461556191556,
+          0.0073179280877957355,
+          0.005929674892013281,
+          0.037743960540974515,
+          0.007829288801176518,
+          0.031239467298728413,
+          0.01757179539425124,
+          0.03288787547673564,
+          0.03340103654656559,
+          0.013299554528784938,
+          0.008716648199781503,
+          0.0036369090433572638,
+          0.012806145206050133,
+          0.0206460332943243
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.0036138268874492496,
+          7.060432621841528e-07,
+          0.0009241930604912341,
+          0.00031561878219918074,
+          0.00012120193863665918,
+          0.0,
+          1.7762886262567834e-10,
+          9.042161303127877e-11,
+          0.0,
+          3.7117127018593265e-08,
+          8.31130974532357e-08,
+          0.0,
+          0.0,
+          2.559991316240101e-10,
+          3.013187731097655e-10,
+          0.0,
+          0.00010821118735748314,
+          8.269099072491515e-10,
+          3.774766846181832e-09,
+          3.691299101798995e-10,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.606818432621566e-08,
+          3.6587156555800692e-09,
+          0.0,
+          4.809223324263312e-11,
+          0.0,
+          0.0,
+          9.278207428464746e-09,
+          3.446260908201992e-08,
+          0.0018262102386324842,
+          0.0008210157584653643,
+          0.0047880403883755205,
+          0.0037385661207372323,
+          0.006986436364240944,
+          0.0061980761075392365,
+          0.00873638309451053,
+          0.004122598585272499,
+          0.002840969234457589,
+          0.0003236998335341923,
+          0.000548300083646609,
+          0.0006037180574639934,
+          0.007507535078912042
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.42857142857142855,
+        "spearman": 0.8283774182421164,
+        "cosine": 0.9794657221893553
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.7316450812293062,
+        "cosine": 0.23884168313290458
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.1111111111111111,
+        "spearman": 0.5866509608729901,
+        "cosine": 0.2882020712998887
+      }
+    }
+  },
+  {
+    "method": "FedProx",
+    "seed": 7,
+    "mu": 0.1,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.984699234961748,
+        "binary_f1": 0.992022524636321,
+        "macro_f1": 0.9027185793913313,
+        "attack_precision": 0.9970652971386648,
+        "attack_recall": 0.9870305042539946,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.1_seed7.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.8948,
+        "binary_f1": 0.9230318993268949,
+        "macro_f1": 0.878445829638179,
+        "attack_precision": 0.8586986114892459,
+        "attack_recall": 0.9977855109142676,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.1_seed7.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.43149847094801225,
+        "binary_f1": 0.5911590059379811,
+        "macro_f1": 0.3291971647853478,
+        "attack_precision": 0.42,
+        "attack_recall": 0.9977728285077951,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/fedprox_mu0.1_seed7.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "ack_flag_number",
+          "IAT",
+          "Number",
+          "Weight"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.3324356462061405
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.09056229770998471
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.06856473063118756
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.06751356583088636
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.04367837589466944
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.03805665415449767
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.03745384189649485
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.035113653452972356
+          },
+          {
+            "feature": "psh_flag_number",
+            "mean_abs_shap": 0.030262764329090714
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.027985249280463906
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "IAT",
+          "Number",
+          "Max",
+          "ack_flag_number"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.20220901210326703
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.0394967928994447
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.0390747329685837
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.036396299436164556
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.035044955640623814
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.03190574928601563
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.029427409314084798
+          },
+          {
+            "feature": "ack_count",
+            "mean_abs_shap": 0.02766874406786883
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.02566173641127534
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.024944547187155875
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "Weight",
+          "IAT",
+          "Std",
+          "Number",
+          "Header_Length"
+        ],
+        "top10": [
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.00968805147393141
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.008988198536389973
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.006258290333207696
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.0059801372155197895
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.005504410393186845
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.004698448103736155
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.004639953393489122
+          },
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.002866071727476083
+          },
+          {
+            "feature": "Tot sum",
+            "mean_abs_shap": 0.002145886383314064
+          },
+          {
+            "feature": "Duration",
+            "mean_abs_shap": 0.0016754327437956816
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.027985249280463906,
+          0.008793569819426921,
+          0.004953322062859798,
+          0.00482328259271533,
+          0.0036784587605640695,
+          0.0,
+          0.0031577187425864393,
+          0.010073809328094967,
+          0.004992937941569835,
+          0.030262764329090714,
+          0.09056229770998471,
+          0.0,
+          0.0,
+          0.0013641403729707235,
+          0.006607302230368078,
+          0.0085735988849774,
+          0.3324356462061405,
+          0.027343732714653016,
+          0.019918500676285474,
+          0.0012284874787610533,
+          0.00014086145907640457,
+          0.0005416049063205719,
+          6.836404092609883e-05,
+          0.00011173031292855739,
+          0.03745384189649485,
+          0.018059027534909546,
+          0.0,
+          0.0012532988158272928,
+          0.00422864829772152,
+          0.0,
+          0.004082005086820573,
+          0.0027370283189520703,
+          0.010781949175870977,
+          0.0037229116809976404,
+          0.03805665415449767,
+          0.0060186869649152186,
+          0.023270278833806515,
+          0.01570602442836389,
+          0.06856473063118756,
+          0.06751356583088636,
+          0.014276086327736266,
+          0.0027447250352634,
+          0.001852949493077176,
+          0.035113653452972356,
+          0.04367837589466944
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.029427409314084798,
+          0.0027473564094179894,
+          0.004086991095584267,
+          0.001345626118556993,
+          0.0009744289873492562,
+          0.0,
+          0.01800742950950962,
+          0.024944547187155875,
+          0.022508315540326295,
+          0.01641645175008307,
+          0.035044955640623814,
+          0.0,
+          0.0,
+          0.02766874406786883,
+          0.007535101078183289,
+          0.011235651792085265,
+          0.20220901210326703,
+          0.015380687303841114,
+          0.019597727147047408,
+          0.0027928637117565812,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.013436501030810177,
+          0.008567630148027092,
+          0.0,
+          0.0011000302396382722,
+          0.0,
+          0.0,
+          0.0016814882791823039,
+          0.005017234600381925,
+          0.008020414308602994,
+          0.006049767340737162,
+          0.036396299436164556,
+          0.007937460837829348,
+          0.03190574928601563,
+          0.01643997916586244,
+          0.0394967928994447,
+          0.0390747329685837,
+          0.008449770250490474,
+          0.005243967150304343,
+          0.005222993470733712,
+          0.015917880917259028,
+          0.02566173641127534
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.005504410393186845,
+          8.138690215986344e-07,
+          0.0016754327437956816,
+          0.00032180853337195005,
+          0.00014688954789676245,
+          0.0,
+          1.7987757920320812e-10,
+          1.1421354497581638e-10,
+          0.0,
+          4.410159700540817e-08,
+          1.1829763517212655e-07,
+          0.0,
+          0.0,
+          2.8752483562446975e-10,
+          1.1472140462598367e-09,
+          0.0,
+          0.00011464958358374133,
+          1.1155479024554938e-09,
+          5.198465825584364e-09,
+          5.167104833933567e-10,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0766880038204362e-07,
+          3.73663937514035e-09,
+          0.0,
+          1.36957699157364e-10,
+          0.0,
+          0.0,
+          1.3555011878496615e-08,
+          5.474703070440512e-08,
+          0.002145886383314064,
+          0.0008558759319566889,
+          0.004639953393489122,
+          0.002866071727476083,
+          0.006258290333207696,
+          0.004698448103736155,
+          0.008988198536389973,
+          0.0059801372155197895,
+          0.0009433223716717975,
+          0.0008735617354977876,
+          0.00018496916178264655,
+          0.0007764145680266665,
+          0.00968805147393141
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.6666666666666666,
+        "spearman": 0.8485930617501853,
+        "cosine": 0.9701781247987326
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.42857142857142855,
+        "spearman": 0.6823984594256236,
+        "cosine": 0.30891918323252715
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.6075144169076843,
+        "cosine": 0.36146865895293784
+      }
+    }
+  },
+  {
+    "method": "FedPer",
+    "seed": 7,
+    "mu": null,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.991499574978749,
+        "binary_f1": 0.9955976797182515,
+        "macro_f1": 0.9362937747361156,
+        "attack_precision": 0.9939503619441572,
+        "attack_recall": 0.9972504669018468,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/study_fedper_seed7_wifi.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.9468,
+        "binary_f1": 0.9594635781773849,
+        "macro_f1": 0.9410465069479129,
+        "attack_precision": 0.9256101146721553,
+        "attack_recall": 0.9958873774122113,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/study_fedper_seed7_mqtt.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.9036697247706422,
+        "binary_f1": 0.8926746166950597,
+        "macro_f1": 0.9026479879591803,
+        "attack_precision": 0.8249370277078085,
+        "attack_recall": 0.9725315515961396,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/study_fedper_seed7_bluetooth.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "ack_flag_number",
+          "psh_flag_number",
+          "TCP"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.3902267155051231
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.2567126239463687
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.05317998674931004
+          },
+          {
+            "feature": "psh_flag_number",
+            "mean_abs_shap": 0.04435365038225427
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.03181575008318759
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.02919958243477595
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.02475929071987366
+          },
+          {
+            "feature": "HTTP",
+            "mean_abs_shap": 0.021867520241066814
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.01995835746580269
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.01974060361739248
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "syn_flag_number",
+          "rst_flag_number",
+          "TCP"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.32561045873211697
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.24488749541342258
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.06605079724186055
+          },
+          {
+            "feature": "rst_flag_number",
+            "mean_abs_shap": 0.03923501089797355
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.03720576074905693
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.03482908764854074
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.027368047537238455
+          },
+          {
+            "feature": "fin_count",
+            "mean_abs_shap": 0.025511587655928453
+          },
+          {
+            "feature": "Radius",
+            "mean_abs_shap": 0.024971185137983413
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.024896069096503198
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "Weight",
+          "AVG",
+          "Number",
+          "Duration",
+          "Std"
+        ],
+        "top10": [
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.04668324984319042
+          },
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.045671772565692666
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.02533174348762259
+          },
+          {
+            "feature": "Duration",
+            "mean_abs_shap": 0.02355788161046803
+          },
+          {
+            "feature": "Std",
+            "mean_abs_shap": 0.0226961827557534
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.021045282944105567
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.020173249683575704
+          },
+          {
+            "feature": "Tot sum",
+            "mean_abs_shap": 0.012269600045401603
+          },
+          {
+            "feature": "Radius",
+            "mean_abs_shap": 0.011950303411576896
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.010575273852591636
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.02919958243477595,
+          0.01891422881279141,
+          0.01690038575325161,
+          0.009173911493251695,
+          0.00756733533730852,
+          0.0,
+          0.001981765523496506,
+          0.02475929071987366,
+          0.006934468671679497,
+          0.04435365038225427,
+          0.05317998674931004,
+          0.0,
+          0.0,
+          0.0003515102067308362,
+          0.0074342457582679345,
+          0.013041750709526241,
+          0.3902267155051231,
+          0.021867520241066814,
+          0.015822887058602644,
+          0.0008751065955220839,
+          1.6052194405347108e-06,
+          0.00014748608693480493,
+          4.0587112307548525e-05,
+          6.509235594421625e-05,
+          0.03181575008318759,
+          0.0068183559259341565,
+          0.0,
+          0.0007624527331427089,
+          0.012733382655569584,
+          0.0,
+          0.008087769307894632,
+          0.01460375966038555,
+          0.002808796558074391,
+          0.00907960781827569,
+          0.017762349632976113,
+          0.007885385904373834,
+          0.008695743867428973,
+          0.012214979885320644,
+          0.01995835746580269,
+          0.01974060361739248,
+          0.01399716636617086,
+          0.0075748476445733105,
+          0.0016035793164883216,
+          0.2567126239463687,
+          0.011296146870590747
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.03482908764854074,
+          0.0029079262289374696,
+          0.007384598605276551,
+          0.0018999652574324788,
+          0.00177406546980734,
+          0.0,
+          0.02231990961727206,
+          0.06605079724186055,
+          0.03923501089797355,
+          0.020836991556843713,
+          0.01963473192987294,
+          0.0,
+          0.0,
+          0.013936198603025786,
+          0.010763289143001202,
+          0.025511587655928453,
+          0.32561045873211697,
+          0.01608125593396835,
+          0.019137685826863163,
+          0.0011990061398682882,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.03720576074905693,
+          0.016640269120689482,
+          0.0,
+          0.00042458743064045735,
+          0.0,
+          0.0,
+          0.0030128686574084893,
+          0.005027026079151255,
+          0.002936146806969191,
+          0.004142433264507872,
+          0.024896069096503198,
+          0.012048864629832678,
+          0.027368047537238455,
+          0.01921804131496174,
+          0.010893504265113733,
+          0.012175119665917009,
+          0.019142739032104145,
+          0.024971185137983413,
+          0.00447922371423374,
+          0.24488749541342258,
+          0.009684075965196826
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.010575273852591636,
+          6.38252518154303e-06,
+          0.02355788161046803,
+          0.0038033715705569193,
+          0.0031686030142100206,
+          0.0,
+          9.036219838533255e-10,
+          1.0429399178654707e-09,
+          0.0,
+          6.963643795626639e-09,
+          4.450182881399201e-07,
+          0.0,
+          0.0,
+          6.159475147635152e-10,
+          8.519964776881883e-09,
+          0.0,
+          0.0007183468573111895,
+          2.3815747419823897e-09,
+          4.039858547078001e-08,
+          3.5503966399220295e-10,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.702666345161703e-07,
+          2.422607649266162e-08,
+          0.0,
+          3.892359776722434e-10,
+          0.0,
+          0.0,
+          3.43680228753751e-08,
+          4.387710473702233e-08,
+          0.012269600045401603,
+          0.004494849181501195,
+          0.021045282944105567,
+          0.045671772565692666,
+          0.0226961827557534,
+          0.009771403853665105,
+          0.010113812375147973,
+          0.02533174348762259,
+          0.020173249683575704,
+          0.011950303411576896,
+          0.002883891804376617,
+          0.0026289948355406522,
+          0.04668324984319042
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.42857142857142855,
+        "spearman": 0.7170919577501566,
+        "cosine": 0.9791248208495177
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.0,
+        "spearman": 0.5476357443547354,
+        "cosine": 0.10740144630081315
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.0,
+        "spearman": 0.4509047565446907,
+        "cosine": 0.1341136655264648
+      }
+    }
+  },
+  {
+    "method": "Cluster-FL",
+    "seed": 7,
+    "mu": null,
+    "background": {
+      "type": "pooled_raw_benign_training_observations",
+      "size": 100,
+      "selection_seed": 2033,
+      "transformation": "Same selected raw rows transformed using each protocol's own training-fitted scaler"
+    },
+    "protocol_metrics": {
+      "wifi": {
+        "accuracy": 0.991799589979499,
+        "binary_f1": 0.9957515154655199,
+        "macro_f1": 0.9391365027184333,
+        "attack_precision": 0.9944634171582324,
+        "attack_recall": 0.9970429549699108,
+        "test_samples": 19999,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/cluster_fl_seed7_cluster0.pth"
+      },
+      "mqtt": {
+        "accuracy": 0.982,
+        "binary_f1": 0.9856482219741668,
+        "macro_f1": 0.9807565325478236,
+        "attack_precision": 0.9937299035369775,
+        "attack_recall": 0.9776969313508383,
+        "test_samples": 10000,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/cluster_fl_seed7_cluster1.pth"
+      },
+      "bluetooth": {
+        "accuracy": 0.9831804281345565,
+        "binary_f1": 0.9793621013133208,
+        "macro_f1": 0.9825842764631121,
+        "attack_precision": 0.9901365705614568,
+        "attack_recall": 0.9688195991091314,
+        "test_samples": 3270,
+        "attack_explanation_samples": 200,
+        "checkpoint": "models/cluster_fl_seed7_cluster1.pth"
+      }
+    },
+    "top_features": {
+      "wifi": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "ack_flag_number",
+          "IPv",
+          "LLC"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.3669199587032199
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.15962079206481575
+          },
+          {
+            "feature": "ack_flag_number",
+            "mean_abs_shap": 0.08106130741754897
+          },
+          {
+            "feature": "IPv",
+            "mean_abs_shap": 0.04549078144133091
+          },
+          {
+            "feature": "LLC",
+            "mean_abs_shap": 0.04278720208443701
+          },
+          {
+            "feature": "psh_flag_number",
+            "mean_abs_shap": 0.039092244068160656
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.02960730104761751
+          },
+          {
+            "feature": "TCP",
+            "mean_abs_shap": 0.02637283042389754
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.021486528155364795
+          },
+          {
+            "feature": "Protocol Type",
+            "mean_abs_shap": 0.02035285055928398
+          }
+        ]
+      },
+      "mqtt": {
+        "top5": [
+          "rst_count",
+          "Variance",
+          "syn_flag_number",
+          "fin_flag_number",
+          "Header_Length"
+        ],
+        "top10": [
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 0.28927139363251625
+          },
+          {
+            "feature": "Variance",
+            "mean_abs_shap": 0.2734509379044175
+          },
+          {
+            "feature": "syn_flag_number",
+            "mean_abs_shap": 0.06230082889640471
+          },
+          {
+            "feature": "fin_flag_number",
+            "mean_abs_shap": 0.0514682557748165
+          },
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 0.04389335885178298
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.03403958636074094
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.030311475200578572
+          },
+          {
+            "feature": "IAT",
+            "mean_abs_shap": 0.028766802902100607
+          },
+          {
+            "feature": "HTTPS",
+            "mean_abs_shap": 0.02845016141218366
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.02537320169096347
+          }
+        ]
+      },
+      "bluetooth": {
+        "top5": [
+          "Header_Length",
+          "rst_count",
+          "Covariance",
+          "Duration",
+          "Tot size"
+        ],
+        "top10": [
+          {
+            "feature": "Header_Length",
+            "mean_abs_shap": 11.540456490516663
+          },
+          {
+            "feature": "rst_count",
+            "mean_abs_shap": 11.375971345901489
+          },
+          {
+            "feature": "Covariance",
+            "mean_abs_shap": 0.743295716047287
+          },
+          {
+            "feature": "Duration",
+            "mean_abs_shap": 0.3516157594323158
+          },
+          {
+            "feature": "Tot size",
+            "mean_abs_shap": 0.1239185002251179
+          },
+          {
+            "feature": "AVG",
+            "mean_abs_shap": 0.06185636348323897
+          },
+          {
+            "feature": "Magnitue",
+            "mean_abs_shap": 0.04504076951532625
+          },
+          {
+            "feature": "Weight",
+            "mean_abs_shap": 0.04203240505128633
+          },
+          {
+            "feature": "Max",
+            "mean_abs_shap": 0.03664072677260265
+          },
+          {
+            "feature": "Number",
+            "mean_abs_shap": 0.03117151334299706
+          }
+        ]
+      }
+    },
+    "full_shap_vectors": {
+      "wifi": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.021486528155364795,
+          0.02035285055928398,
+          0.015982356041204186,
+          0.006616460297428262,
+          0.005873071130552034,
+          0.0,
+          0.0015373248909776294,
+          0.02960730104761751,
+          0.013521583471447229,
+          0.039092244068160656,
+          0.08106130741754897,
+          0.0,
+          0.0,
+          0.000783914521330189,
+          0.011483234083571006,
+          0.01639404765330255,
+          0.3669199587032199,
+          0.014577740640379488,
+          0.011916179480031132,
+          0.0008400871737467241,
+          0.0002377975732088089,
+          0.00018631434068083763,
+          9.368705563247204e-05,
+          0.00014918808825314044,
+          0.02637283042389754,
+          0.005561038796586217,
+          0.0,
+          0.0011825992688864063,
+          0.019491277027373143,
+          0.0,
+          0.04549078144133091,
+          0.04278720208443701,
+          0.001998257044269849,
+          0.002964832310753991,
+          0.013476037587388419,
+          0.012537213477771729,
+          0.0062310166380484585,
+          0.014829051149135922,
+          0.003287676715408452,
+          0.0104306590554188,
+          0.00841138625082749,
+          0.005457737638789695,
+          0.002438397903342775,
+          0.15962079206481575,
+          0.003494029607390985
+        ]
+      },
+      "mqtt": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          0.04389335885178298,
+          0.00482303964527091,
+          0.00755280486853735,
+          0.0011568948103763432,
+          0.000914553918714347,
+          0.0,
+          0.0514682557748165,
+          0.06230082889640471,
+          0.024583137757726945,
+          0.0228094119875459,
+          0.019165002312511205,
+          0.0,
+          0.0,
+          0.014284349691802162,
+          0.0046710327963228335,
+          0.018968641881656367,
+          0.28927139363251625,
+          0.015267964385275263,
+          0.02845016141218366,
+          0.001706522117251552,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.017430768142075975,
+          0.01383975378004834,
+          0.0,
+          0.0015862589648986613,
+          0.0,
+          0.0,
+          0.00861425643437542,
+          0.00562116555745888,
+          0.004368322159862146,
+          0.005277938117433223,
+          0.018900817237736192,
+          0.01501498354737123,
+          0.024547069196705705,
+          0.03403958636074094,
+          0.028766802902100607,
+          0.030311475200578572,
+          0.02339353664458031,
+          0.013034378713346086,
+          0.01026846632694287,
+          0.2734509379044175,
+          0.02537320169096347
+        ]
+      },
+      "bluetooth": {
+        "feature_names": [
+          "Header_Length",
+          "Protocol Type",
+          "Duration",
+          "Rate",
+          "Srate",
+          "Drate",
+          "fin_flag_number",
+          "syn_flag_number",
+          "rst_flag_number",
+          "psh_flag_number",
+          "ack_flag_number",
+          "ece_flag_number",
+          "cwr_flag_number",
+          "ack_count",
+          "syn_count",
+          "fin_count",
+          "rst_count",
+          "HTTP",
+          "HTTPS",
+          "DNS",
+          "Telnet",
+          "SMTP",
+          "SSH",
+          "IRC",
+          "TCP",
+          "UDP",
+          "DHCP",
+          "ARP",
+          "ICMP",
+          "IGMP",
+          "IPv",
+          "LLC",
+          "Tot sum",
+          "Min",
+          "Max",
+          "AVG",
+          "Std",
+          "Tot size",
+          "IAT",
+          "Number",
+          "Magnitue",
+          "Radius",
+          "Covariance",
+          "Variance",
+          "Weight"
+        ],
+        "mean_abs_shap": [
+          11.540456490516663,
+          0.014631404872052372,
+          0.3516157594323158,
+          0.003019473406202451,
+          0.002276079634393682,
+          0.0,
+          2.338952281855202e-09,
+          2.5968370216400992e-09,
+          0.0,
+          0.00042752134337206374,
+          0.0010201895248610525,
+          0.0,
+          0.0,
+          1.2686950608889244e-09,
+          5.401293575232557e-05,
+          0.0,
+          11.375971345901489,
+          7.508327856478874e-09,
+          7.346624319325201e-05,
+          1.1505770562791895e-06,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.003103002057177946,
+          3.4347163782513236e-05,
+          0.0,
+          5.746077613366652e-07,
+          0.0,
+          0.0,
+          1.7753904926394172e-05,
+          0.0007208652238477952,
+          0.013266001969141144,
+          0.005137884387513622,
+          0.03664072677260265,
+          0.06185636348323897,
+          0.02618910609278828,
+          0.1239185002251179,
+          0.016425455052303733,
+          0.03117151334299706,
+          0.04504076951532625,
+          0.026059957661200315,
+          0.743295716047287,
+          0.0011029734418116278,
+          0.04203240505128633
+        ]
+      }
+    },
+    "explanation_consistency": {
+      "wifi-mqtt": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.6280768455162662,
+        "cosine": 0.9037046669685261
+      },
+      "wifi-bluetooth": {
+        "top5_jaccard": 0.1111111111111111,
+        "spearman": 0.45839287970779163,
+        "cosine": 0.6494189879554887
+      },
+      "mqtt-bluetooth": {
+        "top5_jaccard": 0.25,
+        "spearman": 0.564516973861824,
+        "cosine": 0.5604196397083645
+      }
+    }
+  }
+]
