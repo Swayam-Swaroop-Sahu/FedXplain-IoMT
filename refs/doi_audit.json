@@ -1,0 +1,2464 @@
+{
+  "nguyen2021federated": {
+    "doi": "10.1109/comst.2021.3075439",
+    "title": "Federated Learning for Internet of Things: A Comprehensive Survey",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-8092-6756",
+        "authenticated-orcid": false,
+        "given": "Dinh C.",
+        "family": "Nguyen",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-3690-0321",
+        "authenticated-orcid": false,
+        "given": "Ming",
+        "family": "Ding",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8014-7798",
+        "authenticated-orcid": false,
+        "given": "Pubudu N.",
+        "family": "Pathirana",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6894-7987",
+        "authenticated-orcid": false,
+        "given": "Aruna",
+        "family": "Seneviratne",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6239-2922",
+        "authenticated-orcid": false,
+        "given": "Jun",
+        "family": "Li",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2062-131X",
+        "authenticated-orcid": false,
+        "given": "H.",
+        "family": "Vincent Poor",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IEEE Communications Surveys &amp; Tutorials"
+    ],
+    "published": 2021,
+    "volume": "23",
+    "page": "1622-1658"
+  },
+  "dadkhah2024towards": {
+    "doi": "10.1016/j.iot.2024.101351",
+    "title": "CICIoMT2024: A benchmark dataset for multi-protocol security assessment in IoMT",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-5582-0255",
+        "authenticated-orcid": false,
+        "given": "Sajjad",
+        "family": "Dadkhah",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Euclides Carlos Pinto",
+        "family": "Neto",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Raphael",
+        "family": "Ferreira",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Reginald Chukwuka",
+        "family": "Molokwu",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Somayeh",
+        "family": "Sadeghi",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ali A.",
+        "family": "Ghorbani",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Internet of Things"
+    ],
+    "published": 2024,
+    "volume": "28",
+    "page": "101351"
+  },
+  "sattler2020clustered": {
+    "doi": "10.1109/tnnls.2020.3015958",
+    "title": "Clustered Federated Learning: Model-Agnostic Distributed Multitask Optimization Under Privacy Constraints",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-9425-2238",
+        "authenticated-orcid": false,
+        "given": "Felix",
+        "family": "Sattler",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Fraunhofer Heinrich Hertz Institute, Berlin, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-3861-7685",
+        "authenticated-orcid": false,
+        "given": "Klaus-Robert",
+        "family": "Muller",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Electrical Engineering and Computer Science, Technische Universit&#x00E4;t Berlin, Berlin, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6283-3265",
+        "authenticated-orcid": false,
+        "given": "Wojciech",
+        "family": "Samek",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Fraunhofer Heinrich Hertz Institute, Berlin, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IEEE Transactions on Neural Networks and Learning Systems"
+    ],
+    "published": 2021,
+    "volume": "32",
+    "page": "3710-3722"
+  },
+  "fedxai": {
+    "doi": "10.3390/fi17060234",
+    "title": "Federated XAI IDS: An Explainable and Safeguarding Privacy Approach to Detect Intrusion Combining Federated Learning and SHAP",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0001-0829-9866",
+        "authenticated-orcid": false,
+        "given": "Kazi",
+        "family": "Fatema",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Institute of Information Technology, Jahangirnagar University, Dhaka 1342, Bangladesh"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-7999-8576",
+        "authenticated-orcid": false,
+        "given": "Samrat Kumar",
+        "family": "Dey",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Science & Technology, Bangladesh Open University, Gazipur 1705, Bangladesh"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Mehrin",
+        "family": "Anannya",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Information Technology, Jahangirnagar University, Dhaka 1342, Bangladesh"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8236-5959",
+        "authenticated-orcid": false,
+        "given": "Risala Tasin",
+        "family": "Khan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Information Technology, Jahangirnagar University, Dhaka 1342, Bangladesh"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7567-2360",
+        "authenticated-orcid": false,
+        "given": "Mohammad Mamunur",
+        "family": "Rashid",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Science & Technology, Bangladesh Open University, Gazipur 1705, Bangladesh"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Chunhua",
+        "family": "Su",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Graduate School of Computer Science and Engineering, University of Aizu, Aizuwakamatsu 965-8580, Fukushima Prefecture, Japan"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0001-5994-1767",
+        "authenticated-orcid": false,
+        "given": "Rashed",
+        "family": "Mazumder",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Institute of Information Technology, Jahangirnagar University, Dhaka 1342, Bangladesh"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Future Internet"
+    ],
+    "published": 2025,
+    "volume": "17",
+    "page": "234"
+  },
+  "tavallaee2009detailed": {
+    "doi": "10.1109/CISDA.2009.5356528",
+    "title": "A detailed analysis of the KDD CUP 99 data set",
+    "type": "proceedings-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Mahbod",
+        "family": "Tavallaee",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ebrahim",
+        "family": "Bagheri",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Wei",
+        "family": "Lu",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Ali A.",
+        "family": "Ghorbani",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "2009 IEEE Symposium on Computational Intelligence for Security and Defense Applications"
+    ],
+    "published": 2009,
+    "volume": null,
+    "page": "1-6"
+  },
+  "moustafa2015unsw": {
+    "doi": "10.1109/milcis.2015.7348942",
+    "title": "UNSW-NB15: a comprehensive data set for network intrusion detection systems (UNSW-NB15 network data set)",
+    "type": "proceedings-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Nour",
+        "family": "Moustafa",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Jill",
+        "family": "Slay",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "2015 Military Communications and Information Systems Conference (MilCIS)"
+    ],
+    "published": 2015,
+    "volume": null,
+    "page": "1-6"
+  },
+  "koroniotis2019towards": {
+    "doi": "10.1016/j.future.2019.05.041",
+    "title": "Towards the development of realistic botnet dataset in the Internet of Things for network forensic analytics: Bot-IoT dataset",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [
+      "is-referenced-by"
+    ],
+    "author": [
+      {
+        "given": "Nickolaos",
+        "family": "Koroniotis",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Nour",
+        "family": "Moustafa",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Elena",
+        "family": "Sitnikova",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Benjamin",
+        "family": "Turnbull",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Future Generation Computer Systems"
+    ],
+    "published": 2019,
+    "volume": "100",
+    "page": "779-796"
+  },
+  "neto2023ciciot2023": {
+    "doi": "10.3390/s23135941",
+    "title": "CICIoT2023: A Real-Time Dataset and Benchmark for Large-Scale Attacks in IoT Environment",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Euclides Carlos Pinto",
+        "family": "Neto",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Faculty of Computer Science, University of New Brunswick (UnB), Fredericton, NB E3B 5A3, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5582-0255",
+        "authenticated-orcid": false,
+        "given": "Sajjad",
+        "family": "Dadkhah",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Computer Science, University of New Brunswick (UnB), Fredericton, NB E3B 5A3, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Raphael",
+        "family": "Ferreira",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Computer Science, University of New Brunswick (UnB), Fredericton, NB E3B 5A3, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Alireza",
+        "family": "Zohourian",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Computer Science, University of New Brunswick (UnB), Fredericton, NB E3B 5A3, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Rongxing",
+        "family": "Lu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Computer Science, University of New Brunswick (UnB), Fredericton, NB E3B 5A3, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9189-6268",
+        "authenticated-orcid": false,
+        "given": "Ali A.",
+        "family": "Ghorbani",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Computer Science, University of New Brunswick (UnB), Fredericton, NB E3B 5A3, Canada"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2023,
+    "volume": "23",
+    "page": "5941"
+  },
+  "adaptive": {
+    "doi": "10.3390/s26217079",
+    "title": "A Data-Adaptive Explainable Intrusion Detection Framework for IoMT Using Sampling Strategy Search and Ensemble Learning",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-5729-6613",
+        "authenticated-orcid": false,
+        "given": "Guzin",
+        "family": "Ulutas",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Engineering, Karadeniz Technical University, 61080 Trabzon, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "conceptualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "resources",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "supervision",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "project-administration",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "funding-acquisition",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0002-9926-207X",
+        "authenticated-orcid": false,
+        "given": "Metehan",
+        "family": "Bulut",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Engineering, Karadeniz Technical University, 61080 Trabzon, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "conceptualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "resources",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "supervision",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "project-administration",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "funding-acquisition",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7451-0634",
+        "authenticated-orcid": false,
+        "given": "Beste",
+        "family": "Ustubioglu",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Engineering, Karadeniz Technical University, 61080 Trabzon, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "formal-analysis",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6941-9721",
+        "authenticated-orcid": false,
+        "given": "Isilay",
+        "family": "Bozkurt",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Software Development, Karadeniz Technical University, 61080 Trabzon, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "data-curation",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-7734-0295",
+        "authenticated-orcid": false,
+        "given": "Mustafa Hakan",
+        "family": "Bozkurt",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Artificial Intelligence Engineering, Karadeniz Technical University, 61080 Trabzon, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "resources",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2753-366X",
+        "authenticated-orcid": false,
+        "given": "Dasara",
+        "family": "Shullani",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Engineering, University of Florence, 50139 Florence, Italy"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "visualization",
+            "vocabulary": "credit"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2026,
+    "volume": "26",
+    "page": "7079"
+  },
+  "amali": {
+    "doi": "10.1109/ACCESS.2025.3535952",
+    "title": "A Physics-Based Hyper Parameter Optimized Federated Multi-Layered Deep Learning Model for Intrusion Detection in IoT Networks",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-8869-4374",
+        "authenticated-orcid": false,
+        "given": "Chirag",
+        "family": "Jitendra Chandnani",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, Tamil Nadu, India"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0009-0028-879X",
+        "authenticated-orcid": false,
+        "given": "Vedik",
+        "family": "Agarwal",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, Tamil Nadu, India"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0002-3961-2875",
+        "authenticated-orcid": false,
+        "given": "Shlok",
+        "family": "Chetan Kulkarni",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, Tamil Nadu, India"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0009-6113-5113",
+        "authenticated-orcid": false,
+        "given": "Aditya",
+        "family": "Aren",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, Tamil Nadu, India"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2939-4336",
+        "authenticated-orcid": false,
+        "given": "D. Geraldine Bessie",
+        "family": "Amali",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, Tamil Nadu, India"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-9352-0237",
+        "authenticated-orcid": false,
+        "given": "Kathiravan",
+        "family": "Srinivasan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, Tamil Nadu, India"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IEEE Access"
+    ],
+    "published": 2025,
+    "volume": "13",
+    "page": "21992-22010"
+  },
+  "causalfl": {
+    "doi": "10.1007/s43926-026-00292-z",
+    "title": "Explainable federated learning through causal reasoning for intrusion detection in IoT",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Fatima",
+        "family": "Asiri",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Discover Internet of Things"
+    ],
+    "published": 2026,
+    "volume": "6",
+    "page": null
+  },
+  "distill": {
+    "doi": "10.1007/s40747-025-02001-9",
+    "title": "A novel federated learning approach for IoT botnet intrusion detection using SHAP-based knowledge distillation",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-5120-2911",
+        "authenticated-orcid": false,
+        "given": "Md. Alamgir",
+        "family": "Hossain",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sadman",
+        "family": "Saif",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Md. Saiful",
+        "family": "Islam",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Complex &amp; Intelligent Systems"
+    ],
+    "published": 2025,
+    "volume": "11",
+    "page": null
+  },
+  "drift": {
+    "doi": "10.3390/s26196200",
+    "title": "DEA-IDS: Drift-Aware Feature Selection and Few-Shot Adaptation for Cross-Domain IoT–IoMT Intrusion Detection",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-0877-8488",
+        "authenticated-orcid": false,
+        "given": "Büşra",
+        "family": "Günay",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Engineering, Faculty of Engineering and Natural Sciences, Istanbul Atlas University, 34408 Istanbul, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "conceptualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "software",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "formal-analysis",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "visualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-original-draft",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3589-3278",
+        "authenticated-orcid": false,
+        "given": "Mehmet Yavuz",
+        "family": "Yağcı",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Engineering, Faculty of Engineering, Istanbul University-Cerrahpaşa, 34320 Istanbul, Türkiye"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "conceptualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "software",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "formal-analysis",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "visualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-original-draft",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2026,
+    "volume": "26",
+    "page": "6200"
+  },
+  "ecg": {
+    "doi": "10.3389/friot.2025.1712430",
+    "title": "A systematic security analysis of medical internet of things (MIoT) ecosystems in threat modeling scenarios",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Alex",
+        "family": "Akinbi",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Preethi Paul",
+        "family": "Raj",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Frontiers in The Internet of Things"
+    ],
+    "published": 2025,
+    "volume": "4",
+    "page": null
+  },
+  "edgeids": {
+    "doi": "10.3390/s25041216",
+    "title": "Implementing Anomaly-Based Intrusion Detection for Resource-Constrained Devices in IoMT Networks",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-9130-4605",
+        "authenticated-orcid": false,
+        "given": "Georgios",
+        "family": "Zachos",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Instituto de Telecomunicações, 3810-193 Aveiro, Portugal"
+          },
+          {
+            "name": "Faculty of Engineering and Science, University of Greenwich, Chatham Maritime ME4 4TB, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Georgios",
+        "family": "Mantas",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Instituto de Telecomunicações, 3810-193 Aveiro, Portugal"
+          },
+          {
+            "name": "Faculty of Engineering and Science, University of Greenwich, Chatham Maritime ME4 4TB, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1364-0261",
+        "authenticated-orcid": false,
+        "given": "Kyriakos",
+        "family": "Porfyrakis",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Faculty of Engineering and Science, University of Greenwich, Chatham Maritime ME4 4TB, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Jonathan",
+        "family": "Rodriguez",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Instituto de Telecomunicações, 3810-193 Aveiro, Portugal"
+          },
+          {
+            "name": "Faculty of Computing, Engineering and Science, University of South Wales, Pontypridd CF37 1DL, UK"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2025,
+    "volume": "25",
+    "page": "1216"
+  },
+  "experts": {
+    "doi": "10.3390/s26134293",
+    "title": "Explainable Feature-Group-Aware Cross-Attentive Expert Fusion for IoMT Intrusion Detection",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Asmatullah",
+        "family": "Khan",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "School of Information and Communication Engineering, Changchun University of Science and Technology, Changchun 130022, China"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-8314-6448",
+        "authenticated-orcid": false,
+        "given": "Yang",
+        "family": "Li",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Information and Communication Engineering, Changchun University of Science and Technology, Changchun 130022, China"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6783-0787",
+        "authenticated-orcid": false,
+        "given": "Ijaz",
+        "family": "Khan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "State Key Laboratory of Radio Frequency Heterogeneous Integration, Shenzhen University, Shenzhen 518055, China"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-0159-9655",
+        "authenticated-orcid": false,
+        "given": "Mian Muhammad",
+        "family": "Kamal",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Electronic and Communication Engineering, Quanzhou University of Information Engineering, Quanzhou 362000, China"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2026,
+    "volume": "26",
+    "page": "4293"
+  },
+  "graph": {
+    "doi": "10.3390/iot7010013",
+    "title": "G-PFL-ID: Graph-Driven Personalized Federated Learning for Unsupervised Intrusion Detection in Non-IID IoT Systems",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-5165-5443",
+        "authenticated-orcid": false,
+        "given": "Daniel Ayo",
+        "family": "Oladele",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5155-9304",
+        "authenticated-orcid": false,
+        "given": "Ayokunle",
+        "family": "Ige",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-8262-9448",
+        "authenticated-orcid": false,
+        "given": "Olatunbosun",
+        "family": "Agbo-Ajala",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0203-9446",
+        "authenticated-orcid": false,
+        "given": "Olufisayo",
+        "family": "Ekundayo",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-1960-7246",
+        "authenticated-orcid": false,
+        "given": "Sree Ganesh",
+        "family": "Thottempudi",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5617-768X",
+        "authenticated-orcid": false,
+        "given": "Malusi",
+        "family": "Sibiya",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3989-5617",
+        "authenticated-orcid": false,
+        "given": "Ernest",
+        "family": "Mnkandla",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Florida Campus, University of South Africa, Johannesburg 1709, South Africa"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IoT"
+    ],
+    "published": 2026,
+    "volume": "7",
+    "page": "13"
+  },
+  "hada": {
+    "doi": "10.1109/ACCESS.2025.3592481",
+    "title": "Federated Learning for Distributed IoT Security: A Privacy-Preserving Approach to Intrusion Detection",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0001-5968-5898",
+        "authenticated-orcid": false,
+        "given": "Chandu",
+        "family": "Gutti",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Independent Researcher, San Jose, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0001-2690-8901",
+        "authenticated-orcid": false,
+        "given": "Karthik",
+        "family": "Thumula",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Independent Researcher, San Jose, CA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0005-7594-5767",
+        "authenticated-orcid": false,
+        "given": "Parag",
+        "family": "Balbudhe",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Independent Researcher, Boston, MA, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IEEE Access"
+    ],
+    "published": 2025,
+    "volume": "13",
+    "page": "135863-135875"
+  },
+  "iottraffic": {
+    "doi": "10.1109/ACCESS.2024.3437214",
+    "title": "IoMT-TrafficData: Dataset and Tools for Benchmarking Intrusion Detection in Internet of Medical Things",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0000-0595-0468",
+        "authenticated-orcid": false,
+        "given": "José",
+        "family": "Areia",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Computer Science and Communications Research Centre (CIIC), School of Technology and Management (ESTG), Polytechnic of Leiria, Leiria, Portugal"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0004-3166-8780",
+        "authenticated-orcid": false,
+        "given": "Ivo Afonso",
+        "family": "Bispo",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Computer Science and Communications Research Centre (CIIC), School of Technology and Management (ESTG), Polytechnic of Leiria, Leiria, Portugal"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6883-7996",
+        "authenticated-orcid": false,
+        "given": "Leonel",
+        "family": "Santos",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Computer Science and Communications Research Centre (CIIC), School of Technology and Management (ESTG), Polytechnic of Leiria, Leiria, Portugal"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2306-7585",
+        "authenticated-orcid": false,
+        "given": "Rogério Luís de C.",
+        "family": "Costa",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Computer Science and Communications Research Centre (CIIC), School of Technology and Management (ESTG), Polytechnic of Leiria, Leiria, Portugal"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IEEE Access"
+    ],
+    "published": 2024,
+    "volume": "12",
+    "page": "115370-115385"
+  },
+  "semidec": {
+    "doi": "10.3390/s25041039",
+    "title": "A Heterogeneity-Aware Semi-Decentralized Model for a Lightweight Intrusion Detection System for IoT Networks Based on Federated Learning and BiLSTM",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-8233-6875",
+        "authenticated-orcid": false,
+        "given": "Shuroog",
+        "family": "Alsaleh",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, King Saud University, Riyadh 11451, Saudi Arabia"
+          },
+          {
+            "name": "Department of Information Technology, Princess Nourah bint Abdulrahman University, Riyadh 11671, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5981-6299",
+        "authenticated-orcid": false,
+        "given": "Mohamed El Bachir",
+        "family": "Menai",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Technology, Princess Nourah bint Abdulrahman University, Riyadh 11671, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9406-6809",
+        "authenticated-orcid": false,
+        "given": "Saad",
+        "family": "Al-Ahmadi",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Technology, Princess Nourah bint Abdulrahman University, Riyadh 11671, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2025,
+    "volume": "25",
+    "page": "1039"
+  },
+  "smote": {
+    "doi": "10.3390/s26051592",
+    "title": "FedSMOTE-DP: Privacy-Aware Federated Ensemble Learning for Intrusion Detection in IoMT Networks",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Theyab",
+        "family": "Alsolami",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Electrical Engineering and Computer Science, Florida Atlantic University, 777 Glades Road, Boca Raton, FL 33431, USA"
+          },
+          {
+            "name": "College of Computer, Najran University, Najran 55461, Saudi Arabia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Mohammad",
+        "family": "Ilyas",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Electrical Engineering and Computer Science, Florida Atlantic University, 777 Glades Road, Boca Raton, FL 33431, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2026,
+    "volume": "26",
+    "page": "1592"
+  },
+  "specialized": {
+    "doi": "10.3390/ai7100387",
+    "title": "Developing a Federated, Lightweight, Interpretable, and Specialized AI-Based Intrusion Detection System for Medical Internet of Things (IoMT) Environments",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0003-4435-5500",
+        "authenticated-orcid": false,
+        "given": "Jehad M.",
+        "family": "Hamamreh",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science and Cybersecurity, An-Najah National University, Nablus P.O. Box 7, Palestine"
+          },
+          {
+            "name": "Electrical and Computer Engineering Department, Antalya Bilim University, 07190 Antalya, Turkey"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "conceptualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "formal-analysis",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-original-draft",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "project-administration",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "supervision",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0006-0737-7603",
+        "authenticated-orcid": false,
+        "given": "Aman M.",
+        "family": "Araf",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Cybersecurity, An-Najah National University, Nablus P.O. Box 7, Palestine"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "methodology",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "software",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "formal-analysis",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "resources",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "data-curation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "visualization",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-original-draft",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8856-4895",
+        "authenticated-orcid": false,
+        "given": "Ahmad M.",
+        "family": "Jaradat",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Electrical and Computer Engineering and Computer Science, University of Detroit Mercy, Detroit, MI 48221-3038, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4531-8392",
+        "authenticated-orcid": false,
+        "given": "Adnan",
+        "family": "Daraghmeh",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Mathmatics, An-Najah National University, Nablus P.O. Box 7, Palestine"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4946-6269",
+        "authenticated-orcid": false,
+        "given": "Moamin",
+        "family": "Abughazala",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science Apprenticeship, An-Najah University, Nablus P.O. Box 7, Palestine"
+          },
+          {
+            "name": "Department of Information Engineering, Computer Science and Mathematics, University of L’Aquila, 67100 L’Aquila, Italy"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Henry",
+        "family": "Muccini",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Engineering, Computer Science and Mathematics, University of L’Aquila, 67100 L’Aquila, Italy"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          },
+          {
+            "role": "validation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "investigation",
+            "vocabulary": "credit"
+          },
+          {
+            "role": "writing-review-editing",
+            "vocabulary": "credit"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "AI"
+    ],
+    "published": 2026,
+    "volume": "7",
+    "page": "387"
+  },
+  "transferstudy": {
+    "doi": "10.3390/computers15060376",
+    "title": "Leveraging Cross-Domain Transfer Learning for Enhanced Multi-Protocol Network Intrusion Detection",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0002-0712-7445",
+        "authenticated-orcid": false,
+        "given": "Oluwaseyi",
+        "family": "Oladejo",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Prairie View A&M University, Prairie View, TX 77446, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9736-5353",
+        "authenticated-orcid": false,
+        "given": "Ahmed Abdelmoamen",
+        "family": "Ahmed",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Prairie View A&M University, Prairie View, TX 77446, USA"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Computers"
+    ],
+    "published": 2026,
+    "volume": "15",
+    "page": "376"
+  },
+  "trustreview": {
+    "doi": "10.3390/s26165182",
+    "title": "Trustworthy AI-Powered Intrusion Detection for the Internet of Medical Things (IoMT): A Review",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "given": "Jahidul",
+        "family": "Islam",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Information Technology and Engineering (ITE), Sydney Metropolitan Institute of Technology (SydneyMet), Sydney, NSW 2000, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-9426-9750",
+        "authenticated-orcid": false,
+        "given": "Dristi",
+        "family": "Datta",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Technology and Engineering (ITE), Sydney Metropolitan Institute of Technology (SydneyMet), Sydney, NSW 2000, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6917-0513",
+        "authenticated-orcid": false,
+        "given": "Fowzia",
+        "family": "Akhter",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Technology and Engineering (ITE), Sydney Metropolitan Institute of Technology (SydneyMet), Sydney, NSW 2000, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Sensors"
+    ],
+    "published": 2026,
+    "volume": "26",
+    "page": "5182"
+  },
+  "clinicalrisk": {
+    "doi": "10.3390/fi16110389",
+    "title": "Health IoT Threats: Survey of Risks and Vulnerabilities",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-6430-9611",
+        "authenticated-orcid": false,
+        "given": "Samaneh",
+        "family": "Madanian",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science and Software Engineering, Auckland University of Technology (AUT), 6 St. Paul Street, Auckland 1010, New Zealand"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Tserendorj",
+        "family": "Chinbat",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science and Software Engineering, Auckland University of Technology (AUT), 6 St. Paul Street, Auckland 1010, New Zealand"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Maduka",
+        "family": "Subasinghage",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Business School, University of Western Australia, Perth 6009, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "David",
+        "family": "Airehrour",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Together Communications, 77 Cook Street, Auckland 1010, New Zealand"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7190-9527",
+        "authenticated-orcid": false,
+        "given": "Farkhondeh",
+        "family": "Hassandoust",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Information Systems and Operation Management, University of Auckland, 12 Grafton Road, Auckland CBD, Auckland 1010, New Zealand"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sira",
+        "family": "Yongchareon",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science and Software Engineering, Auckland University of Technology (AUT), 6 St. Paul Street, Auckland 1010, New Zealand"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "Future Internet"
+    ],
+    "published": 2024,
+    "volume": "16",
+    "page": "389"
+  },
+  "edgeiio": {
+    "doi": "10.1109/ACCESS.2022.3165809",
+    "title": "Edge-IIoTset: A New Comprehensive Realistic Cyber Security Dataset of IoT and IIoT Applications for Centralized and Federated Learning",
+    "type": "journal-article",
+    "updates": [],
+    "updated_by": [],
+    "relations": [
+      "has-preprint",
+      "is-referenced-by"
+    ],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-0632-3172",
+        "authenticated-orcid": false,
+        "given": "Mohamed Amine",
+        "family": "Ferrag",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Computer Science, Guelma University, Guelma, Algeria"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-1160-2846",
+        "authenticated-orcid": false,
+        "given": "Othmane",
+        "family": "Friha",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Networks and Systems Laboratory (LRS), Badji Mokhtar&#x2014;Annaba University, Annaba, Algeria"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2168-4192",
+        "authenticated-orcid": false,
+        "given": "Djallel",
+        "family": "Hamouda",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Labstic Laboratory, Guelma University, Guelma, Algeria"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5360-9782",
+        "authenticated-orcid": false,
+        "given": "Leandros",
+        "family": "Maglaras",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "School of Computer Science and Informatics, De Montfort University, Leicester, U.K."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-1345-2829",
+        "authenticated-orcid": false,
+        "given": "Helge",
+        "family": "Janicke",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Cyber Security Cooperative Research Centre (CSCRC), Edith Cowan University, Perth, WA, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "venue": [
+      "IEEE Access"
+    ],
+    "published": 2022,
+    "volume": "10",
+    "page": "40281-40306"
+  }
+}

@@ -1,0 +1,267 @@
+[
+  {
+    "key": "hada",
+    "doi": "10.1109/ACCESS.2025.3592481",
+    "relevance": "Studies communication and detection in distributed IoT training.",
+    "title": "Federated Learning for Distributed IoT Security: A Privacy-Preserving Approach to Intrusion Detection",
+    "authors": [
+      "Gutti, Chandu",
+      "Thumula, Karthik",
+      "Balbudhe, Parag"
+    ],
+    "venue": "IEEE Access",
+    "year": 2025,
+    "volume": "13",
+    "page": "135863-135875"
+  },
+  {
+    "key": "drift",
+    "doi": "10.3390/s26196200",
+    "relevance": "Studies drift-aware few-shot adaptation between IoT and medical traffic.",
+    "title": "DEA-IDS: Drift-Aware Feature Selection and Few-Shot Adaptation for Cross-Domain IoT–IoMT Intrusion Detection",
+    "authors": [
+      "Günay, Büşra",
+      "Yağcı, Mehmet Yavuz"
+    ],
+    "venue": "Sensors",
+    "year": 2026,
+    "volume": "26",
+    "page": "6200"
+  },
+  {
+    "key": "iottraffic",
+    "doi": "10.1109/ACCESS.2024.3437214",
+    "relevance": "Provides a complementary benchmark for packet- and flow-level medical traffic.",
+    "title": "IoMT-TrafficData: Dataset and Tools for Benchmarking Intrusion Detection in Internet of Medical Things",
+    "authors": [
+      "Areia, José",
+      "Bispo, Ivo Afonso",
+      "Santos, Leonel",
+      "Costa, Rogério Luís de C."
+    ],
+    "venue": "IEEE Access",
+    "year": 2024,
+    "volume": "12",
+    "page": "115370-115385"
+  },
+  {
+    "key": "causalfl",
+    "doi": "10.1007/s43926-026-00292-z",
+    "relevance": "Uses causal reasoning in explainable federated intrusion detection.",
+    "title": "Explainable federated learning through causal reasoning for intrusion detection in IoT",
+    "authors": [
+      "Asiri, Fatima"
+    ],
+    "venue": "Discover Internet of Things",
+    "year": 2026,
+    "volume": "6"
+  },
+  {
+    "key": "ecg",
+    "doi": "10.3389/friot.2025.1712430",
+    "relevance": "Models threats to a connected electrocardiography system.",
+    "title": "A systematic security analysis of medical internet of things (MIoT) ecosystems in threat modeling scenarios",
+    "authors": [
+      "Akinbi, Alex",
+      "Raj, Preethi Paul"
+    ],
+    "venue": "Frontiers in The Internet of Things",
+    "year": 2025,
+    "volume": "4"
+  },
+  {
+    "key": "amali",
+    "doi": "10.1109/ACCESS.2025.3535952",
+    "relevance": "Examines hyperparameter optimization in federated IoT intrusion detection.",
+    "title": "A Physics-Based Hyper Parameter Optimized Federated Multi-Layered Deep Learning Model for Intrusion Detection in IoT Networks",
+    "authors": [
+      "Jitendra Chandnani, Chirag",
+      "Agarwal, Vedik",
+      "Chetan Kulkarni, Shlok",
+      "Aren, Aditya",
+      "Amali, D. Geraldine Bessie",
+      "Srinivasan, Kathiravan"
+    ],
+    "venue": "IEEE Access",
+    "year": 2025,
+    "volume": "13",
+    "page": "21992-22010"
+  },
+  {
+    "key": "transferstudy",
+    "doi": "10.3390/computers15060376",
+    "relevance": "Examines transfer between different traffic domains.",
+    "title": "Leveraging Cross-Domain Transfer Learning for Enhanced Multi-Protocol Network Intrusion Detection",
+    "authors": [
+      "Oladejo, Oluwaseyi",
+      "Ahmed, Ahmed Abdelmoamen"
+    ],
+    "venue": "Computers",
+    "year": 2026,
+    "volume": "15",
+    "page": "376"
+  },
+  {
+    "key": "edgeids",
+    "doi": "10.3390/s25041216",
+    "relevance": "Evaluates anomaly detection with constrained medical network devices.",
+    "title": "Implementing Anomaly-Based Intrusion Detection for Resource-Constrained Devices in IoMT Networks",
+    "authors": [
+      "Zachos, Georgios",
+      "Mantas, Georgios",
+      "Porfyrakis, Kyriakos",
+      "Rodriguez, Jonathan"
+    ],
+    "venue": "Sensors",
+    "year": 2025,
+    "volume": "25",
+    "page": "1216"
+  },
+  {
+    "key": "graph",
+    "doi": "10.3390/iot7010013",
+    "relevance": "Personalizes detection under device and simulated distribution shifts.",
+    "title": "G-PFL-ID: Graph-Driven Personalized Federated Learning for Unsupervised Intrusion Detection in Non-IID IoT Systems",
+    "authors": [
+      "Oladele, Daniel Ayo",
+      "Ige, Ayokunle",
+      "Agbo-Ajala, Olatunbosun",
+      "Ekundayo, Olufisayo",
+      "Thottempudi, Sree Ganesh",
+      "Sibiya, Malusi",
+      "Mnkandla, Ernest"
+    ],
+    "venue": "IoT",
+    "year": 2026,
+    "volume": "7",
+    "page": "13"
+  },
+  {
+    "key": "smote",
+    "doi": "10.3390/s26051592",
+    "relevance": "Studies federated training with resampling and differential privacy under imbalance.",
+    "title": "FedSMOTE-DP: Privacy-Aware Federated Ensemble Learning for Intrusion Detection in IoMT Networks",
+    "authors": [
+      "Alsolami, Theyab",
+      "Ilyas, Mohammad"
+    ],
+    "venue": "Sensors",
+    "year": 2026,
+    "volume": "26",
+    "page": "1592"
+  },
+  {
+    "key": "adaptive",
+    "doi": "10.3390/s26217079",
+    "relevance": "Studies sampling and explanation in CICIoMT2024 intrusion detection.",
+    "title": "A Data-Adaptive Explainable Intrusion Detection Framework for IoMT Using Sampling Strategy Search and Ensemble Learning",
+    "authors": [
+      "Ulutas, Guzin",
+      "Bulut, Metehan",
+      "Ustubioglu, Beste",
+      "Bozkurt, Isilay",
+      "Bozkurt, Mustafa Hakan",
+      "Shullani, Dasara"
+    ],
+    "venue": "Sensors",
+    "year": 2026,
+    "volume": "26",
+    "page": "7079"
+  },
+  {
+    "key": "semidec",
+    "doi": "10.3390/s25041039",
+    "relevance": "Studies heterogeneity through semi-decentralized federated intrusion detection.",
+    "title": "A Heterogeneity-Aware Semi-Decentralized Model for a Lightweight Intrusion Detection System for IoT Networks Based on Federated Learning and BiLSTM",
+    "authors": [
+      "Alsaleh, Shuroog",
+      "Menai, Mohamed El Bachir",
+      "Al-Ahmadi, Saad"
+    ],
+    "venue": "Sensors",
+    "year": 2025,
+    "volume": "25",
+    "page": "1039"
+  },
+  {
+    "key": "distill",
+    "doi": "10.1007/s40747-025-02001-9",
+    "relevance": "Uses attribution information in federated botnet knowledge distillation.",
+    "title": "A novel federated learning approach for IoT botnet intrusion detection using SHAP-based knowledge distillation",
+    "authors": [
+      "Hossain, Md. Alamgir",
+      "Saif, Sadman",
+      "Islam, Md. Saiful"
+    ],
+    "venue": "Complex &amp; Intelligent Systems",
+    "year": 2025,
+    "volume": "11"
+  },
+  {
+    "key": "specialized",
+    "doi": "10.3390/ai7100387",
+    "relevance": "Examines specialized federated medical-device traffic detectors.",
+    "title": "Developing a Federated, Lightweight, Interpretable, and Specialized AI-Based Intrusion Detection System for Medical Internet of Things (IoMT) Environments",
+    "authors": [
+      "Hamamreh, Jehad M.",
+      "Araf, Aman M.",
+      "Jaradat, Ahmad M.",
+      "Daraghmeh, Adnan",
+      "Abughazala, Moamin",
+      "Muccini, Henry"
+    ],
+    "venue": "AI",
+    "year": 2026,
+    "volume": "7",
+    "page": "387"
+  },
+  {
+    "key": "experts",
+    "doi": "10.3390/s26134293",
+    "relevance": "Groups input features for interpretable expert-based medical network detection.",
+    "title": "Explainable Feature-Group-Aware Cross-Attentive Expert Fusion for IoMT Intrusion Detection",
+    "authors": [
+      "Khan, Asmatullah",
+      "Li, Yang",
+      "Khan, Ijaz",
+      "Kamal, Mian Muhammad"
+    ],
+    "venue": "Sensors",
+    "year": 2026,
+    "volume": "26",
+    "page": "4293"
+  },
+  {
+    "key": "trustreview",
+    "doi": "10.3390/s26165182",
+    "relevance": "Reviews explainability and validation challenges in medical intrusion detection.",
+    "title": "Trustworthy AI-Powered Intrusion Detection for the Internet of Medical Things (IoMT): A Review",
+    "authors": [
+      "Islam, Jahidul",
+      "Datta, Dristi",
+      "Akhter, Fowzia"
+    ],
+    "venue": "Sensors",
+    "year": 2026,
+    "volume": "26",
+    "page": "5182"
+  },
+  {
+    "key": "clinicalrisk",
+    "doi": "10.3390/fi16110389",
+    "title": "Health IoT Threats: Survey of Risks and Vulnerabilities",
+    "authors": [
+      "Madanian, Samaneh",
+      "Chinbat, Tserendorj",
+      "Subasinghage, Maduka",
+      "Airehrour, David",
+      "Hassandoust, Farkhondeh",
+      "Yongchareon, Sira"
+    ],
+    "venue": "Future Internet",
+    "year": 2024,
+    "volume": "16",
+    "page": "389",
+    "relevance": "Relates health IoT risks to the affected architectural layer and potential patient consequences."
+  }
+]
