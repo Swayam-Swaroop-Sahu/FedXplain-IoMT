@@ -18,7 +18,7 @@ The evaluation suite started with empty revised result directories. It produced 
 - Seven pytest regression tests and six Streamlit tabs passed. The legacy schema and result-completeness audits also passed.
 - Recomputed metrics match 294 client prediction files. Every selected round minimizes the logged validation criterion. Zero-penalty FedProx gives the FedAvg scores, and the matched pooled models use equal optimizer step counts.
 - Clean seed-42 FedAvg and FedPer reruns reproduced the sample IDs and logits of all six client files bit for bit.
-- The generated tables and numerical macros match the saved outputs. The bibliography has 41 resolved entries and the abstract has 186 words. The 15-page IEEE Access PDF has no unresolved references. MiKTeX used substitute fonts and reported two template title-block width warnings and a minor table-width warning.
+- The generated tables and numerical macros matched the saved outputs. That build resolved 41 bibliography entries and produced a 15-page IEEE Access PDF. MiKTeX used substitute fonts and reported two template title-block width warnings and a minor table-width warning.
 - The release and Overleaf archives passed ZIP integrity checks. The reproducibility archive contains code, configs, manifests, checkpoints, logits, per-label reports, SHAP outputs and documentation. It excludes raw and derived traffic tables.
 
 ## Author and data dependencies
@@ -26,3 +26,11 @@ The evaluation suite started with empty revised result directories. It produced 
 - Supply the original extractor, source capture and device/session identifiers, plus feature-unit documentation for grouped independent evaluation and exact reconstruction of historical sampling.
 - Confirm applicable author biographies, photographs, funding, competing interests, institutional declarations, licence, release tag and public repository link.
 - Identify the intended supervisor XAI paper by title or persistent identifier. A verified federated IDS paper from the supervisor is already cited. Optional SCAFFOLD and FedNova empirical controls were outside the retained compute budget.
+
+## Follow-up verification on 19 November 2026
+
+- Verified the experiment-to-publication order in Git. The grouped training implementation precedes the run records, which in turn precede the manuscript rewrite and final checks. The revised source is committed on the local `revision/ieee-access` branch. A read-only check of the GitHub remote found `main` at the earlier revision and no published branch with the revision name.
+- Reran the seven regression tests, dashboard smoke test, numerical generation check, and metrics validation on all 294 client prediction files. All five primary split manifest digests matched, and the Bluetooth calibration fitting and selection groups were disjoint subsets of validation. All 19 archived JSON files matched the corresponding original outputs.
+- Fresh seed-42 FedAvg and FedPer training reproduced the sample IDs, binary labels, logits and probabilities in all six client prediction files exactly.
+- The README now explains branch visibility and links to the implementation and evidence. The paper explains how validation-selected checkpoints became test predictions and corrects stale wording about training shares and target-inclusive adaptation. [Guide checklist](guide_checklist.md)
+- Rebuilt the 15-page PDF with a 182-word rendered abstract, 41 resolved references and no broken cross-references. The new opening reports the measured five-seed values from the generated numerical macros.

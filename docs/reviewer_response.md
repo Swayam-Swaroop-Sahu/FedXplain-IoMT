@@ -1,6 +1,6 @@
 # Prior manuscript revision audit
 
-The primary results now use grouped train, validation and test partitions. This file records the earlier row-split response and its historical source locations. See [TRACEABILITY](TRACEABILITY.md) and [FINAL_REPORT](FINAL_REPORT.md) for current status.
+The primary results now use grouped train, validation and test partitions. The earlier row-split response below is preserved for reference. The current guide checklist covers the 14 requests, the implementation evidence and the work still open. [Guide checklist](guide_checklist.md) · [Reviewer traceability](TRACEABILITY.md) · [Final report](FINAL_REPORT.md)
 
 ## Build and evidence
 

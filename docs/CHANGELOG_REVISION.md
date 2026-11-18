@@ -27,3 +27,7 @@ Synced the dashboard and README to the generated primary results, added read-tim
 ## Phase 7
 
 Recomputed metrics from all 294 prediction outputs, replayed the seed-42 shared-model comparison from clean directories and verified identical logits, inspected the compiled PDF and ensured regenerated table and README values match the results. Marked each review and guide item in TRACEABILITY.md. Packaging and author dependencies are recorded in FINAL_REPORT.md.
+
+## Follow-up verification
+
+Confirmed local branch and remote visibility, repeated the seed-42 replay, and checked prediction metrics and calibration split membership. Updated the README, manuscript and guide checklist to connect code, evidence and remaining submission work.

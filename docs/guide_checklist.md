@@ -1,13 +1,42 @@
-# Guide checklist
+# Guide requests and revision status
 
-The numbered PDF responses and R1–R12 are in reviewer_response.md. The guide adds the following verification targets.
+This checklist follows the 14 guide requirements in the project brief. The reviewer PDF has a separate item-by-item record. [Supervisor notes](guide_review.md) · [Reviewer traceability](TRACEABILITY.md)
 
-| Guide item | Implementation and evidence |
+## What changed in the code and experiments
+
+| Area | Completed work and evidence |
 |---|---|
-| 1–3 | Expand terminology and clinical context in the introduction. Verify recent publications in additional_references.json. |
-| 4–5 | Derive the full label inventory from the CSV splits. Connect traffic domains and detection errors to conditional medical impacts. |
-| 6–7 | Place related work, research gap and contributions before the benchmark provenance and subset methods. |
-| 8–10 | Draw the trunk/head and group aggregation diagrams from the implemented dimensions and counts. Report separate seed tables. |
-| 11 | Extract sweep results and paired seed differences. Identify parameters held constant. |
-| 12–14 | Explain the attribution baseline, comparison objects, scope of personalization and relevance of the professor’s publications. |
-| QA | Rebuild figures and evidence, compile LaTeX and bibliography, test the dashboard, verify the submission archive. |
+| Data preparation | Exact 45-feature vectors stay together across training, validation and test, including matches across clients. Each protocol fits its scaler on training data. Split manifests preserve record IDs, group IDs and source labels. The rounded-signature audit flags possible near matches. [Data preparation](../src/revision_data.py) · [Split summaries](../results/revision/splits) |
+| Training | The revised runner uses matched seeds, logs round-level validation loss and optimizer steps, and picks the lowest validation-loss checkpoint before evaluating test records. The comparisons include FedAvg, the FedProx sweep, FedPer, fixed and adaptive groups, equal-weight and class-balanced controls, local-only and centralized runs. [Training](../src/revision_train.py) · [Run settings](../config/revision.yml) |
+| Experiments | 70 primary runs cover five seeds. Another 28 runs hold out the reconnaissance family across two seeds. Calibration and explanation diagnostics use five seeds. Sensitivity and target-excluded adaptation use seeds 42 and 7. [Primary runs](../results/revision/runs) · [Withholding runs](../results/revision_holdout/runs) · [Run counts and timing](../results/revision/training_summary.json) |
+| Diagnostics | Calibration compares a threshold, Platt scaling, temperature scaling, a head-only update and full fine-tuning. Explainability compares federated models on matched records within a protocol and compares protocols under a fixed model. Transfer uses benign controls from the foreign protocol. [Diagnostic implementation](../src/revision_probes.py) · [Outputs](../results/revision) |
+| Verification and reporting | The validator matches saved prediction IDs to the split manifests, recomputes metrics, checks the selected round and checks matched optimizer step totals. The generator produces the numerical macros, figures, result tables and README comparison from those outputs. [Validator](../scripts/validate_revision.py) · [Claim-to-result map](claim_to_result_map.csv) |
+
+Git records the sequence from audit (`597de65`) to implementation (`56a9d9c`), experiment outputs (`cac8c86`), bibliography verification (`3698068`), manuscript (`e22cc3d`), documentation and dashboard (`90538b7`) and verification (`b05d09a`). The archived row-split outputs remain available alongside the grouped study. [Revision log](CHANGELOG_REVISION.md) · [Archived results](../results_v1_archive)
+
+## Guide checklist
+
+| # | Guide request | Status and evidence | Follow-up |
+|---:|---|---|---|
+| 1 | Expand abbreviations at first use | Addressed for the main study terms, including Internet of Medical Things (IoMT), intrusion detection system (IDS), federated learning (FL), Message Queuing Telemetry Transport (MQTT), Bluetooth Low Energy (BLE) and Shapley additive explanations (SHAP). [Manuscript](../access.tex) | Apply the same convention to any new prose or labels added during supervisor review. |
+| 2 | Connect IoMT security to clinical devices | The introduction discusses infusion pumps, electrocardiography, pulse oximeters and smart beds, with potential consequences of delayed or unreliable observations. [Manuscript](../access.tex) | Device-specific safety claims require evidence from a clinical or device-level evaluation. |
+| 3 | Expand recent related work | The compiled bibliography resolves 41 references. It includes recent federated intrusion detection, explanation and heterogeneous-protocol studies and compares their evaluation scopes. [Bibliography](../refs/references.bib) · [Reading notes](../refs/reading_notes.md) | Confirm the intended supervisor XAI paper under item 14. |
+| 4 | Cover all 19 attack labels, protocol and potential medical impact | The introduction summarizes the families and points to the generated taxonomy, which maps each retained label to its protocol, count and possible service consequence. The evidence is grounded in the benchmark and the broader clinical-security literature. [Taxonomy and support tables](../revision_tables.tex) · [Per-label metrics](../results/revision/per_label_metrics.csv) | Dedicated device-specific studies for individual labels would support stronger claims about clinical effects. |
+| 5 | Explain health-data security, protocol differences and the limits of macro F1 | The introduction connects feature-based monitoring and privacy limits to Wi-Fi frames and transport indicators, MQTT broker sessions and publications, and Bluetooth connection events. Results report client macro F1 alongside benign and attack recall. [Manuscript](../access.tex) | Capture- or device-based measurements would support stronger claims about real deployment traffic. |
+| 6 | Organize related work, research gap and contributions | The introduction proceeds from technical and clinical context to related work, the research gap and contributions. [Manuscript](../access.tex) | Address any changes requested in the guide's next review. |
+| 7 | Detail CICIoMT2024 provenance, devices and capture | The dataset section cites the 25 physical and 15 simulated devices and explains the available feature tables, attack categories and grouped split. The feature dictionary marks fields with undocumented extraction details. [Dataset notes](../data/README.md) · [Feature dictionary](feature_dictionary.md) | Obtain the original extractor, capture-to-row manifest and device/session identifiers. Use them to evaluate on independently held-out captures or devices. |
+| 8 | Draw the model layer by layer | The architecture diagram labels the 45 → 64 → 32 → 1 path, activations, dropout and the shared trunk/private head boundary. [Architecture figure](../figures/fig_iomt_mlp_architecture.png) | Update the figure if the model specification changes. |
+| 9 | Draw and explain Cluster-FL groups | The topology contrasts FedAvg, the fixed Wi-Fi and MQTT–Bluetooth groups, and the observed adaptive groups. The adaptive runs selected three singleton groups. [Topology figure](../figures/revision_topology.png) · [Grouped results](../results/revision/paper_summary.json) | A claim about a useful learned multi-client group needs supporting evidence from additional conditions. |
+| 10 | Report seed 42 and seed 7 separately | The manuscript contains both seed-specific tables and an aggregate table over all five primary seeds. [Generated tables](../revision_tables.tex) | Apply the same reporting structure to any expanded experiments. |
+| 11 | Measure sensitivity and explain the choices | The primary study repeats the proximal-penalty sweep across all five seeds. The two-seed grid varies rounds, local epochs, batch size, learning rate, dropout, hidden width and private head depth, with a rounds-by-epochs contrast. [Configuration](../config/revision.yml) · [Sensitivity settings and results](../results/revision/sensitivity) · [Sensitivity figure](../figures/revision_sensitivity.png) | For broader claims, expand the remaining settings and interactions to all five seeds or a larger predeclared budget. The completed grid bounds the current claims. |
+| 12 | Explain why explanation matters and how it was evaluated | The related work motivates attribution-based inspection. Methods and results cover DeepExplainer, train-only benign backgrounds, matched within-client comparisons, cross-client comparisons and rank/overlap metrics. [Manuscript](../access.tex) · [Explanation outputs](../results/revision/shap) | Any deployment claim about analyst benefit requires a separate human evaluation. |
+| 13 | Explain the contribution of FedPer and Cluster-FL | The contribution is a matched evaluation of established sharing methods on protocol-grounded clients, with benign recall, calibration, representation and attribution diagnostics. [Manuscript](../access.tex) | Keep algorithmic novelty claims limited to changes that are independently demonstrated. |
+| 14 | Integrate the professor's exact XAI paper | Pending. A verified federated IDS article coauthored by Dr. Amali is cited for its own contribution. [Citation notes](unverified_sources.md) | Confirm the intended XAI paper by title or DOI before adding or discussing it. |
+
+## Before submission
+
+1. **Author review.** Resolve the supervisor-specific XAI citation and confirm biographies, photographs, licence, declarations and the public release location. The revision is currently on a local branch.
+2. **Evidence gaps.** Capture-independent evaluation requires the original provenance. The bounded main budget and two-seed sensitivity, adaptation and holdout experiments support the claims as written. A wider schedule, additional seeds for the secondary analyses and the optional SCAFFOLD/FedNova controls belong to a separate experiment extension.
+3. **Manuscript length.** The earlier brief targeted 10–12 pages. The expanded build includes the detailed sensitivity, transfer and adaptation outputs. If that target still applies, move secondary tables and figures to a supplement with the guide's approval.
+
+[Detailed limitations](OPEN_ISSUES.md) · [Verification and release notes](FINAL_REPORT.md)

@@ -110,12 +110,12 @@ Status refers to the current revision. The issue wording follows the numbered ex
 | Guide 1. Abbreviations | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 2. IoMT context | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 3. Recent work | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
-| Guide 4. Attack-label coverage | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
+| Guide 4. Attack-label coverage | Taxonomy and potential consequences documented. Dedicated device-specific citations by label remain open. | access.tex, scripts/make_all_tables_figures.py | results/revision/per_label_metrics.csv, refs/reading_notes.md | Introduction and Dataset |
 | Guide 5. Data and network IDS | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 6. Limits of macro F1 | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 7. Protocol behavior | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 8. Cross-class heterogeneity | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
-| Guide 9. Sensitivity | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
+| Guide 9. Sensitivity | Tested grid complete. Secondary grid uses seeds 42 and 7. | src/revision_sensitivity.py, access.tex | results/revision/sensitivity | Methods and Results |
 | Guide 10. Label inventory | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 11. Explainability | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
 | Guide 12. Dataset literature and gap | Done | access.tex, scripts/make_all_tables_figures.py | results/revision, refs/reading_notes.md | Introduction, Methods and Results |
