@@ -20,6 +20,7 @@
 \def\xfigwd{\columnwidth}
 \graphicspath{{figures/}{./}}
 \input{revision_numbers.tex}
+\input{revision_tables.tex}
 \history{Manuscript prepared for review.}\doi{pending assignment}
 
 \title{FedXplain-IoMT: Diagnosing Cross-Protocol Explanation Divergence in Federated Intrusion Detection for Medical IoT}
@@ -112,6 +113,8 @@ This revision assigns identical 45-feature vectors to the same group across all 
 \subsection{Attack labels and clinical interpretation}
 The Canadian Institute for Cybersecurity grouped testbed traffic into denial of service (DoS), distributed denial of service (DDoS), reconnaissance, spoofing and MQTT scenarios. For Wi-Fi, the flood labels distinguish Transmission Control Protocol (TCP), User Datagram Protocol (UDP), Internet Control Message Protocol (ICMP) and TCP synchronization (SYN) traffic. The reconnaissance labels distinguish operating-system identification, host discovery, port enumeration and vulnerability scanning. Address Resolution Protocol (ARP) spoofing concerns the binding between an address and a local link endpoint. The MQTT scenarios distinguish session establishment, publication traffic and malformed messages. The Bluetooth DoS label identifies the source scenario without specifying a common IP-layer mechanism. The released features describe traffic observed during these labeled capture scenarios. Table~\ref{tab:attacks} lists the retained labels. Clinical consequences are possible interpretations for monitoring services.
 
+\RevisionTaxonomy
+
 \subsection{Partitioning and prevalence}
 Protocol prevalence and label support describe different forms of heterogeneity. The Wi-Fi partition has the largest sample count and the highest proportion of attacks. The Bluetooth partition contains a benign majority. The resulting distribution changes both the sample-weighted update mixture and the operational meaning of a global score. Table~\ref{tab:newsupport} gives train, validation, and test supports under one realized grouped partition.
 \begin{figure}[t]\centering
@@ -157,6 +160,8 @@ FedPer trains all local parameters but sends the trunk to the aggregator. Client
 
 The adaptive comparator starts with all clients together. Following the norm-gated principle of clustered federated learning~\cite{sattler2020clustered}, we summarize the mean and maximum norms of the model updates within each group, relative to its initial update scale. After a configured warm-up, a low group-mean norm with a large individual norm triggers a split. Complete linkage uses distances equal to one minus the cosine of the update vectors. We use this finite-budget operational adaptation of the published procedure. Groups are then trained and evaluated independently. Table~\ref{tab:newgroups} and Fig.~\ref{fig:revised_topology} report the selected membership.
 
+\RevisionTopology
+
 \subsection{Training schedule and sensitivity design}
 The main schedule uses \RevisionRounds{} rounds, \RevisionEpochs{} local epoch per round, minibatches of at most \RevisionBatch{}, and Adam learning rate \RevisionLr. All federated clients participate every round. Adam state resets for a fresh local federated fit. It persists across local-only blocks and pooled epochs. Matching the number of optimizer steps to the federated total defines the compute-matched central comparator. Matching steps does not equate communication, memory or data access. Pooled training is an empirical comparator. The legacy runner used the Flower interfaces~\cite{beutel2020flower}. The revised runner records each local update and its validation scores directly for all methods.
 
@@ -188,29 +193,41 @@ The adaptive procedure produced singleton groups at every validation-selected ch
 
 When $R_{\rm local}>R_{\rm Avg}$, let $G=(R_{\rm Per}-R_{\rm Avg})/(R_{\rm local}-R_{\rm Avg})$ be the fraction of the benign-recall gap recovered on a fixed split. The individual scores in Tables~\ref{tab:newseed42} and \ref{tab:newseed7} provide these denominators. For seed 42, the paired percentile interval for the FedPer minus FedAvg specificity difference was $[\RevisionPerLo,\RevisionPerHi]$ under an exact-feature-group bootstrap. The unit is a feature-equivalence group, so the interval conditions on the observed partition and is not a device-level interval. Splits for different seeds can include many of the same observations. Seed-to-seed dispersion in Table~\ref{tab:newmain} is descriptive.
 
+\RevisionDetection
+
 \subsection{Regularization, update weights and budget}
 Figure~\ref{fig:revised_sweep_budget} displays all tested proximal penalties for each seed. The penalties are discrete tested settings. The zero-penalty run reproduces FedAvg. Equal client weighting raised Bluetooth benign recall to \RevisionEqualB{}, while class balancing reached \RevisionBalancedB{}. These interventions alter different parts of optimization. The equal-weight result provides direct evidence that the aggregation rule matters for this training schedule. It does not isolate a unique mechanism from data prevalence, different numbers of client steps, or changing local models. The saved client update cosines are descriptive measures of model-update alignment, not gradients or causal effects.
 
 Round-level validation loss and accuracy, step counts and elapsed training times accompany every run. The compute-matched central comparator uses the same optimizer step total as FedAvg. A descriptive plateau screen requires at least three evaluations in a final tail whose validation BCE range is at most $0.001$. We use the lowest validation BCE seen during the fixed schedule for selection and make no claim of reaching a stationary solution.
+
+\RevisionBudget
 
 \subsection{Output interventions and representation similarity}
 Table~\ref{tab:newprobe} summarizes the Bluetooth probe. Starting from the same FedAvg scores, a validation-selected threshold raised mean specificity to \RevisionThresholdB{} with attack recall \RevisionThresholdA{}. Fitting a slope and intercept yielded specificity \RevisionPlattB{} and attack recall \RevisionPlattA{}, with a Brier improvement from \RevisionProbeAvgBrier{} to \RevisionPlattBrier{}. Temperature scaling changed the Brier score to \RevisionTemperatureBrier{} and preserved every binary decision. Thus changing probability calibration and changing an operating threshold are distinct actions. Full fine-tuning attained specificity \RevisionTuneB{} and attack recall \RevisionTuneA{}. The frozen-trunk head update improved specificity to \RevisionHeadB{} with attack recall \RevisionHeadA{}. The measured sensitivity--specificity trade-offs depend on which parameters are available for adjustment. Figure~\ref{fig:revised_diagnostic} illustrates these metrics and the FedAvg class-conditional score distributions.
 
 FedAvg and FedPer had mean Bluetooth trunk CKA of \RevisionCka{} under matched test inputs. This indicates broad similarity of centered activation geometry. The same score does not imply that the decision-relevant directions, head parameters, or individual predictions coincide. In combination with the output-only and fine-tuning controls, the evidence supports multiple ways of improving the operating point on Bluetooth.
 
+\RevisionDiagnostics
+
 \subsection{Within-client and cross-client attributions}
 In the Bluetooth within-client comparison, FedAvg and FedPer's mean absolute attribution ranks had mean Spearman correlations of \RevisionWithinAttack{} on attack records and \RevisionWithinBenign{} on benign records. The FedAvg attack comparison between Wi-Fi and Bluetooth was \RevisionAcrossAttack{}. The two comparisons use different evaluation populations. Table~\ref{tab:newshapwithin} compares models on matched client records, whereas Table~\ref{tab:newshapacross} compares clients within a method. Figure~\ref{fig:revised_shap_tradeoff} uses the all-pair average of the within-method attack correlations. Signed attributions, record IDs and sample-bootstrap intervals are saved for inspection. Similar rankings can coexist with different operating points and cannot establish representation invariance.
+
+\RevisionShap
 
 \subsection{Sensitivity and transfer}
 Table~\ref{tab:newsensitivity} and Fig.~\ref{fig:revised_sensitivity} describe the observed contrasts on the reduced two-seed sensitivity budget. In the FedPer head-depth comparison, mean Bluetooth specificity was \RevisionHeadDepthOne{} with one private affine layer and \RevisionHeadDepthTwo{} when the final hidden layer and classifier were retained. This contrast motivates reporting the exact personalization boundary. The sensitivity grid does not select the main-run architecture.
 
 For foreign-source transfer we apply each target's scaler and deployed head to test records from a different client. The benign flag rate comes from benign records of the same foreign source, and the detection margin is attack recall minus that flag rate. Table~\ref{tab:newtransfer} summarizes Bluetooth-target transfer. A separate two-seed experiment excludes the reconnaissance family from the training and validation records of all clients and fits all models and scalers anew. Table~\ref{tab:newholdout} reports recall on the held-out family. The test domain still comes from the same derived benchmark and can contain features shared with other attacks.
 
+\RevisionSensitivity
+\RevisionTransfer
 \subsection{Target-excluded adaptation}
 The budget is a count of target training records. On each budget the same stratified samples and update count are used for scratch training, a frozen trunk with a new head, two private layers with a frozen first layer, and full fine-tuning. Pretraining excludes the target client entirely. Each target scaler is fitted on the sampled budget. Figure~\ref{fig:revised_scarcity} shows that the best adaptation arm varies with the target and budget. The fixed step budget can restrict which sampled records are visited at the largest budgets.
 
-\input{revision_tables.tex}
 
+
+\RevisionScarcity
+\clearpage
 \section{Discussion}\label{sec:discussion}
 A high benign flag rate would impose review burden if a deployed monitor used the same scores and thresholds. For example, repeated alarms on routine wearable observations could delay review of other signals. The benchmark contains no observed patient outcomes. Client-specific false-positive rates and a separately selected operating point should be inspected before any containment action is considered.
 

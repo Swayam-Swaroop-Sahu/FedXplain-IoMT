@@ -2,6 +2,7 @@
 import argparse
 from collections import defaultdict
 import json
+import re
 from pathlib import Path
 from statistics import mean, stdev
 
@@ -22,12 +23,16 @@ NAMES={"local_only":"Local-only","centralized":"Centralized","fedavg":"FedAvg",
 
 
 def table(title,key,headers,rows):
-    return "\n".join([r"\begin{table*}[t]\centering",
-        r"\caption{"+title+r"}\label{tab:"+key+r"}",
-        r"\resizebox{\textwidth}{!}{\begin{tabular}{l"+"r"*(len(headers)-1)+r"}\hline",
+    wide=len(headers)>=5
+    env="table*" if wide else "table"
+    width=r"\textwidth" if wide else r"\columnwidth"
+    grid="\n".join([r"\begin{tabular}{l"+"r"*(len(headers)-1)+r"}\hline",
         " & ".join(headers)+r"\\\hline",
         *(" & ".join(map(str,row))+r"\\" for row in rows),
-        r"\hline\end{tabular}}\end{table*}"])
+        r"\hline\end{tabular}"])
+    body=r"\small"+grid if len(headers)<=3 else r"\resizebox{"+width+r"}{!}{"+grid+"}"
+    return "\n".join([r"\begin{"+env+r"}[t]\centering",
+        r"\caption{"+title+r"}\label{tab:"+key+r"}",body,r"\end{"+env+"}"])
 
 
 def read(path):
@@ -223,7 +228,23 @@ def make_report(root):
     results["shortcut_accuracy"]=mean(r["accuracy"] for r in read(root/"shortcut.json")["runs"])
     results["seeds"]=seeds
     results["blocked_near_signature_counts"]={str(s):read(root/"splits"/f"seed{s}.json")["rounded_signatures_across_splits"] for s in seeds}
-    return "\n\n".join(output)+"\n",results
+    grouped_blocks={
+        "RevisionTaxonomy":("attacks",),
+        "RevisionTopology":("revised_topology","newgroups"),
+        "RevisionDetection":("newmain","newseed42","newseed7","newsupport"),
+        "RevisionBudget":("revised_sweep_budget",),
+        "RevisionDiagnostics":("newprobe","revised_diagnostic"),
+        "RevisionShap":("newshapwithin","newshapacross","revised_shap_tradeoff"),
+        "RevisionSensitivity":("newsensitivity","revised_sensitivity"),
+        "RevisionTransfer":("newtransfer","newholdout"),
+        "RevisionScarcity":("revised_scarcity",)}
+    rendered={re.search(r"\\label\{(?:fig|tab):([^}]+)\}",block)[1]:block for block in output}
+    definitions=[]
+    for macro,labels in grouped_blocks.items():
+        blocks="\n\n".join(rendered.pop(k,"") for k in labels)
+        definitions.append("\\newcommand{\\"+macro+"}{%\n"+blocks+"\n}\n")
+    assert not rendered, "Unassigned tables or figures"
+    return "\n".join(definitions),results
 
 
 

@@ -111,12 +111,16 @@ def split_report(rows, features):
             "rounded_signatures_across_splits": int(rows.groupby(sig)["split"].nunique().gt(1).sum())}
 
 
-def write_manifest(rows, root, seed):
+def write_manifest(rows, root, seed, expected=None):
     path = root / f"manifest_{seed}.csv"
     path.parent.mkdir(parents=True, exist_ok=True)
     cols = ["record_id","feature_file","source_file","group","client","label","split"]
-    rows[cols].to_csv(path,index=False)
-    return {"file":path.name,"sha256":hashlib.sha256(path.read_bytes()).hexdigest()}
+    contents = rows[cols].to_csv(index=False,lineterminator="\r\n").encode("utf8")
+    metadata = {"file":path.name,"sha256":hashlib.sha256(contents).hexdigest()}
+    if expected is not None and metadata != expected:
+        raise ValueError(f"Split manifest digest differs for seed {seed}. Use a new output directory.")
+    path.write_bytes(contents)
+    return metadata
 
 
 def main():

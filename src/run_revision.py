@@ -3,7 +3,6 @@ import argparse
 from pathlib import Path
 import json
 from concurrent.futures import ProcessPoolExecutor
-from itertools import product
 
 import numpy as np
 from scipy.special import expit
@@ -65,14 +64,27 @@ def run_seed(job):
     split,features,clients = get_data(cfg,seed,data,provenance,held_out)
     report = split_report(split,features)
     report["training_excluded_labels"] = list(held_out)
-    report["assignment"] = write_manifest(split,Path("splits")/root.name,seed)
-    write_json(root/"splits"/f"seed{seed}.json",report)
+    report_path = root/"splits"/f"seed{seed}.json"
+    original = None
+    if report_path.exists():
+        original = json.loads(report_path.read_text())
+        if any(original.get(k) != v for k,v in report.items()):
+            raise ValueError(f"Split or label policy differs from archived seed {seed}. Use a new output directory.")
+    expected = original.get("assignment") if original is not None else None
+    report["assignment"] = write_manifest(split,Path("splits")/root.name,seed,expected=expected)
+    write_json(report_path,report)
     for method,mu in baseline_grid(cfg):
         if method not in methods:
             continue
         tag = f"fedprox_{mu}" if method=="fedprox" else method
-        if (root/"runs"/f"{tag}_{seed}.json").exists():
-            continue
+        run_path = root/"runs"/f"{tag}_{seed}.json"
+        if run_path.exists():
+            previous = json.loads(run_path.read_text())
+            if previous["config"] != cfg:
+                raise ValueError(f"Configuration differs from {run_path}. Use a new output directory.")
+            if all((root/"preds"/f"{tag}_{client}_{seed}{ext}").exists()
+                   for client in clients for ext in (".npz",".pth")):
+                continue
         models,logs,_ = train(clients,cfg,seed,method,mu)
         save_run(root,seed,tag,models,clients,cfg,dict(logs,seed=seed,method=method,mu=mu,config=cfg))
         print(seed,tag,round(logs["seconds"],2),flush=True)

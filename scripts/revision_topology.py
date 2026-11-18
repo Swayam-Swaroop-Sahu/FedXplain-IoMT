@@ -36,7 +36,7 @@ def benchmark_figures(config, inventory):
     fig,ax=plt.subplots(figsize=(9,2.4))
     ax.axis("off")
     w1,w2=config["widths"]
-    labels=["45 network\nflow features",f"{w1} units\nReLU and dropout",f"{w2} units\nReLU","1 unit\nSigmoid"]
+    labels=["45 network\nflow features",f"{w1} units\nReLU, dropout {config['dropout']:g}",f"{w2} units\nReLU","1 unit\nSigmoid"]
     for x,label in zip((.11,.38,.64,.89),labels):
         box(ax,x,.55,label)
     for a,b in ((.18,.28),(.46,.56),(.71,.82)):
