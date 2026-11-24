@@ -81,3 +81,5 @@ splits/*_initial_attempt/
 
 results/revision_replay/
 splits/revision_replay/
+
+*.bak
